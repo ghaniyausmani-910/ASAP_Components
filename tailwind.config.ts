@@ -63,10 +63,17 @@ const config: Config = {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         fade: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+        // Content is duplicated twice, so -50% lands exactly on the seam for a
+        // seamless loop. The reverse row uses animation-direction: reverse.
+        marquee: {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
         reveal: 'reveal .7s cubic-bezier(.22,1,.36,1) both',
         fade: 'fade .4s ease both',
+        marquee: 'marquee var(--marquee-duration,60s) linear infinite',
       },
     },
   },

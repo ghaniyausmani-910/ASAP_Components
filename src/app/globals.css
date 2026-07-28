@@ -179,6 +179,14 @@
   /* One consistent vertical rhythm for every section site-wide */
   .section-y { padding-block: clamp(64px, 10vw, 160px); }
   .section-y-sm { padding-block: clamp(48px, 7vw, 96px); }
+
+  /* Inner-page header rhythm: when a white content section sits directly
+     under the breadcrumb (no hero band between them), the full 160px band
+     padding opens a dead gap between the header and the page title. Tighten
+     the top so the title sits close to the breadcrumb; keep the generous
+     bottom that carries into the next band. Applies to every inner page —
+     current and future — that follows the Breadcrumb → section-y pattern. */
+  nav[aria-label='Breadcrumb'] + .section-y { padding-top: clamp(28px, 4vw, 56px); }
 }
 
 /* Respect reduced motion */

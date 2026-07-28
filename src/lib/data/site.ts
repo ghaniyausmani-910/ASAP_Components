@@ -1,4 +1,5 @@
 import type { Certification, Benefit } from '@/lib/types'
+import { FSC_CODES } from '@/lib/data/parts'
 
 export const COMPANY = {
   name: 'ASAP Components',
@@ -46,32 +47,117 @@ export const PARTNERS: string[] = [
   'Bombardier', 'Gulfstream',
 ]
 
-// Manufacturer logos rendered on the home "Trusted brands" wall.
-// `src` files live in /public/logos/ — save each logo there with the exact
-// filename below (transparent PNG or SVG, wide/landscape crop works best).
-export const MANUFACTURER_LOGOS: { name: string; src: string }[] = [
-  { name: 'Boeing', src: '/logos/boeing.webp' },
-  { name: 'Lockheed Martin', src: '/logos/lockheed-martin.webp' },
-  { name: 'Honeywell', src: '/logos/honeywell.webp' },
-  { name: 'GE Aviation', src: '/logos/ge-aviation.webp' },
-  { name: 'Goodrich', src: '/logos/goodrich.webp' },
-  { name: 'Eaton', src: '/logos/eaton.webp' },
-  { name: 'Parker', src: '/logos/parker.webp' },
-  { name: 'De Havilland Aircraft of Canada', src: '/logos/de-havilland-aircraft-of-canada.webp' },
-  { name: 'Freescale Semiconductor', src: '/logos/freescale.webp' },
+// Manufacturers shown in the home bento grid. Each card deep-links to that
+// manufacturer's parts listing (/catalog/aviation/list/<slug>); `slug` matches
+// the entry in MANUFACTURERS (src/lib/data/parts.ts) where one exists so the
+// listing resolves to the real name. `logo` files live in /public/logos/.
+// `domain` is a short capability tag; `icon` keys a lucide glyph for the card
+// badge (see ManufacturersBento); `blurb` is the one-line capability summary.
+export type ManufacturerCard = {
+  name: string
+  slug: string
+  logo: string
+  domain: string
+  icon:
+    | 'aerostructures' | 'defense' | 'avionics' | 'propulsion' | 'landing'
+    | 'hydraulics' | 'fluid' | 'interconnect' | 'controls' | 'semiconductors'
+    | 'electronics' | 'airframes'
+  blurb: string
+}
+
+export const MANUFACTURER_CARDS: ManufacturerCard[] = [
+  { name: 'Boeing', slug: 'the-boeing-company', logo: '/logos/boeing.webp', domain: 'Aerostructures', icon: 'aerostructures', blurb: 'Airframe assemblies and structural hardware for civil and military platforms.' },
+  { name: 'Lockheed Martin', slug: 'lockheed-martin', logo: '/logos/lockheed-martin.webp', domain: 'Defense Systems', icon: 'defense', blurb: 'Mission-grade defense systems and components with full traceability.' },
+  { name: 'Honeywell', slug: 'honeywell', logo: '/logos/honeywell.webp', domain: 'Avionics', icon: 'avionics', blurb: 'Flight-deck avionics, sensors, and control electronics.' },
+  { name: 'GE Aviation', slug: 'ge-aviation', logo: '/logos/ge-aviation.webp', domain: 'Propulsion', icon: 'propulsion', blurb: 'Turbine engine parts and propulsion-system components.' },
+  { name: 'Goodrich', slug: 'goodrich', logo: '/logos/goodrich.webp', domain: 'Landing Systems', icon: 'landing', blurb: 'Landing gear, wheels, and braking-system hardware.' },
+  { name: 'Eaton', slug: 'eaton', logo: '/logos/eaton.webp', domain: 'Hydraulics', icon: 'hydraulics', blurb: 'Hydraulic and fuel-system components for demanding duty cycles.' },
+  { name: 'Parker Hannifin', slug: 'parker-hannifin', logo: '/logos/parker.webp', domain: 'Fluid & Motion', icon: 'fluid', blurb: 'Fluid, motion, and control technologies across the airframe.' },
+  { name: 'Harwin', slug: 'harwin', logo: '/logos/harwin.webp', domain: 'Interconnect', icon: 'interconnect', blurb: 'High-reliability connectors and interconnect for harsh environments.' },
+  { name: 'Bosch Rexroth', slug: 'bosch-rexroth', logo: '/logos/rexroth.webp', domain: 'Drives & Controls', icon: 'controls', blurb: 'Drive and control systems engineered for precision motion.' },
+  { name: 'Freescale', slug: 'freescale-semiconductor', logo: '/logos/freescale.webp', domain: 'Semiconductors', icon: 'semiconductors', blurb: 'Board-level semiconductors and processing components.' },
+  { name: 'Flextronics', slug: 'flextronics', logo: '/logos/flextronics.webp', domain: 'Electronics', icon: 'electronics', blurb: 'Electronic assemblies and contract-manufactured components.' },
+  { name: 'De Havilland Canada', slug: 'de-havilland-aircraft-of-canada', logo: '/logos/de-havilland-aircraft-of-canada.webp', domain: 'Airframes', icon: 'airframes', blurb: 'Airframe and structural parts for regional and utility aircraft.' },
 ]
 
-export const TOP_FSCS: string[] = [
-  'Aircraft Wheel and Brake Systems', 'Aircraft Propellers and Components',
-  'Hand Tools, Power Driven', 'Aircraft Landing Gear Components',
-  'Miscellaneous Vehicular Components', 'Diesel Engines and Components',
-  'Fuses, Arresters, Absorbers and Protectors', 'Bars and Rods, Nonferrous Base Metal',
-  'Electrical Contact Brushes and Electrodes',
-]
+// ── Catalog explorer (homepage 4-column hover-preview section) ──
+// TODO: swap `image` paths for real per-item photos under /public/catalog/preview/.
+// Until then they reuse the topical shots in /public/featured.
+export type CatalogPreviewItem = {
+  id: string
+  label: string
+  title: string
+  description: string
+  count: string
+  image: string
+  href: string
+}
 
-export const HOT_PART_NUMBERS: string[] = [
-  '3202975-001', 'CBL-DATA-2013', 'EPO-3019', '43-4746594-01', '3234TS1-1',
-  '652-4001-001', '012-S2200-00', 'CBL-DATA-3061', '60901076-060',
+export type CatalogColumn = {
+  title: string
+  viewAllHref: string
+  items: CatalogPreviewItem[]
+}
+
+// Topical placeholder image per FSC code (first six of FSC_CODES).
+const FSC_IMAGE: Record<string, string> = {
+  '1560': '/featured/components.jpg',
+  '1650': '/featured/components.jpg',
+  '1680': '/featured/components.jpg',
+  '2915': '/featured/engine.jpg',
+  '2925': '/featured/engine.jpg',
+  '3010': '/featured/bearings.jpg',
+}
+
+// FSCs reuse the canonical codes + counts from the catalog data engine.
+const FSC_PREVIEWS: CatalogPreviewItem[] = FSC_CODES.slice(0, 6).map((f) => ({
+  id: `fsc-${f.code}`,
+  label: `${f.code} · ${f.label}`,
+  title: `FSC ${f.code}`,
+  description: f.label,
+  count: `${f.count.toLocaleString()} parts in stock`,
+  image: FSC_IMAGE[f.code] ?? '/featured/components.jpg',
+  href: `/catalog/nsn/list/${f.code}`,
+}))
+
+const NSN_PREVIEWS: CatalogPreviewItem[] = [
+  { nsn: '5340-01-560-3234', title: 'Bracket, Mounting', desc: 'Airframe hardware bracket, cadmium-plated steel', count: '1,240 sourced this year', image: '/featured/fasteners.jpg' },
+  { nsn: '5935-01-278-3059', title: 'Connector, Receptacle, Electrical', desc: 'MIL-spec circular connector, 37-contact', count: '980 sourced this year', image: '/featured/instruments.jpg' },
+  { nsn: '5310-01-414-2030', title: 'Nut, Self-Locking, Hexagon', desc: 'Corrosion-resistant steel, MS21042 series', count: '3,410 sourced this year', image: '/featured/fasteners.jpg' },
+  { nsn: '2915-01-641-6570', title: 'Fuel Nozzle Assembly', desc: 'Engine fuel system component, turbine', count: '620 sourced this year', image: '/featured/engine.jpg' },
+  { nsn: '4730-00-908-9516', title: 'Elbow, Tube', desc: 'Hydraulic line fitting, 45-degree flare', count: '1,880 sourced this year', image: '/featured/components.jpg' },
+  { nsn: '1560-01-190-8815', title: 'Panel, Structural, Aircraft', desc: 'Airframe skin panel, aluminum alloy', count: '740 sourced this year', image: '/featured/components.jpg' },
+].map((n) => ({
+  id: `nsn-${n.nsn}`,
+  label: n.nsn,
+  title: n.title,
+  description: n.desc,
+  count: n.count,
+  image: n.image,
+  href: `/catalog/nsn/list/${n.nsn}`,
+}))
+
+const PART_PREVIEWS: CatalogPreviewItem[] = [
+  { pn: '3202975-001', title: 'Actuator Assembly', desc: 'Flight-control surface actuator', count: 'In stock · ships same day', image: '/featured/components.jpg' },
+  { pn: 'CBL-DATA-2013', title: 'Data Bus Cable', desc: 'Shielded avionics interconnect harness', count: 'In stock · ships same day', image: '/featured/instruments.jpg' },
+  { pn: 'EPO-3019', title: 'Bearing, Roller', desc: 'Antifriction unmounted bearing', count: 'In stock · ships same day', image: '/featured/bearings.jpg' },
+  { pn: '43-4746594-01', title: 'Cabin Window Pane', desc: 'Stretched-acrylic passenger window', count: 'In stock · ships same day', image: '/featured/windows.jpg' },
+  { pn: '3234TS1-1', title: 'Temperature Sensor', desc: 'Engine bleed-air probe assembly', count: 'In stock · ships same day', image: '/featured/engine.jpg' },
+  { pn: '652-4001-001', title: 'Fastener, Panel', desc: 'Quarter-turn quick-release fastener', count: 'In stock · ships same day', image: '/featured/fasteners.jpg' },
+].map((p) => ({
+  id: `pn-${p.pn}`,
+  label: p.pn,
+  title: p.title,
+  description: p.desc,
+  count: p.count,
+  image: p.image,
+  href: `/rfq/search?partno=${encodeURIComponent(p.pn)}`,
+}))
+
+export const CATALOG_EXPLORER: CatalogColumn[] = [
+  { title: 'Top Trending FSCs', viewAllHref: '/catalog/nsn/fsc', items: FSC_PREVIEWS },
+  { title: 'Top Demanding NSN', viewAllHref: '/catalog/nsn/nsn', items: NSN_PREVIEWS },
+  { title: 'Hot Stock Part Numbers', viewAllHref: '/rfq/search', items: PART_PREVIEWS },
 ]
 
 export const RECENTLY_ORDERED = [

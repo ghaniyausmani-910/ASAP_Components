@@ -92,7 +92,9 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
       {/* Nav row (desktop) */}
       <div className={cn('hidden lg:block border-t', solid ? 'border-hairline' : 'border-white/15')}>
         <div className="container-x flex items-center">
-          <nav className="flex items-center">
+          {/* -ml-4 cancels the first link's px-4 so "Home" sits flush with the
+              container edge — aligned with the logo and breadcrumb above/below. */}
+          <nav className="-ml-4 flex items-center">
             <TopLink href="/" onDark={onDark}>Home</TopLink>
             {CATEGORIES.map((cat) => (
               <div key={cat.slug} className="relative" onMouseEnter={() => setOpenMenu(cat.slug)}>
