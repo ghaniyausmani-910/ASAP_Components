@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   ASAP Components — Design Tokens (see DESIGN.md)
+   Editorial aerospace language · Caladan navy monochrome
+   Two-tier: primitives + opacity-ladder  ->  semantic tokens.
+   tailwind.config.ts points at these vars — this is the one
+   source of truth for color; change a primitive to re-theme.
+   ============================================================ */
+:root {
+  /* ---- Tier 1: primitive anchors (RGB channels enable /alpha) ---- */
+  --ink-rgb: 11 31 51; /* #0b1f33 deep-navy anchor */
+  --ocean-rgb: 15 76 129; /* #0f4c81 focus / rare pop */
+
+  /* ---- Tier 1: primitive full-colors ---- */
+  --ink: rgb(var(--ink-rgb));
+  --paper: #ffffff;
+  --dark-ocean: #0d2b44; /* dark button fill + dark bands */
+  --deep-navy: #071522; /* darkest band / footer floor */
+  --ocean: rgb(var(--ocean-rgb));
+  --aqua: #2ec4b6; /* decorative pop only — never text */
+
+  /* ---- Tier 1b: opacity ladder — every neutral is navy at N% ---- */
+  --ink-4: rgb(var(--ink-rgb) / 0.04);
+  --ink-8: rgb(var(--ink-rgb) / 0.08);
+  --ink-14: rgb(var(--ink-rgb) / 0.14);
+  --ink-28: rgb(var(--ink-rgb) / 0.28);
+  --ink-48: rgb(var(--ink-rgb) / 0.48);
+  --ink-64: rgb(var(--ink-rgb) / 0.64);
+  --ink-88: rgb(var(--ink-rgb) / 0.88);
+
+  /* ---- Tier 2: semantic neutrals ---- */
+  --color-white: #ffffff;
+  --color-surface: color-mix(in srgb, var(--ink) 5%, #fff);
+  --color-surface-2: color-mix(in srgb, var(--ink) 9%, #fff);
+  --color-ink: rgb(var(--ink-rgb));
+  --color-ink-900: rgb(var(--ink-rgb));
+  --color-text-secondary: var(--ink-64);
+  --color-text-tertiary: var(--ink-48);
+  --color-border: var(--ink-14);
+  --color-inputline: var(--ink-28);
+  --on-dark: rgba(255, 255, 255, 0.92);
+  --on-dark-muted: rgba(255, 255, 255, 0.6);
+  --on-dark-border: rgba(255, 255, 255, 0.15);
+
+  /* ---- Tier 2: brand accent (near-monochrome navy) ---- */
+  --color-accent: var(--dark-ocean);
+  --color-accent-hover: var(--deep-navy);
+  --color-accent-100: color-mix(in srgb, var(--ocean) 14%, #fff);
+  --color-error: #c94040;
+  --color-navy: var(--dark-ocean);
+  --color-navy-700: #16436e;
+  --color-navy-tint: color-mix(in srgb, var(--ink) 12%, #fff);
+
+  /* ---- Tier 2: status ---- */
+  --color-success: #2ad87f;
+  --color-warning: #c56a21;
+
+  /* layout — wide container + tight fluid gutters that scale proportionally
+     with the viewport so the composition stays consistent at every size */
+  --container-max: 1800px;
+  --content-max: 1170px;
+  --gutter: clamp(16px, 3vw, 48px);
+
+  /* motion */
+  --dur-fast: 200ms;
+  --dur: 400ms;
+  --dur-slow: 700ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer base {
+  * {
+    @apply border-hairline;
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-body text-ink antialiased;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+    font-weight: 300;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: #fff;
+  }
+  /* Focus ring — ocean (the lone accent-hue touch, for visibility) */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--ocean);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Layout container */
+  .container-x {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Eyebrow / label */
+  .eyebrow {
+    @apply font-body text-xs uppercase text-accent;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+
+  /* Buttons — square, sharp */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-body text-sm font-semibold transition-colors;
+    letter-spacing: 0.02em;
+    padding: 14px 24px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    color: #fff;
+  }
+  .btn-primary:hover { background: var(--color-accent-hover); }
+  .btn-outline {
+    background: transparent;
+    color: var(--color-ink);
+    border-color: var(--color-ink);
+  }
+  .btn-outline:hover { background: var(--color-ink); color: #fff; }
+  .btn-on-dark {
+    background: transparent;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+  .btn-on-dark:hover { background: #fff; color: var(--color-ink); }
+
+  /* Form controls */
+  .field-label {
+    @apply block font-body text-sm font-medium text-ink;
+    margin-bottom: 6px;
+  }
+  .field-input {
+    @apply block w-full bg-white font-body text-body text-ink;
+    border: 1px solid var(--color-inputline);
+    border-radius: 2px;
+    padding: 12px 14px;
+  }
+  .field-input::placeholder { color: var(--color-text-tertiary); }
+  .field-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-100);
+  }
+
+  /* Hairline card */
+  .card {
+    @apply bg-white;
+    border: 1px solid var(--color-border);
+  }
+
+  /* Image scrim for text-over-photo */
+  .scrim {
+    background: linear-gradient(180deg, rgba(11, 31, 51, 0) 0%, rgba(11, 31, 51, 0.65) 100%);
+  }
+}
+
+@layer utilities {
+  .tracking-tight-2 { letter-spacing: -0.02em; }
+  .tracking-tight-3 { letter-spacing: -0.03em; }
+  /* One consistent vertical rhythm for every section site-wide */
+  .section-y { padding-block: clamp(64px, 10vw, 160px); }
+  .section-y-sm { padding-block: clamp(48px, 7vw, 96px); }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
