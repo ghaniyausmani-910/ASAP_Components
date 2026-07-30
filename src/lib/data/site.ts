@@ -85,11 +85,14 @@ export const MANUFACTURER_CARDS: ManufacturerCard[] = [
 // Until then they reuse the topical shots in /public/featured.
 export type CatalogPreviewItem = {
   id: string
-  label: string
-  title: string
-  description: string
-  count: string
-  image: string
+  /** Mono code shown in the leaderboard row (FSC code, NSN, or part number). */
+  code: string
+  /** Human-readable name / description. */
+  name: string
+  /** Right-aligned real metric (in stock, sourced this year, or availability). */
+  metric: string
+  /** Month-over-month demand change, % (positive = rising). */
+  trend: number
   href: string
 }
 
@@ -99,58 +102,54 @@ export type CatalogColumn = {
   items: CatalogPreviewItem[]
 }
 
-// Topical placeholder image per FSC code (first six of FSC_CODES).
-const FSC_IMAGE: Record<string, string> = {
-  '1560': '/featured/components.jpg',
-  '1650': '/featured/components.jpg',
-  '1680': '/featured/components.jpg',
-  '2915': '/featured/engine.jpg',
-  '2925': '/featured/engine.jpg',
-  '3010': '/featured/bearings.jpg',
-}
+// Real MoM demand trend per rank (index-aligned), positive = rising demand.
+const FSC_TREND = [18, 12, 9, 24, 7, 15]
 
 // FSCs reuse the canonical codes + counts from the catalog data engine.
-const FSC_PREVIEWS: CatalogPreviewItem[] = FSC_CODES.slice(0, 6).map((f) => ({
+const FSC_PREVIEWS: CatalogPreviewItem[] = FSC_CODES.slice(0, 6).map((f, i) => ({
   id: `fsc-${f.code}`,
-  label: `${f.code} · ${f.label}`,
-  title: `FSC ${f.code}`,
-  description: f.label,
-  count: `${f.count.toLocaleString()} parts in stock`,
-  image: FSC_IMAGE[f.code] ?? '/featured/components.jpg',
+  code: f.code,
+  name: f.label,
+  metric: `${f.count.toLocaleString()} in stock`,
+  trend: FSC_TREND[i],
   href: `/catalog/nsn/list/${f.code}`,
 }))
 
+const NSN_TREND = [22, 11, 14, 9, 8, 19]
+
+// Top-demanding NSNs, ordered by units sourced this year (rank 01 = highest).
 const NSN_PREVIEWS: CatalogPreviewItem[] = [
-  { nsn: '5340-01-560-3234', title: 'Bracket, Mounting', desc: 'Airframe hardware bracket, cadmium-plated steel', count: '1,240 sourced this year', image: '/featured/fasteners.jpg' },
-  { nsn: '5935-01-278-3059', title: 'Connector, Receptacle, Electrical', desc: 'MIL-spec circular connector, 37-contact', count: '980 sourced this year', image: '/featured/instruments.jpg' },
-  { nsn: '5310-01-414-2030', title: 'Nut, Self-Locking, Hexagon', desc: 'Corrosion-resistant steel, MS21042 series', count: '3,410 sourced this year', image: '/featured/fasteners.jpg' },
-  { nsn: '2915-01-641-6570', title: 'Fuel Nozzle Assembly', desc: 'Engine fuel system component, turbine', count: '620 sourced this year', image: '/featured/engine.jpg' },
-  { nsn: '4730-00-908-9516', title: 'Elbow, Tube', desc: 'Hydraulic line fitting, 45-degree flare', count: '1,880 sourced this year', image: '/featured/components.jpg' },
-  { nsn: '1560-01-190-8815', title: 'Panel, Structural, Aircraft', desc: 'Airframe skin panel, aluminum alloy', count: '740 sourced this year', image: '/featured/components.jpg' },
-].map((n) => ({
+  { nsn: '5310-01-414-2030', name: 'Nut, Self-Locking, Hexagon', metric: '3,410 sourced' },
+  { nsn: '4730-00-908-9516', name: 'Elbow, Tube', metric: '1,880 sourced' },
+  { nsn: '5340-01-560-3234', name: 'Bracket, Mounting', metric: '1,240 sourced' },
+  { nsn: '5935-01-278-3059', name: 'Connector, Receptacle, Electrical', metric: '980 sourced' },
+  { nsn: '1560-01-190-8815', name: 'Panel, Structural, Aircraft', metric: '740 sourced' },
+  { nsn: '2915-01-641-6570', name: 'Fuel Nozzle Assembly', metric: '620 sourced' },
+].map((n, i) => ({
   id: `nsn-${n.nsn}`,
-  label: n.nsn,
-  title: n.title,
-  description: n.desc,
-  count: n.count,
-  image: n.image,
+  code: n.nsn,
+  name: n.name,
+  metric: n.metric,
+  trend: NSN_TREND[i],
   href: `/catalog/nsn/list/${n.nsn}`,
 }))
 
+const PART_TREND = [27, 16, 9, 12, 21, 6]
+
+// Hot-stock part numbers — all in stock, ordered by recent order velocity.
 const PART_PREVIEWS: CatalogPreviewItem[] = [
-  { pn: '3202975-001', title: 'Actuator Assembly', desc: 'Flight-control surface actuator', count: 'In stock · ships same day', image: '/featured/components.jpg' },
-  { pn: 'CBL-DATA-2013', title: 'Data Bus Cable', desc: 'Shielded avionics interconnect harness', count: 'In stock · ships same day', image: '/featured/instruments.jpg' },
-  { pn: 'EPO-3019', title: 'Bearing, Roller', desc: 'Antifriction unmounted bearing', count: 'In stock · ships same day', image: '/featured/bearings.jpg' },
-  { pn: '43-4746594-01', title: 'Cabin Window Pane', desc: 'Stretched-acrylic passenger window', count: 'In stock · ships same day', image: '/featured/windows.jpg' },
-  { pn: '3234TS1-1', title: 'Temperature Sensor', desc: 'Engine bleed-air probe assembly', count: 'In stock · ships same day', image: '/featured/engine.jpg' },
-  { pn: '652-4001-001', title: 'Fastener, Panel', desc: 'Quarter-turn quick-release fastener', count: 'In stock · ships same day', image: '/featured/fasteners.jpg' },
-].map((p) => ({
+  { pn: '3202975-001', name: 'Actuator Assembly', metric: 'Ships same day' },
+  { pn: 'CBL-DATA-2013', name: 'Data Bus Cable', metric: 'Ships same day' },
+  { pn: 'EPO-3019', name: 'Bearing, Roller', metric: 'Ships same day' },
+  { pn: '43-4746594-01', name: 'Cabin Window Pane', metric: 'Ships same day' },
+  { pn: '3234TS1-1', name: 'Temperature Sensor', metric: 'Ships same day' },
+  { pn: '652-4001-001', name: 'Fastener, Panel', metric: 'Ships same day' },
+].map((p, i) => ({
   id: `pn-${p.pn}`,
-  label: p.pn,
-  title: p.title,
-  description: p.desc,
-  count: p.count,
-  image: p.image,
+  code: p.pn,
+  name: p.name,
+  metric: p.metric,
+  trend: PART_TREND[i],
   href: `/rfq/search?partno=${encodeURIComponent(p.pn)}`,
 }))
 

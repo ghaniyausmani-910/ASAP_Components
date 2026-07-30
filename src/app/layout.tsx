@@ -9,7 +9,7 @@ import { CartProvider } from '@/lib/cart/CartContext'
 
 const sora = Sora({
   subsets: ['latin'],
-  weight: ['200', '300', '400', '500', '600'],
+  // Variable weight axis (100–800) so intermediate weights like 440 render.
   variable: '--font-display',
   display: 'swap',
 })

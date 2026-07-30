@@ -2,22 +2,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Container, Section, SectionHeading, Eyebrow } from '@/components/ui/primitives'
 import { ScrollReveal } from '@/components/ui/ScrollReveal'
+import { ScrollTextReveal } from '@/components/ui/ScrollTextReveal'
+import { ScrollScrubText } from '@/components/ui/ScrollScrubText'
 import { FeaturedCarousel } from '@/components/home/FeaturedCarousel'
 import { InDemandCarousel } from '@/components/home/InDemandCarousel'
-import { ManufacturersBento } from '@/components/home/ManufacturersBento'
+import { ManufacturersSplit } from '@/components/home/ManufacturersSplit'
 import { CatalogExplorer } from '@/components/home/CatalogExplorer'
+import { ProofBand } from '@/components/home/ProofBand'
 import { HeroInquiryBar } from '@/components/home/HeroInquiryBar'
 import { Certifications } from '@/components/modules/Certifications'
 import {
   FEATURED_HOME, RECENTLY_ORDERED, CATALOG_EXPLORER, MANUFACTURER_CARDS,
 } from '@/lib/data/site'
-
-const HOME_STATS = [
-  { value: '10M+', label: 'Obsolete & hard-to-find parts in inventory' },
-  { value: '5,100+', label: 'Trusted and verified manufacturers' },
-  { value: '15 min', label: 'Average quote turnaround, 24/7' },
-  { value: '100%', label: 'Orders fulfilled in the U.S.A.' },
-]
 
 export default function HomePage() {
   return (
@@ -46,7 +42,7 @@ export default function HomePage() {
           <div className="max-w-4xl animate-fade">
             <p className="eyebrow !text-white/70">Aerospace &amp; Defense Parts Distributor</p>
             <div className="w-fit">
-              <h1 className="mt-5 font-display text-[clamp(2.75rem,6vw,5.5rem)] font-light leading-[1.02] tracking-tight-3 [text-shadow:0_2px_40px_rgba(11,31,51,0.5)] [text-wrap:balance]">
+              <h1 className="mt-5 font-display text-[clamp(2.75rem,6vw,5.5rem)] font-[440] leading-[1.02] tracking-tight-3 [text-shadow:0_2px_40px_rgba(11,31,51,0.5)] [text-wrap:balance]">
                 Proudly Supporting
                 <br />
                 <span className="whitespace-nowrap text-slate-300">The USA and her Allies</span>
@@ -68,55 +64,70 @@ export default function HomePage() {
       {/* 3 · FEATURED AVIATION PARTS — carousel */}
       <FeaturedCarousel items={FEATURED_HOME} />
 
-      {/* 4 · ABOUT — statement + stats (dark navy) */}
-      <Section tone="navy">
-        <Container>
-          <div className="grid gap-10 lg:grid-cols-[220px_1fr] lg:gap-16">
-            <ScrollReveal>
-              <p className="eyebrow !text-white/75">About Us</p>
-            </ScrollReveal>
-
-            <ScrollReveal delay={100}>
-              <p className="font-display text-h3 font-light leading-[1.35] tracking-tight-2 text-white lg:text-[2rem] lg:leading-[1.3]">
-                ASAP Components is the latest digital platform by ASAP Semiconductor for the sourcing of civil aviation
-                and military aviation parts as well as board-level components. All of our military aerospace parts are
-                organized under 40 federal supply classes with their corresponding NIINs, federal supply classes, and
-                federal supply groups that comprise each national stock number.
-              </p>
-
-              <dl className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-white/15 pt-10 md:mt-16 md:grid-cols-4 md:gap-0">
-                {HOME_STATS.map((s) => (
-                  <div key={s.label} className="md:border-l md:border-white/[0.12] md:pl-6 md:first:border-l-0 md:first:pl-0">
-                    <dt className="font-display text-[2.25rem] font-extralight leading-none tracking-tight-2 text-white sm:text-[2.5rem]">
-                      {s.value}
-                    </dt>
-                    <dd className="mt-3 max-w-[18ch] text-sm leading-snug text-white/60">{s.label}</dd>
-                  </div>
-                ))}
-              </dl>
-            </ScrollReveal>
-          </div>
-        </Container>
-      </Section>
+      {/* 4 · ABOUT — scroll-scrubbed editorial reveal (content only; animation lives in the component) */}
+      <ScrollTextReveal
+        label="About Us"
+        heading="Searching. Securing. Shipping."
+        paragraphs={[
+          'ASAP Components, a digital platform by ASAP Semiconductor, simplifies sourcing for civil aviation, military aerospace, and board-level parts. Built around customer feedback, the platform organizes military components by National Stock Numbers across 40 Federal Supply Classes. It features dedicated, intuitive sections for commercial aircraft avionics, engines, assemblies, and over 5 million board-level components, including specialized connectors and interconnects.',
+        ]}
+        cards={[
+          { icon: 'badge', title: 'Certified distributor', body: 'AS9120B, ISO 9001:2015, and FAA AC 00-56B accredited.' },
+          { icon: 'timer', title: 'RFQs in 15 minutes', body: 'Round-the-clock quote responses, 365 days a year.' },
+          { icon: 'layers', title: '5M+ board-level parts', body: 'Connectors, interconnects, and components in one catalog.' },
+          { icon: 'boxes', title: 'NSN-organized inventory', body: 'Military parts mapped across 40 Federal Supply Classes.' },
+          { icon: 'truck', title: 'Same-day delivery', body: 'Expedited fulfillment for your most urgent requirements.' },
+          { icon: 'route', title: 'Traceable supply chain', body: 'Full documentation and supply-chain integrity, end to end.' },
+        ]}
+      />
 
       {/* 5 · RECENTLY ORDERED PARTS — carousel */}
       <InDemandCarousel items={RECENTLY_ORDERED} />
 
       {/* 5.5 · MISSION STATEMENT (tighter vertical spacing) */}
-      <section className="bg-white pb-20 pt-6 lg:pb-24 lg:pt-10">
+      {/* Same section/heading as before — only the reveal changed from a
+          block fade to the scroll-scrubbed word reveal used in About Us. */}
+      <section className="bg-white pb-20 pt-6 lg:pb-[120px] lg:pt-10">
         <Container>
-          <ScrollReveal>
-            <h2 className="font-display text-[clamp(1.9rem,3.6vw,3rem)] font-light leading-[1.15] tracking-tight-2 text-ink lg:max-w-[90%]">
-              ASAP-Components provides round-the-clock RFQ responses within 15 minutes, 365 days a year, backed by
-              top-tier industry standards as an AS9120B, ISO 9001:2015, and FAA AC 00-56B certified distributor.
-              ASAP-Components guarantees supply chain integrity while offering same-day delivery to seamlessly meet
-              your most challenging requirements.
-            </h2>
-          </ScrollReveal>
+          <ScrollScrubText
+            as="h2"
+            tone="light"
+            className="font-display text-[clamp(1.9rem,3.6vw,3rem)] font-light leading-[1.15] tracking-tight-2 text-ink lg:max-w-[90%]"
+          >
+            ASAP-Components provides round-the-clock RFQ responses within 15 minutes, 365 days a year, backed by
+            top-tier industry standards as an AS9120B, ISO 9001:2015, and FAA AC 00-56B certified distributor.
+            ASAP-Components guarantees supply chain integrity while offering same-day delivery to seamlessly meet
+            your most challenging requirements.
+          </ScrollScrubText>
         </Container>
       </section>
 
-      {/* 6 · TOP AEROSPACE PART CATEGORIES */}
+      {/* 6 · MANUFACTURERS — sticky ASAP-culture photo + streaming card grid */}
+      <Section className="!pb-16 lg:!pb-24">
+        <Container>
+          <ScrollReveal>
+            {/* Header — eyebrow above; heading left with the CTA aligned to its
+                right edge on desktop, dropping below the heading on mobile. */}
+            <p className="eyebrow">Manufacturers</p>
+            <div className="mt-5 flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-10">
+              <h2 className="font-display text-h2 font-light leading-[1.12] tracking-tight-2 text-ink">
+                5,100+ trusted names.{" "}
+                <span className="text-tertiary">Every part traceable.</span>
+              </h2>
+              <Link
+                href="/catalog/aviation/manufacturers"
+                className="btn btn-outline shrink-0 self-start md:self-auto"
+              >
+                View all manufacturers
+              </Link>
+            </div>
+          </ScrollReveal>
+
+          <ManufacturersSplit items={MANUFACTURER_CARDS} />
+        </Container>
+      </Section>
+
+      {/* 7 · TOP AEROSPACE PART CATEGORIES */}
       <Section tone="surface">
         <Container>
           <ScrollReveal>
@@ -126,42 +137,8 @@ export default function HomePage() {
         </Container>
       </Section>
 
-      {/* 7 · MANUFACTURERS — statement + top-right CTA, slow auto-scrolling marquee */}
-      <Section className="!pb-16 lg:!pb-24">
-        <Container>
-          <ScrollReveal>
-            {/* Top row — eyebrow left, CTA aligned top-right */}
-            <div className="flex items-center justify-between gap-6">
-              <p className="eyebrow">Manufacturers</p>
-              <Link
-                href="/catalog/aviation/manufacturers"
-                className="btn btn-outline hidden shrink-0 sm:inline-flex"
-              >
-                View all manufacturers
-              </Link>
-            </div>
-
-            <h2 className="mt-5 font-display text-h2 font-light tracking-tight-2 text-ink">
-              The aerospace industry&apos;s most trusted names,
-              <br className="hidden sm:inline" />{' '}
-              <span className="text-tertiary">5,100+ manufacturers — every part fully traceable.</span>
-            </h2>
-
-            {/* CTA falls below the heading on narrow screens where the top row hides it */}
-            <Link
-              href="/catalog/aviation/manufacturers"
-              className="btn btn-outline mt-6 inline-flex sm:hidden"
-            >
-              View all manufacturers
-            </Link>
-          </ScrollReveal>
-
-          {/* Two carousels converging — top row drifts left, bottom row drifts right */}
-          <ScrollReveal className="mt-12 md:mt-16">
-            <ManufacturersBento items={MANUFACTURER_CARDS} />
-          </ScrollReveal>
-        </Container>
-      </Section>
+      {/* 7.5 · STATS — interactive proof band (Scale / Speed / Trust) */}
+      <ProofBand />
 
       {/* 8 · CERTIFICATIONS */}
       <Certifications />
