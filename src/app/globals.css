@@ -176,6 +176,48 @@
 @layer utilities {
   .tracking-tight-2 { letter-spacing: -0.02em; }
   .tracking-tight-3 { letter-spacing: -0.03em; }
+
+  /* About hero load reveal — visible by default, animation only enhances.
+     Base state is the FINAL position (opacity 1, no offset) so a headless or
+     backgrounded render, or a no-animation environment, still ships the hero
+     fully visible. The keyframe supplies the entrance from a delayed offset. */
+  .about-rise {
+    animation: about-rise var(--dur-slow) var(--ease-out) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+  @keyframes about-rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  /* Slow settle on the hero image — a long, near-imperceptible zoom-out. */
+  .about-hero-img { animation: about-hero-settle 1200ms var(--ease-out) both; }
+  @keyframes about-hero-settle {
+    from { transform: scale(1.06); }
+    to { transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .about-rise,
+    .about-hero-img { animation: none; }
+  }
+
+  /* About photo marquee — a slow, continuous, seamless horizontal scroll.
+     The track holds the photo set twice; translating it by exactly -50%
+     lands the second copy where the first began, so the loop is invisible.
+     Speed is set from a CSS var so the same track can scale duration to its
+     own width (wider track = longer duration = constant pixel speed). */
+  .about-marquee-track {
+    animation: about-marquee var(--marquee-dur, 60s) linear infinite;
+    will-change: transform;
+  }
+  @keyframes about-marquee {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+  /* Hovering the strip eases the scroll to a pause so a photo can be studied. */
+  .about-marquee:hover .about-marquee-track { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) {
+    .about-marquee-track { animation: none; }
+  }
   /* One consistent vertical rhythm for every section site-wide */
   .section-y { padding-block: clamp(64px, 10vw, 160px); }
   .section-y-sm { padding-block: clamp(48px, 7vw, 96px); }

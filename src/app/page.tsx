@@ -37,28 +37,30 @@ export default function HomePage() {
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(0deg,rgba(11,31,51,0.72)_0%,rgba(11,31,51,0)_100%)]" />
         <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(11,31,51,0.42),rgba(11,31,51,0))]" />
 
-        {/* Heading block — fills the hero, anchored above the docked bar */}
-        <Container className="relative z-10 flex flex-1 flex-col justify-end pb-10 pt-32 md:pb-14">
-          <div className="max-w-4xl animate-fade">
-            <p className="eyebrow !text-white/70">Aerospace &amp; Defense Parts Distributor</p>
-            <div className="w-fit">
-              <h1 className="mt-5 font-display text-[clamp(2.75rem,6vw,5.5rem)] font-[440] leading-[1.02] tracking-tight-3 [text-shadow:0_2px_40px_rgba(11,31,51,0.5)] [text-wrap:balance]">
-                Proudly Supporting
-                <br />
-                <span className="whitespace-nowrap text-slate-300">The USA and her Allies</span>
-              </h1>
-              <p className="mt-6 text-body-lg text-white/80 [text-shadow:0_1px_16px_rgba(11,31,51,0.5)]">
-                Mission-critical aerospace and defense parts — sourced, quoted, and delivered through a
-                fully traceable, U.S.-based supply chain.
-              </p>
+        {/* Heading block — fills the hero, with the inquiry card sitting right after the copy */}
+        <Container className="relative z-10 flex flex-1 flex-col justify-end pb-[60px] pt-32">
+          <div className="animate-fade">
+            <div className="max-w-4xl">
+              <p className="eyebrow !text-white/70">Aerospace &amp; Defense Parts Distributor</p>
+              <div className="w-fit">
+                <h1 className="mt-5 font-display text-[clamp(2.75rem,6vw,5.5rem)] font-[440] leading-[1.1] tracking-tight-3 [text-shadow:0_2px_40px_rgba(11,31,51,0.5)] [text-wrap:balance]">
+                  Proudly Supporting
+                  <br />
+                  <span className="whitespace-nowrap text-slate-300">The USA and her Allies</span>
+                </h1>
+                <p className="mt-6 text-body-lg text-white/80 [text-shadow:0_1px_16px_rgba(11,31,51,0.5)]">
+                  Mission-critical aerospace and defense parts — sourced, quoted, and delivered through a
+                  fully traceable, U.S.-based supply chain.
+                </p>
+              </div>
+            </div>
+
+            {/* Inquiry card — floating glass RFQ panel docked right beneath the copy */}
+            <div className="mt-10 w-full">
+              <HeroInquiryBar />
             </div>
           </div>
         </Container>
-
-        {/* Inquiry bar — full-bleed frosted-navy control bar docked to the hero's base */}
-        <div className="relative z-10 animate-fade">
-          <HeroInquiryBar />
-        </div>
       </section>
 
       {/* 3 · FEATURED AVIATION PARTS — carousel */}

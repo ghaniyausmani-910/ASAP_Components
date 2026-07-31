@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowRight, Clock } from 'lucide-react'
+import Image from 'next/image'
+import { Clock } from 'lucide-react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container } from '@/components/ui/primitives'
 import { BlogSidebar } from '@/components/blog/BlogSidebar'
@@ -34,8 +35,15 @@ export default function BlogListingPage() {
               {/* Featured post */}
               <ScrollReveal>
                 <Link href={`/blog/${featured.slug}`} className="group grid overflow-hidden border border-hairline sm:grid-cols-2">
-                  <div className={`relative h-56 sm:h-full ${gradient(featured.image)}`}>
-                    <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(135deg,#fff_1px,transparent_1px)] [background-size:22px_22px]" />
+                  <div className={`relative h-72 overflow-hidden sm:h-full sm:min-h-[340px] ${gradient(featured.image)}`}>
+                    <Image
+                      src={featured.photo}
+                      alt={featured.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 480px"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,32,58,0.15)_0%,rgba(15,32,58,0.45)_100%)]" />
                   </div>
                   <div className="p-6">
                     <span className="text-xs font-semibold uppercase tracking-[0.08em] text-accent">{featured.category}</span>
@@ -50,29 +58,32 @@ export default function BlogListingPage() {
               </ScrollReveal>
 
               {/* Grid */}
-              <div className="mt-6 grid gap-6 sm:grid-cols-2">
+              <div className="mt-10 grid gap-x-8 gap-y-12 sm:grid-cols-2">
                 {rest.map((p, i) => (
                   <ScrollReveal key={p.slug} delay={(i % 2) * 80}>
-                    <Link href={`/blog/${p.slug}`} className="group flex h-full flex-col border border-hairline">
-                      <div className={`relative h-40 ${gradient(p.image)}`}>
-                        <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(135deg,#fff_1px,transparent_1px)] [background-size:20px_20px]" />
+                    <Link href={`/blog/${p.slug}`} className="group flex h-full flex-col">
+                      <div className={`relative aspect-[3/2] overflow-hidden ${gradient(p.image)}`}>
+                        <Image
+                          src={p.photo}
+                          alt={p.title}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 320px"
+                          className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                        />
                       </div>
-                      <div className="flex flex-1 flex-col p-5">
-                        <span className="text-xs font-semibold uppercase tracking-[0.08em] text-accent">{p.category}</span>
-                        <h3 className="mt-2 font-display text-base font-medium leading-snug group-hover:text-accent">{p.title}</h3>
-                        <p className="mt-2 line-clamp-2 text-sm text-secondary">{p.excerpt}</p>
-                        <div className="mt-auto pt-4 flex items-center justify-between text-xs text-tertiary">
-                          <span>{formatDate(p.date)}</span>
-                          <span className="inline-flex items-center gap-1 font-semibold text-accent">Read <ArrowRight size={13} /></span>
-                        </div>
+                      <div className="mt-5 flex items-center gap-4 border-t border-hairline pt-4 text-xs">
+                        <span className="font-semibold text-secondary">{formatDate(p.date)}</span>
+                        <span className="font-semibold uppercase tracking-[0.08em] text-accent">{p.category}</span>
                       </div>
+                      <h3 className="mt-4 font-display text-h4 font-medium leading-snug tracking-tight-2 group-hover:text-accent">{p.title}</h3>
+                      <p className="mt-3 text-sm leading-relaxed text-secondary">{p.excerpt}</p>
                     </Link>
                   </ScrollReveal>
                 ))}
               </div>
 
               {/* Pagination */}
-              <nav className="mt-10 flex items-center justify-center gap-1" aria-label="Blog pagination">
+              <nav className="mt-10 flex items-center justify-start gap-1" aria-label="Blog pagination">
                 <span className="flex h-9 w-9 items-center justify-center bg-accent text-sm text-white">1</span>
                 {[2, 3, 4, 5, 6].map((n) => (
                   <span key={n} className="flex h-9 w-9 cursor-pointer items-center justify-center border border-hairline text-sm text-secondary hover:border-accent hover:text-accent">{n}</span>

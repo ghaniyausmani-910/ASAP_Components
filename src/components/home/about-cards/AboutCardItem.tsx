@@ -36,7 +36,7 @@ export function AboutCardItem({ card }: { card: AboutCardData }) {
         className={[
           'group relative flex h-full flex-col overflow-hidden border border-white/10 bg-white/[0.035] p-8',
           'transition-[transform,box-shadow,border-color] duration-[420ms] ease-out',
-          '[@media(hover:hover)]:hover:z-10 [@media(hover:hover)]:hover:scale-[1.02] [@media(hover:hover)]:hover:border-white/20 [@media(hover:hover)]:hover:shadow-[0_44px_90px_-42px_rgba(0,0,0,0.85)]',
+          '[@media(hover:hover)]:hover:z-10 [@media(hover:hover)]:hover:scale-[1.02] [@media(hover:hover)]:hover:border-white/20 [@media(hover:hover)]:hover:shadow-[0_22px_50px_-40px_rgba(0,0,0,0.55)]',
         ].join(' ')}
       >
         {/* Accent keyline sweeps in from the left edge on hover. */}

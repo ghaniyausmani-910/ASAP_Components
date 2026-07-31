@@ -24,6 +24,18 @@ export function ScrollReveal({
       setShown(true)
       return
     }
+
+    // Reveal immediately if the element is already within the viewport on
+    // mount. The observer's first async callback can miss an element that is
+    // in view before it fires (e.g. after a client navigation or restored
+    // scroll), which would otherwise leave the content stranded at opacity 0.
+    const rect = el.getBoundingClientRect()
+    const vh = window.innerHeight || document.documentElement.clientHeight
+    if (rect.top < vh && rect.bottom > 0) {
+      setShown(true)
+      return
+    }
+
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -36,7 +48,15 @@ export function ScrollReveal({
       { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
     )
     io.observe(el)
-    return () => io.disconnect()
+
+    // Safety net: never let content stay hidden. If the observer hasn't fired
+    // by the time this resolves (stalled/backgrounded render), reveal anyway.
+    const fallback = window.setTimeout(() => setShown(true), 1200)
+
+    return () => {
+      io.disconnect()
+      window.clearTimeout(fallback)
+    }
   }, [])
 
   return (

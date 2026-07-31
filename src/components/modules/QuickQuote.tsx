@@ -19,8 +19,7 @@ export function QuickQuote({ variant = 'bar' }: { variant?: 'bar' | 'card' }) {
 
   if (variant === 'card') {
     return (
-      <form onSubmit={submit} className="border border-hairline bg-white p-5">
-        <p className="mb-4 font-display text-base font-medium">Send Instant RFQ</p>
+      <form onSubmit={submit}>
         <div className="space-y-3">
           <input className="field-input" placeholder="Enter Part Number" value={f.partNo} onChange={(e) => setF({ ...f, partNo: e.target.value })} aria-label="Part number" />
           <input className="field-input" placeholder="Quantity" value={f.qty} onChange={(e) => setF({ ...f, qty: e.target.value })} aria-label="Quantity" />

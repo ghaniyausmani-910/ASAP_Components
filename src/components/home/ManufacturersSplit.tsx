@@ -15,8 +15,8 @@ export function ManufacturersSplit({ items }: { items: ManufacturerCard[] }) {
       <div className="lg:sticky lg:top-28 lg:self-start">
         <figure className="relative aspect-[4/5] overflow-hidden border border-hairline bg-surface sm:aspect-[16/10] lg:aspect-[24/25]">
           <Image
-            src="/about/warehouse-aisle.jpg"
-            alt="ASAP Components warehouse aisle lined floor-to-ceiling with catalogued aerospace parts inventory"
+            src="/about/team-cart.jpg"
+            alt="ASAP Components team members handling a packaged part beside a branded parts cart in the warehouse"
             fill
             sizes="(min-width: 1024px) 40vw, 100vw"
             className="object-cover"

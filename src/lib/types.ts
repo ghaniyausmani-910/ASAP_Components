@@ -57,6 +57,7 @@ export interface BlogPost {
   readingTime: number
   excerpt: string
   image: string // gradient key
+  photo: string // hero photo path
   body: BlogBlock[]
 }
 

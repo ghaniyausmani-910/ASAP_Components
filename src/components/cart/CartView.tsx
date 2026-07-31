@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { CheckCircle2, Clock, ShieldCheck, ShoppingCart, Trash2, ArrowRight } from 'lucide-react'
+import { CheckCircle2, Clock, ShieldCheck, ShoppingCart, Trash2 } from 'lucide-react'
 import { useCart } from '@/lib/cart/CartContext'
 import { QtyStepper } from '@/components/cart/QtyStepper'
 import { cn } from '@/lib/utils'
@@ -49,10 +49,7 @@ export function CartView() {
           Add parts from any search result or catalog listing to build a single quote request for everything you need.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/search" className="btn btn-primary group">
-            Search parts <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
-          </Link>
-          <Link href="/catalog/aviation/part-types" className="btn btn-outline">Browse catalog</Link>
+          <Link href="/catalog/aviation/part-types" className="btn btn-primary">Browse catalog</Link>
         </div>
       </div>
     )

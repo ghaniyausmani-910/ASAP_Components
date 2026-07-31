@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Clock, User, Facebook, Twitter, Linkedin, ArrowRight } from 'lucide-react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
@@ -32,8 +33,17 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Blog', href: '/blog' }, { label: post.title }]} />
 
       {/* Article hero */}
-      <section className={`relative ${gradient(post.image)}`}>
-        <div className="absolute inset-0 opacity-15 [background-image:linear-gradient(135deg,#fff_1px,transparent_1px)] [background-size:26px_26px]" />
+      <section className={`relative overflow-hidden ${gradient(post.image)}`}>
+        <Image
+          src={post.photo}
+          alt={post.title}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,32,58,0.72)_0%,rgba(15,32,58,0.85)_100%)]" />
+        <div className="absolute inset-0 opacity-10 [background-image:linear-gradient(135deg,#fff_1px,transparent_1px)] [background-size:26px_26px]" />
         <Container>
           <div className="relative py-16 lg:py-24">
             <span className="text-xs font-semibold uppercase tracking-[0.08em] text-white/80">{post.category}</span>
@@ -96,7 +106,16 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             <div className="mt-6 grid gap-6 sm:grid-cols-3">
               {related.map((p) => (
                 <Link key={p.slug} href={`/blog/${p.slug}`} className="group flex flex-col border border-hairline">
-                  <div className={`h-32 ${gradient(p.image)}`} />
+                  <div className={`relative h-44 overflow-hidden ${gradient(p.image)}`}>
+                    <Image
+                      src={p.photo}
+                      alt={p.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 260px"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,32,58,0.1)_0%,rgba(15,32,58,0.4)_100%)]" />
+                  </div>
                   <div className="flex flex-1 flex-col p-4">
                     <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-accent">{p.category}</span>
                     <h3 className="mt-1.5 font-display text-sm font-medium leading-snug group-hover:text-accent">{p.title}</h3>
