@@ -62,7 +62,7 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
     <form onSubmit={submit} className="border border-hairline bg-white">
       <div className="grid md:grid-cols-2">
         {/* Part details */}
-        <fieldset className="border-b border-hairline p-6 md:border-b-0 md:border-r">
+        <fieldset className="border-b border-hairline px-6 pb-6 pt-10 md:border-b-0 md:border-r">
           <legend className="mb-4 font-display text-sm font-medium text-navy">Part Details</legend>
           <div className="space-y-4">
             <Field id="pn" label="Mfg Part Number" required defaultValue={defaults?.partNo} />
@@ -83,7 +83,7 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
         </fieldset>
 
         {/* Contact info */}
-        <fieldset className="p-6">
+        <fieldset className="px-6 pb-6 pt-10">
           <legend className="mb-4 font-display text-sm font-medium text-navy">Contact Information</legend>
           <div className="space-y-4">
             <Field id="name" label="Contact Name" required />

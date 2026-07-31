@@ -35,6 +35,8 @@ export interface ProofPillar {
   figure: string
   /** Supporting line shown when the pillar is open. */
   body: string
+  /** Photo shown on the left while this pillar is active. */
+  image: { src: string; alt: string; /** object-position for the cover crop; defaults to center. */ position?: string }
   cta: { label: string; href: string }
 }
 
@@ -44,6 +46,10 @@ const PROOF_PILLARS: ProofPillar[] = [
     heading: '5,100+ manufacturers · 40 Federal Supply Classes',
     figure: '5M+ parts',
     body: 'One traceable catalog spanning board-level to airframe.',
+    image: {
+      src: '/about/warehouse-aisle.jpg',
+      alt: 'Rows of labelled parts bins on warehouse racking, spanning the full catalog',
+    },
     cta: { label: 'View Manufacturers', href: '/catalog/aviation/manufacturers' },
   },
   {
@@ -51,6 +57,10 @@ const PROOF_PILLARS: ProofPillar[] = [
     heading: '24/7 × 365 · Same-day delivery on AOG',
     figure: '15-minute RFQs',
     body: 'Guaranteed quote responses within fifteen minutes, every hour of every day.',
+    image: {
+      src: '/partners.jpg',
+      alt: 'Palletized freight being loaded into the cargo hold of a wide-body aircraft',
+    },
     cta: { label: 'Request a Quote', href: '/instant-rfq' },
   },
   {
@@ -58,12 +68,17 @@ const PROOF_PILLARS: ProofPillar[] = [
     heading: 'AS9120B · ISO 9001:2015 · FAA AC 00-56B',
     figure: '100% traceable',
     body: 'Full chain-of-custody documentation on every part we ship.',
+    image: {
+      src: '/operations-floor.jpg',
+      alt: 'ASAP operations floor — specialists inspecting and packing parts against stocked shelving',
+    },
     cta: { label: 'View Quality & Certifications', href: '/quality' },
   },
 ]
 
 export function ProofBand({ pillars = PROOF_PILLARS }: { pillars?: ProofPillar[] }) {
   const [activeId, setActiveId] = useState(pillars[0]?.id)
+  const activePillar = pillars.find((p) => p.id === activeId) ?? pillars[0]
   const reduce = useReducedMotion()
 
   // Vertical rail fill — tracks the active pillar's box within the column.
@@ -113,15 +128,28 @@ export function ProofBand({ pillars = PROOF_PILLARS }: { pillars?: ProofPillar[]
 
         {/* Row: photo · rail · pillars */}
         <div className="mt-10 flex flex-col gap-8 lg:mt-16 lg:h-[400px] lg:flex-row lg:items-stretch lg:gap-10">
-          {/* Left — grayscale aerospace photo */}
+          {/* Left — aerospace photo, crossfades with the active pillar */}
           <div className="relative aspect-[1033/519] w-full overflow-hidden bg-ink-900 lg:aspect-auto lg:h-[400px] lg:w-[55%]">
-            <Image
-              src="/proof/mission-critical.jpg"
-              alt="Twin rear-mounted turbofan engines of a business jet against a bright sky, in monochrome"
-              fill
-              sizes="(min-width: 1024px) 55vw, 100vw"
-              className="object-cover grayscale"
-            />
+            <AnimatePresence initial={false} mode="popLayout">
+              <motion.div
+                key={activePillar.id}
+                initial={reduce ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={reduce ? { opacity: 0 } : { opacity: 0 }}
+                transition={{ duration: reduce ? 0 : 0.5, ease: EASE_OUT }}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={activePillar.image.src}
+                  alt={activePillar.image.alt}
+                  fill
+                  sizes="(min-width: 1024px) 55vw, 100vw"
+                  className="object-cover"
+                  style={{ objectPosition: activePillar.image.position ?? 'center' }}
+                  priority
+                />
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Right — vertical rail + accordion column */}

@@ -15,10 +15,11 @@ export function ManufacturersSplit({ items }: { items: ManufacturerCard[] }) {
       <div className="lg:sticky lg:top-28 lg:self-start">
         <figure className="relative aspect-[4/5] overflow-hidden border border-hairline bg-surface sm:aspect-[16/10] lg:aspect-[24/25]">
           <Image
-            src="/about/team-cart.jpg"
+            src="/about/team-cart-hd.jpg"
             alt="ASAP Components team members handling a packaged part beside a branded parts cart in the warehouse"
             fill
-            sizes="(min-width: 1024px) 40vw, 100vw"
+            quality={95}
+            sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover"
           />
           {/* Faint navy floor so the hairline frame reads against a bright shot */}
