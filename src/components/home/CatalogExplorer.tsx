@@ -23,7 +23,7 @@ export function CatalogExplorer({ columns }: { columns: CatalogColumn[] }) {
       <div
         role="tablist"
         aria-label="Catalog categories"
-        className="flex justify-start gap-8 overflow-x-auto border-b border-hairline sm:justify-center [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex justify-start gap-14 overflow-x-auto border-b border-hairline sm:justify-center sm:gap-20 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {columns.map((col, i) => {
           const isActive = i === activeTab
@@ -58,14 +58,24 @@ export function CatalogExplorer({ columns }: { columns: CatalogColumn[] }) {
           <li key={item.id} className="motion-safe:animate-fade" style={{ animationDelay: `${i * 45}ms` }}>
             <Link
               href={item.href}
-              className="group grid grid-cols-[1.75rem_auto_minmax(0,1fr)_auto] items-center gap-x-4 py-4 pl-1 pr-2 transition-colors hover:bg-surface sm:gap-x-6 sm:pl-2 sm:pr-4"
+              className="group grid grid-cols-[1.75rem_auto_minmax(0,1fr)_auto] items-center gap-x-4 py-5 pl-1 pr-2 transition-[background-color,box-shadow] duration-300 ease-out hover:bg-white hover:shadow-hover focus-visible:bg-white focus-visible:shadow-hover motion-reduce:transition-none sm:gap-x-6 sm:pl-2 sm:pr-4"
             >
               <span className="font-mono text-sm tabular-nums text-tertiary">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span className="font-mono text-sm text-ink">{item.code}</span>
-              <span className="min-w-0 truncate text-sm text-secondary transition-colors group-hover:text-accent">
-                {item.name}
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate text-sm text-secondary transition-colors group-hover:text-accent group-focus-visible:text-accent">
+                  {item.name}
+                </span>
+                {/* One-liner detail: row grows on hover/focus via 0fr→1fr grid rows. */}
+                <span className="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 ease-out group-hover:grid-rows-[1fr] group-focus-visible:grid-rows-[1fr] motion-reduce:transition-none">
+                  <span className="overflow-hidden">
+                    <span className="block pt-1 text-xs leading-snug text-secondary opacity-0 transition-opacity duration-300 ease-out [text-wrap:pretty] group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none">
+                      {item.subtext}
+                    </span>
+                  </span>
+                </span>
               </span>
               <span className="flex shrink-0 items-center gap-3 sm:gap-4">
                 <span className="hidden font-mono text-xs tabular-nums text-tertiary md:inline">

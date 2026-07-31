@@ -39,6 +39,12 @@ export const CERTIFICATIONS: Certification[] = [
   { name: 'ASA Member', short: 'ASA', detail: 'Aviation Suppliers Association member.', img: '/certifications/001.png' },
   { name: 'NBAA Member', short: 'NBAA', detail: 'National Business Aviation Association member.', img: '/certifications/006.png' },
   { name: 'Inc. 500', short: 'Inc.500', detail: "One of America's fastest-growing private companies.", img: '/certifications/004.png' },
+  { name: 'CAGE Code 6RE77', short: 'CAGE', detail: 'Registered supplier with the Defense Logistics Agency.', img: '/certifications/005.png' },
+  { name: 'Top Distributor 2018', short: '2018', detail: 'SourceToday & SourceESB industry recognition.', img: '/certifications/009.png' },
+  { name: 'Visual Compliance', short: 'eCustoms', detail: 'eCustoms export-compliance screening.', img: '/certifications/10.png' },
+  { name: 'Top Distributor 2020', short: '2020', detail: 'SourceToday & SourceESB industry recognition.', img: '/certifications/15.png' },
+  { name: 'Top Distributor 2025', short: '2025', detail: 'Supply Chain Connect & PartsDirect authorized.', img: '/certifications/16.png' },
+  { name: 'Top Distributor 2026', short: '2026', detail: 'Supply Chain Connect & PartsDirect independent.', img: '/certifications/17.png' },
 ]
 
 export const PARTNERS: string[] = [
@@ -89,6 +95,8 @@ export type CatalogPreviewItem = {
   code: string
   /** Human-readable name / description. */
   name: string
+  /** One-line capability summary revealed on row hover/focus. */
+  subtext: string
   /** Right-aligned real metric (in stock, sourced this year, or availability). */
   metric: string
   /** Month-over-month demand change, % (positive = rising). */
@@ -105,11 +113,22 @@ export type CatalogColumn = {
 // Real MoM demand trend per rank (index-aligned), positive = rising demand.
 const FSC_TREND = [18, 12, 9, 24, 7, 15]
 
+// One-line summary per FSC rank (index-aligned to FSC_CODES.slice(0, 6)).
+const FSC_SUBTEXT = [
+  'Skins, frames, bulkheads, and longerons for primary airframe structure.',
+  'Pumps, valves, and actuators for hydraulic, vacuum, and de-icing systems.',
+  'Seats, controls, and cabin accessories not classed elsewhere.',
+  'Fuel pumps, nozzles, and metering parts for nonaircraft engines.',
+  'Igniters, harnesses, and generators for aircraft engine electrical systems.',
+  'Couplings, converters, and speed changers for power transmission.',
+]
+
 // FSCs reuse the canonical codes + counts from the catalog data engine.
 const FSC_PREVIEWS: CatalogPreviewItem[] = FSC_CODES.slice(0, 6).map((f, i) => ({
   id: `fsc-${f.code}`,
   code: f.code,
   name: f.label,
+  subtext: FSC_SUBTEXT[i],
   metric: `${f.count.toLocaleString()} in stock`,
   trend: FSC_TREND[i],
   href: `/catalog/nsn/list/${f.code}`,
@@ -119,16 +138,17 @@ const NSN_TREND = [22, 11, 14, 9, 8, 19]
 
 // Top-demanding NSNs, ordered by units sourced this year (rank 01 = highest).
 const NSN_PREVIEWS: CatalogPreviewItem[] = [
-  { nsn: '5310-01-414-2030', name: 'Nut, Self-Locking, Hexagon', metric: '3,410 sourced' },
-  { nsn: '4730-00-908-9516', name: 'Elbow, Tube', metric: '1,880 sourced' },
-  { nsn: '5340-01-560-3234', name: 'Bracket, Mounting', metric: '1,240 sourced' },
-  { nsn: '5935-01-278-3059', name: 'Connector, Receptacle, Electrical', metric: '980 sourced' },
-  { nsn: '1560-01-190-8815', name: 'Panel, Structural, Aircraft', metric: '740 sourced' },
-  { nsn: '2915-01-641-6570', name: 'Fuel Nozzle Assembly', metric: '620 sourced' },
+  { nsn: '5310-01-414-2030', name: 'Nut, Self-Locking, Hexagon', subtext: 'Corrosion-resistant hex nut, MS-spec and fully traceable.', metric: '3,410 sourced' },
+  { nsn: '4730-00-908-9516', name: 'Elbow, Tube', subtext: 'Tube-fitting elbow for fluid and pneumatic line routing.', metric: '1,880 sourced' },
+  { nsn: '5340-01-560-3234', name: 'Bracket, Mounting', subtext: 'Structural mounting bracket for equipment and system installs.', metric: '1,240 sourced' },
+  { nsn: '5935-01-278-3059', name: 'Connector, Receptacle, Electrical', subtext: 'Receptacle connector for airframe wiring harnesses.', metric: '980 sourced' },
+  { nsn: '1560-01-190-8815', name: 'Panel, Structural, Aircraft', subtext: 'Structural aircraft panel, inspected and quote-ready.', metric: '740 sourced' },
+  { nsn: '2915-01-641-6570', name: 'Fuel Nozzle Assembly', subtext: 'Engine fuel nozzle assembly, flow-tested to spec.', metric: '620 sourced' },
 ].map((n, i) => ({
   id: `nsn-${n.nsn}`,
   code: n.nsn,
   name: n.name,
+  subtext: n.subtext,
   metric: n.metric,
   trend: NSN_TREND[i],
   href: `/catalog/nsn/list/${n.nsn}`,
@@ -138,16 +158,17 @@ const PART_TREND = [27, 16, 9, 12, 21, 6]
 
 // Hot-stock part numbers — all in stock, ordered by recent order velocity.
 const PART_PREVIEWS: CatalogPreviewItem[] = [
-  { pn: '3202975-001', name: 'Actuator Assembly', metric: 'Ships same day' },
-  { pn: 'CBL-DATA-2013', name: 'Data Bus Cable', metric: 'Ships same day' },
-  { pn: 'EPO-3019', name: 'Bearing, Roller', metric: 'Ships same day' },
-  { pn: '43-4746594-01', name: 'Cabin Window Pane', metric: 'Ships same day' },
-  { pn: '3234TS1-1', name: 'Temperature Sensor', metric: 'Ships same day' },
-  { pn: '652-4001-001', name: 'Fastener, Panel', metric: 'Ships same day' },
+  { pn: '3202975-001', name: 'Actuator Assembly', subtext: 'Actuator assembly on the shelf — ships same day.', metric: 'Ships same day' },
+  { pn: 'CBL-DATA-2013', name: 'Data Bus Cable', subtext: 'Data bus cable for avionics interconnect, in stock now.', metric: 'Ships same day' },
+  { pn: 'EPO-3019', name: 'Bearing, Roller', subtext: 'Precision roller bearing, ready for immediate dispatch.', metric: 'Ships same day' },
+  { pn: '43-4746594-01', name: 'Cabin Window Pane', subtext: 'Cabin window pane, inspected and cleared to ship.', metric: 'Ships same day' },
+  { pn: '3234TS1-1', name: 'Temperature Sensor', subtext: 'Temperature sensor, calibrated and quote-ready.', metric: 'Ships same day' },
+  { pn: '652-4001-001', name: 'Fastener, Panel', subtext: 'Panel fastener stocked in volume for quick turnaround.', metric: 'Ships same day' },
 ].map((p, i) => ({
   id: `pn-${p.pn}`,
   code: p.pn,
   name: p.name,
+  subtext: p.subtext,
   metric: p.metric,
   trend: PART_TREND[i],
   href: `/rfq/search?partno=${encodeURIComponent(p.pn)}`,

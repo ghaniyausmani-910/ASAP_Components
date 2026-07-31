@@ -5,19 +5,21 @@ import { cn } from '@/lib/utils'
 
 // Two full-bleed carousels stacked and travelling toward each other: the top row
 // drifts left, the bottom row drifts right, reading as a calm, always-on signal of
-// broad accreditation. Each row carries the FULL set of certifications so one base
-// set is always wider than the viewport — otherwise the -50% loop reveals a gap on
-// wide screens. The two rows start from a different offset so they never mirror.
-// Each set is duplicated once and the track slides exactly -50%, landing on the seam
-// for a gapless infinite loop. Hover pauses the whole strip so a badge stays legible;
-// motion is gated behind prefers-reduced-motion (Tailwind's motion-safe), so it
-// degrades to a static strip.
+// broad accreditation. The badge set is split in half — the first half rides the top
+// row, the second half the bottom — so each row carries its own unique badges with no
+// repetition across rows. Cards are sized so one row's set is wider than the viewport;
+// otherwise the -50% loop reveals a gap on wide screens (and because the set exceeds
+// the viewport, a badge's two loop copies are never on screen at once). Each set is
+// duplicated once and the track slides exactly -50%, landing on the seam for a gapless
+// infinite loop. Hover pauses the whole strip so a badge stays legible; motion is
+// gated behind prefers-reduced-motion (Tailwind's motion-safe), so it degrades to a
+// static strip.
 export function Certifications({ tone = 'surface' }: { tone?: 'surface' | 'light' }) {
-  // Both rows show all badges; the bottom row is rotated by half the list so the two
-  // rows carry different logos side by side rather than reading as a mirror.
+  // First half → top row, second half → bottom row: every badge appears once, and the
+  // two rows never share a logo.
   const half = Math.ceil(CERTIFICATIONS.length / 2)
-  const topRow = CERTIFICATIONS
-  const bottomRow = [...CERTIFICATIONS.slice(half), ...CERTIFICATIONS.slice(0, half)]
+  const topRow = CERTIFICATIONS.slice(0, half)
+  const bottomRow = CERTIFICATIONS.slice(half)
 
   return (
     <section className={tone === 'surface' ? 'bg-surface' : 'bg-white'}>
@@ -92,7 +94,7 @@ function CertificationCell({
 }) {
   return (
     <li
-      className="w-[13rem] shrink-0 sm:w-[14rem]"
+      className="w-[15rem] shrink-0 sm:w-[16rem]"
       aria-hidden={ariaHidden || undefined}
     >
       <div className="group flex h-full min-h-[9.5rem] flex-col items-center justify-center gap-3.5 border border-hairline bg-white px-6 py-7 text-center transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-ink/20 hover:shadow-hover">

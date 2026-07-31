@@ -87,12 +87,12 @@ export default function HomePage() {
       {/* 5.5 · MISSION STATEMENT (tighter vertical spacing) */}
       {/* Same section/heading as before — only the reveal changed from a
           block fade to the scroll-scrubbed word reveal used in About Us. */}
-      <section className="bg-white pb-20 pt-6 lg:pb-[120px] lg:pt-10">
+      <section className="bg-white pb-20 pt-6 lg:pb-[88px] lg:pt-10">
         <Container>
           <ScrollScrubText
             as="h2"
             tone="light"
-            className="font-display text-[clamp(1.9rem,3.6vw,3rem)] font-light leading-[1.15] tracking-tight-2 text-ink lg:max-w-[90%]"
+            className="font-display text-[44px] font-light leading-[1.35] tracking-tight-2 text-ink lg:max-w-[90%]"
           >
             ASAP-Components provides round-the-clock RFQ responses within 15 minutes, 365 days a year, backed by
             top-tier industry standards as an AS9120B, ISO 9001:2015, and FAA AC 00-56B certified distributor.
@@ -103,7 +103,7 @@ export default function HomePage() {
       </section>
 
       {/* 6 · MANUFACTURERS — sticky ASAP-culture photo + streaming card grid */}
-      <Section className="!pb-16 lg:!pb-24">
+      <Section className="!pb-[200px]">
         <Container>
           <ScrollReveal>
             {/* Header — eyebrow above; heading left with the CTA aligned to its

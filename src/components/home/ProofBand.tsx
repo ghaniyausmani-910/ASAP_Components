@@ -112,14 +112,14 @@ export function ProofBand({ pillars = PROOF_PILLARS }: { pillars?: ProofPillar[]
         </h2>
 
         {/* Row: photo · rail · pillars */}
-        <div className="mt-10 flex flex-col gap-8 lg:mt-16 lg:flex-row lg:items-start lg:gap-10">
+        <div className="mt-10 flex flex-col gap-8 lg:mt-16 lg:h-[400px] lg:flex-row lg:items-stretch lg:gap-10">
           {/* Left — grayscale aerospace photo */}
-          <div className="relative aspect-[1033/519] w-full overflow-hidden bg-ink-900 lg:w-[58%]">
+          <div className="relative aspect-[1033/519] w-full overflow-hidden bg-ink-900 lg:aspect-auto lg:h-[400px] lg:w-[55%]">
             <Image
               src="/proof/mission-critical.jpg"
               alt="Twin rear-mounted turbofan engines of a business jet against a bright sky, in monochrome"
               fill
-              sizes="(min-width: 1024px) 58vw, 100vw"
+              sizes="(min-width: 1024px) 55vw, 100vw"
               className="object-cover grayscale"
             />
           </div>
@@ -136,7 +136,7 @@ export function ProofBand({ pillars = PROOF_PILLARS }: { pillars?: ProofPillar[]
               />
             </div>
 
-            <ul ref={columnRef} className="relative flex flex-1 flex-col gap-11 lg:gap-14">
+            <ul ref={columnRef} className="relative flex flex-1 flex-col gap-11 lg:justify-between lg:gap-8">
               {pillars.map((p, i) => {
                 const isActive = p.id === activeId
                 const panelId = `proof-panel-${p.id}`
@@ -157,7 +157,7 @@ export function ProofBand({ pillars = PROOF_PILLARS }: { pillars?: ProofPillar[]
                     >
                       <span
                         className={cn(
-                          'block font-display text-[clamp(1.2rem,1.5vw,1.4rem)] font-medium leading-snug tracking-tight-2 transition-colors duration-300',
+                          'block font-display text-[22px] font-normal leading-snug tracking-tight-2 transition-colors duration-300',
                           isActive ? 'text-ink' : 'text-secondary hover:text-ink',
                         )}
                       >
@@ -178,7 +178,7 @@ export function ProofBand({ pillars = PROOF_PILLARS }: { pillars?: ProofPillar[]
                         >
                           <div className="flex flex-col items-start gap-5 pt-5">
                             <div className="flex flex-col gap-3">
-                              <p className="font-display text-lg font-medium tracking-tight-2 text-accent">
+                              <p className="font-display text-lg font-light tracking-tight-2 text-accent">
                                 {p.figure}
                               </p>
                               <p className="max-w-[52ch] text-body-lg leading-relaxed text-secondary">

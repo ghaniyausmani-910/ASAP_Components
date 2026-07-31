@@ -9,11 +9,11 @@ import type { ManufacturerCard } from '@/lib/data/site'
 // first fold reveals a full row plus the next peeking — a scroll cue for the rest.
 export function ManufacturersSplit({ items }: { items: ManufacturerCard[] }) {
   return (
-    <div className="mt-12 grid gap-8 md:mt-16 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:gap-12">
+    <div className="mt-12 grid gap-8 md:mt-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-5">
       {/* Left — pinned ASAP-culture photograph. `self-start` keeps it from
           stretching to the grid-row height so `sticky` has room to travel. */}
       <div className="lg:sticky lg:top-28 lg:self-start">
-        <figure className="relative aspect-[4/5] overflow-hidden border border-hairline bg-surface sm:aspect-[16/10] lg:aspect-[3/4]">
+        <figure className="relative aspect-[4/5] overflow-hidden border border-hairline bg-surface sm:aspect-[16/10] lg:aspect-[24/25]">
           <Image
             src="/about/warehouse-aisle.jpg"
             alt="ASAP Components warehouse aisle lined floor-to-ceiling with catalogued aerospace parts inventory"
@@ -45,7 +45,7 @@ function ManufacturerCell({ m }: { m: ManufacturerCard }) {
       <Link
         href={`/catalog/aviation/list/${m.slug}`}
         aria-label={`View ${m.name} parts`}
-        className="group relative flex h-full min-h-[10.5rem] flex-col justify-between border border-hairline bg-surface p-5 transition-[transform,box-shadow,border-color,background-color] duration-300 ease-out hover:-translate-y-1 hover:border-transparent hover:bg-white hover:shadow-hover focus-visible:-translate-y-1 focus-visible:border-transparent focus-visible:bg-white focus-visible:shadow-hover focus-visible:outline-none lg:min-h-[11.5rem] lg:p-6"
+        className="group relative flex h-full min-h-[220px] flex-col justify-between border border-hairline bg-surface p-5 transition-[transform,box-shadow,border-color,background-color] duration-300 ease-out hover:-translate-y-1 hover:border-transparent hover:bg-white hover:shadow-hover focus-visible:-translate-y-1 focus-visible:border-transparent focus-visible:bg-white focus-visible:shadow-hover focus-visible:outline-none lg:min-h-[220px] lg:p-6"
       >
         {/* Accent keyline — draws in on hover/focus to single out the active card */}
         <span className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100" />
