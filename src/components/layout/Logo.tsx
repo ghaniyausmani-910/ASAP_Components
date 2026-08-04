@@ -35,9 +35,8 @@ export function Logo({
     >
       <LogoMark
         className={cn(
-          // Height tracks the wordmark+subtitle block via flex stretch; aspect-square
-          // keeps the mark's width equal to that height at every breakpoint.
-          'aspect-square w-auto self-stretch shrink-0',
+          // Fixed square sized to the wordmark+subtitle block height.
+          'h-9 w-9 shrink-0',
           onDark ? 'text-white' : 'text-ink',
         )}
       />

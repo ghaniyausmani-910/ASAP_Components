@@ -102,6 +102,8 @@ export type CatalogPreviewItem = {
   /** Month-over-month demand change, % (positive = rising). */
   trend: number
   href: string
+  /** Cinematic shot revealed in the gutter peek on row hover/focus. */
+  image: string
 }
 
 export type CatalogColumn = {
@@ -123,6 +125,17 @@ const FSC_SUBTEXT = [
   'Couplings, converters, and speed changers for power transmission.',
 ]
 
+// Gutter-peek shot per FSC rank (index-aligned). Reuses the topical /public/featured
+// photography until real per-item shots land under /public/catalog/preview/.
+const FSC_IMAGE = [
+  '/featured/components.jpg', // Airframe Structural
+  '/featured/instruments.jpg', // Hydraulic, Vacuum & De-Icing
+  '/featured/windows.jpg', // Misc Aircraft Accessories
+  '/featured/engine.jpg', // Engine Fuel System
+  '/featured/fasteners.jpg', // Engine Electrical
+  '/featured/bearings.jpg', // Torque Converters & Speed Changers
+]
+
 // FSCs reuse the canonical codes + counts from the catalog data engine.
 const FSC_PREVIEWS: CatalogPreviewItem[] = FSC_CODES.slice(0, 6).map((f, i) => ({
   id: `fsc-${f.code}`,
@@ -132,18 +145,19 @@ const FSC_PREVIEWS: CatalogPreviewItem[] = FSC_CODES.slice(0, 6).map((f, i) => (
   metric: `${f.count.toLocaleString()} in stock`,
   trend: FSC_TREND[i],
   href: `/catalog/nsn/list/${f.code}`,
+  image: FSC_IMAGE[i],
 }))
 
 const NSN_TREND = [22, 11, 14, 9, 8, 19]
 
 // Top-demanding NSNs, ordered by units sourced this year (rank 01 = highest).
 const NSN_PREVIEWS: CatalogPreviewItem[] = [
-  { nsn: '5310-01-414-2030', name: 'Nut, Self-Locking, Hexagon', subtext: 'Corrosion-resistant hex nut, MS-spec and fully traceable.', metric: '3,410 sourced' },
-  { nsn: '4730-00-908-9516', name: 'Elbow, Tube', subtext: 'Tube-fitting elbow for fluid and pneumatic line routing.', metric: '1,880 sourced' },
-  { nsn: '5340-01-560-3234', name: 'Bracket, Mounting', subtext: 'Structural mounting bracket for equipment and system installs.', metric: '1,240 sourced' },
-  { nsn: '5935-01-278-3059', name: 'Connector, Receptacle, Electrical', subtext: 'Receptacle connector for airframe wiring harnesses.', metric: '980 sourced' },
-  { nsn: '1560-01-190-8815', name: 'Panel, Structural, Aircraft', subtext: 'Structural aircraft panel, inspected and quote-ready.', metric: '740 sourced' },
-  { nsn: '2915-01-641-6570', name: 'Fuel Nozzle Assembly', subtext: 'Engine fuel nozzle assembly, flow-tested to spec.', metric: '620 sourced' },
+  { nsn: '5310-01-414-2030', name: 'Nut, Self-Locking, Hexagon', subtext: 'Corrosion-resistant hex nut, MS-spec and fully traceable.', metric: '3,410 sourced', image: '/featured/fasteners.jpg' },
+  { nsn: '4730-00-908-9516', name: 'Elbow, Tube', subtext: 'Tube-fitting elbow for fluid and pneumatic line routing.', metric: '1,880 sourced', image: '/featured/components.jpg' },
+  { nsn: '5340-01-560-3234', name: 'Bracket, Mounting', subtext: 'Structural mounting bracket for equipment and system installs.', metric: '1,240 sourced', image: '/featured/bearings.jpg' },
+  { nsn: '5935-01-278-3059', name: 'Connector, Receptacle, Electrical', subtext: 'Receptacle connector for airframe wiring harnesses.', metric: '980 sourced', image: '/featured/instruments.jpg' },
+  { nsn: '1560-01-190-8815', name: 'Panel, Structural, Aircraft', subtext: 'Structural aircraft panel, inspected and quote-ready.', metric: '740 sourced', image: '/featured/windows.jpg' },
+  { nsn: '2915-01-641-6570', name: 'Fuel Nozzle Assembly', subtext: 'Engine fuel nozzle assembly, flow-tested to spec.', metric: '620 sourced', image: '/featured/engine.jpg' },
 ].map((n, i) => ({
   id: `nsn-${n.nsn}`,
   code: n.nsn,
@@ -152,18 +166,19 @@ const NSN_PREVIEWS: CatalogPreviewItem[] = [
   metric: n.metric,
   trend: NSN_TREND[i],
   href: `/catalog/nsn/list/${n.nsn}`,
+  image: n.image,
 }))
 
 const PART_TREND = [27, 16, 9, 12, 21, 6]
 
 // Hot-stock part numbers — all in stock, ordered by recent order velocity.
 const PART_PREVIEWS: CatalogPreviewItem[] = [
-  { pn: '3202975-001', name: 'Actuator Assembly', subtext: 'Actuator assembly on the shelf — ships same day.', metric: 'Ships same day' },
-  { pn: 'CBL-DATA-2013', name: 'Data Bus Cable', subtext: 'Data bus cable for avionics interconnect, in stock now.', metric: 'Ships same day' },
-  { pn: 'EPO-3019', name: 'Bearing, Roller', subtext: 'Precision roller bearing, ready for immediate dispatch.', metric: 'Ships same day' },
-  { pn: '43-4746594-01', name: 'Cabin Window Pane', subtext: 'Cabin window pane, inspected and cleared to ship.', metric: 'Ships same day' },
-  { pn: '3234TS1-1', name: 'Temperature Sensor', subtext: 'Temperature sensor, calibrated and quote-ready.', metric: 'Ships same day' },
-  { pn: '652-4001-001', name: 'Fastener, Panel', subtext: 'Panel fastener stocked in volume for quick turnaround.', metric: 'Ships same day' },
+  { pn: '3202975-001', name: 'Actuator Assembly', subtext: 'Actuator assembly on the shelf — ships same day.', metric: 'Ships same day', image: '/featured/engine.jpg' },
+  { pn: 'CBL-DATA-2013', name: 'Data Bus Cable', subtext: 'Data bus cable for avionics interconnect, in stock now.', metric: 'Ships same day', image: '/featured/components.jpg' },
+  { pn: 'EPO-3019', name: 'Bearing, Roller', subtext: 'Precision roller bearing, ready for immediate dispatch.', metric: 'Ships same day', image: '/featured/bearings.jpg' },
+  { pn: '43-4746594-01', name: 'Cabin Window Pane', subtext: 'Cabin window pane, inspected and cleared to ship.', metric: 'Ships same day', image: '/featured/windows.jpg' },
+  { pn: '3234TS1-1', name: 'Temperature Sensor', subtext: 'Temperature sensor, calibrated and quote-ready.', metric: 'Ships same day', image: '/featured/instruments.jpg' },
+  { pn: '652-4001-001', name: 'Fastener, Panel', subtext: 'Panel fastener stocked in volume for quick turnaround.', metric: 'Ships same day', image: '/featured/fasteners.jpg' },
 ].map((p, i) => ({
   id: `pn-${p.pn}`,
   code: p.pn,
@@ -172,6 +187,7 @@ const PART_PREVIEWS: CatalogPreviewItem[] = [
   metric: p.metric,
   trend: PART_TREND[i],
   href: `/rfq/search?partno=${encodeURIComponent(p.pn)}`,
+  image: p.image,
 }))
 
 export const CATALOG_EXPLORER: CatalogColumn[] = [

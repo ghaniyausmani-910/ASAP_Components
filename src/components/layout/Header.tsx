@@ -9,8 +9,9 @@ import { SearchBar } from '@/components/ui/SearchBar'
 import { CartButton } from '@/components/cart/CartButton'
 import { cn } from '@/lib/utils'
 
+// About ASAP sits right after Home; Blog and Contact Us close out the row.
+const ABOUT_LINK = { label: 'About ASAP', href: '/about-us' }
 const SIMPLE_LINKS = [
-  { label: 'About Us', href: '/about-us' },
   { label: 'Blog', href: '/blog' },
   { label: 'Contact Us', href: '/contact-us' },
 ]
@@ -87,6 +88,7 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
               container edge — aligned with the logo and breadcrumb above/below. */}
           <nav className="-ml-5 flex items-center">
             <TopLink href="/" onDark={onDark}>Home</TopLink>
+            <TopLink href={ABOUT_LINK.href} onDark={onDark}>{ABOUT_LINK.label}</TopLink>
             {CATEGORIES.map((cat) => (
               <div key={cat.slug} className="relative" onMouseEnter={() => setOpenMenu(cat.slug)}>
                 <button
@@ -138,6 +140,7 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
             </div>
             <SearchBar size="sm" className="mb-5" />
             <MobileLink href="/" onClick={() => setMobileOpen(false)}>Home</MobileLink>
+            <MobileLink href={ABOUT_LINK.href} onClick={() => setMobileOpen(false)}>{ABOUT_LINK.label}</MobileLink>
             {CATEGORIES.map((cat) => (
               <details key={cat.slug} className="border-b border-hairline">
                 <summary className="flex cursor-pointer list-none items-center justify-between py-3 text-sm font-medium">

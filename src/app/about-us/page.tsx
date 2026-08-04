@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import { AboutHero } from '@/components/about/AboutHero'
 import { AboutVision } from '@/components/about/AboutVision'
+import { LeadershipRail } from '@/components/about/LeadershipRail'
 import { Container } from '@/components/ui/primitives'
 import { Certifications } from '@/components/modules/Certifications'
 
 export const metadata: Metadata = {
-  title: 'About Us',
+  title: 'About ASAP',
   description:
     'ASAP Components is a parts-distribution platform owned and operated by ASAP Semiconductor LLC, serving civil and defense markets across aerospace, marine, and commercial industries.',
 }
@@ -21,7 +22,7 @@ export default function AboutPage() {
   return (
     <>
       <AboutHero
-        crumbs={[{ label: 'Home', href: '/' }, { label: 'About Us' }]}
+        crumbs={[{ label: 'Home', href: '/' }, { label: 'About ASAP' }]}
         eyebrow="Who we are"
         title="A strategic purchasing partner — not just another distributor"
         intro="ASAP Components is a parts-distribution interface owned and operated by ASAP Semiconductor LLC, serving civil and defense markets across the aerospace, marine, and commercial industries."
@@ -42,6 +43,8 @@ export default function AboutPage() {
       </section>
 
       <AboutVision />
+
+      <LeadershipRail />
 
       <Certifications />
     </>
