@@ -74,12 +74,12 @@ export default function HomePage() {
           'ASAP Components, a digital platform by ASAP Semiconductor, simplifies sourcing for civil aviation, military aerospace, and board-level parts. Built around customer feedback, the platform organizes military components by National Stock Numbers across 40 Federal Supply Classes. It features dedicated, intuitive sections for commercial aircraft avionics, engines, assemblies, and over 5 million board-level components, including specialized connectors and interconnects.',
         ]}
         cards={[
-          { icon: 'badge', title: 'Certified distributor', body: 'AS9120B, ISO 9001:2015, and FAA AC 00-56B accredited.' },
-          { icon: 'timer', title: 'RFQs in 15 minutes', body: 'Round-the-clock quote responses, 365 days a year.' },
-          { icon: 'layers', title: '5M+ board-level parts', body: 'Connectors, interconnects, and components in one catalog.' },
-          { icon: 'boxes', title: 'NSN-organized inventory', body: 'Military parts mapped across 40 Federal Supply Classes.' },
-          { icon: 'truck', title: 'Same-day delivery', body: 'Expedited fulfillment for your most urgent requirements.' },
-          { icon: 'route', title: 'Traceable supply chain', body: 'Full documentation and supply-chain integrity, end to end.' },
+          { icon: 'badge', title: 'Certified distributor', body: 'AS9120B, ISO 9001:2015, and FAA AC 00-56B accredited.', image: '/Cards/certified-distributor.jpg', imageAlt: 'Wall of framed ASAP Semiconductor certifications and accreditations' },
+          { icon: 'timer', title: 'RFQs in 15 minutes', body: 'Round-the-clock quote responses, 365 days a year.', image: '/Cards/rfq-response.jpg', imageAlt: 'ASAP team member reviewing a part request at their desk' },
+          { icon: 'layers', title: '5M+ board-level parts', body: 'Connectors, interconnects, and components in one catalog.', image: '/Cards/board-level-parts.jpg', imageAlt: 'ASAP warehouse lined with stocked inventory racks' },
+          { icon: 'boxes', title: 'NSN-organized inventory', body: 'Military parts mapped across 40 Federal Supply Classes.', image: '/Cards/nsn-inventory.jpg', imageAlt: 'Numbered and lettered storage bins organizing inventory by classification' },
+          { icon: 'truck', title: 'Same-day delivery', body: 'Expedited fulfillment for your most urgent requirements.', image: '/Cards/same-day-delivery.jpg', imageAlt: 'ASAP staff loading a package into a FedEx Express truck' },
+          { icon: 'route', title: 'Traceable supply chain', body: 'Full documentation and supply-chain integrity, end to end.', image: '/Cards/traceable-supply-chain.jpg', imageAlt: 'Quality control bench inspecting components beside the quality policy' },
         ]}
       />
 
@@ -94,6 +94,11 @@ export default function HomePage() {
           <ScrollScrubText
             as="h2"
             tone="light"
+            emphasize={[
+              '15 minutes',
+              '365 days a year',
+              'AS9120B, ISO 9001:2015, and FAA AC 00-56B',
+            ]}
             className="font-display text-[44px] font-light leading-[1.35] tracking-tight-2 text-ink lg:max-w-[90%]"
           >
             ASAP-Components provides round-the-clock RFQ responses within 15 minutes, 365 days a year, backed by

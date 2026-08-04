@@ -1,8 +1,10 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useId, useState, type ReactNode } from 'react'
 import { Minus, Plus } from 'lucide-react'
+import { useAutocomplete } from '@/components/ui/useAutocomplete'
+import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 
 /**
  * Hero inquiry card — a frosted-glass RFQ panel that sits directly beneath the
@@ -22,6 +24,13 @@ import { Minus, Plus } from 'lucide-react'
 export function HeroInquiryBar() {
   const router = useRouter()
   const [f, setF] = useState({ partNo: '', qty: '', email: '' })
+  const partListId = useId()
+
+  const partAc = useAutocomplete({
+    query: f.partNo,
+    type: 'Part Number',
+    onSelect: (s) => setF((prev) => ({ ...prev, partNo: s.value })),
+  })
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -44,10 +53,34 @@ export function HeroInquiryBar() {
           label="Part Number / NSN"
           required
           value={f.partNo}
-          onChange={(v) => setF({ ...f, partNo: v })}
+          onChange={(v) => {
+            setF({ ...f, partNo: v })
+            partAc.setOpen(true)
+          }}
+          onFocus={() => partAc.setOpen(true)}
+          onBlur={() => partAc.setOpen(false)}
+          onKeyDown={partAc.onKeyDown}
           placeholder="MS27039-1-08"
           autoComplete="off"
           mono
+          combobox={{
+            listId: partListId,
+            expanded: partAc.listOpen,
+            activeId: partAc.active >= 0 ? `${partListId}-opt-${partAc.active}` : undefined,
+          }}
+          overlay={
+            partAc.listOpen ? (
+              <SuggestionsDropdown
+                id={partListId}
+                items={partAc.items}
+                active={partAc.active}
+                query={f.partNo}
+                variant="dark"
+                onPick={(s) => setF((prev) => ({ ...prev, partNo: s.value }))}
+                onHover={partAc.setActive}
+              />
+            ) : null
+          }
         />
         <HeroField
           id="hero-qty"
@@ -96,6 +129,11 @@ function HeroField({
   counter,
   autoComplete,
   inputMode,
+  onKeyDown,
+  onFocus,
+  onBlur,
+  combobox,
+  overlay,
 }: {
   id: string
   label: string
@@ -109,9 +147,14 @@ function HeroField({
   counter?: boolean
   autoComplete?: string
   inputMode?: 'text' | 'email' | 'numeric' | 'search'
+  onKeyDown?: (e: React.KeyboardEvent) => void
+  onFocus?: () => void
+  onBlur?: () => void
+  combobox?: { listId: string; expanded: boolean; activeId?: string }
+  overlay?: ReactNode
 }) {
   return (
-    <div className="px-5 py-3 transition-colors focus-within:bg-white/[0.06] focus-within:ring-2 focus-within:ring-inset focus-within:ring-white/70">
+    <div className="relative px-5 py-3 transition-colors focus-within:bg-white/[0.06] focus-within:ring-2 focus-within:ring-inset focus-within:ring-white/70">
       <label
         htmlFor={id}
         className="block font-body text-xs font-semibold uppercase tracking-[0.14em] text-white"
@@ -136,12 +179,21 @@ function HeroField({
           inputMode={inputMode}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onKeyDown={onKeyDown}
+          onFocus={onFocus}
+          onBlur={onBlur}
+          role={combobox ? 'combobox' : undefined}
+          aria-expanded={combobox ? combobox.expanded : undefined}
+          aria-controls={combobox?.listId}
+          aria-activedescendant={combobox?.activeId}
+          aria-autocomplete={combobox ? 'list' : undefined}
           placeholder={placeholder}
           className={`mt-1.5 block h-9 w-full border-0 bg-transparent p-0 font-body text-body-lg font-medium text-white outline-none placeholder:font-normal placeholder:text-white/65 focus-visible:outline-none ${
             mono ? 'font-mono text-base placeholder:font-mono' : ''
           }`}
         />
       )}
+      {overlay}
     </div>
   )
 }

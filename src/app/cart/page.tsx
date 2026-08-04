@@ -16,18 +16,7 @@ export default function CartPage() {
 
       <section className="section-y bg-white">
         <Container>
-          <div className="max-w-3xl">
-            <p className="eyebrow">RFQ Cart</p>
-            <h1 className="mt-3 font-display text-h2 font-light tracking-tight-2">Your parts cart</h1>
-            <p className="mt-4 text-body-lg text-secondary">
-              Review the parts you have collected, set quantities, and submit one request for a competitive quote on
-              everything — answered within 15 minutes, 24/7.
-            </p>
-          </div>
-
-          <div className="mt-10">
-            <CartView />
-          </div>
+          <CartView />
         </Container>
       </section>
 

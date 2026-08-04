@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Sora, Inter, IBM_Plex_Mono } from 'next/font/google'
+import { Sora, Inter, IBM_Plex_Mono, Archivo } from 'next/font/google'
 import './globals.css'
 import { SiteHeader } from '@/components/layout/SiteHeader'
 import { Footer } from '@/components/layout/Footer'
@@ -25,6 +25,13 @@ const plexMono = IBM_Plex_Mono({
   variable: '--font-mono',
   display: 'swap',
 })
+// Brand wordmark face — "ASAP Components" lockup only.
+const archivo = Archivo({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-brand',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -37,7 +44,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${sora.variable} ${inter.variable} ${plexMono.variable}`}>
+    <html lang="en" className={`${sora.variable} ${inter.variable} ${plexMono.variable} ${archivo.variable}`}>
       <body>
         <CartProvider>
           <SiteHeader />

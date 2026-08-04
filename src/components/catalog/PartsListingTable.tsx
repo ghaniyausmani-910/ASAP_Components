@@ -66,8 +66,7 @@ export function PartsListingTable({
               <Th>Manufacturer</Th>
               {showDescription && <Th>Description</Th>}
               {extraColumn && <Th>{extraColumn.label}</Th>}
-              <Th className="w-32 text-center">Cart</Th>
-              <Th className="w-24 text-center">RFQ</Th>
+              <Th className="w-56">Actions</Th>
             </tr>
           </thead>
           <tbody>
@@ -88,16 +87,16 @@ export function PartsListingTable({
                     {(p as unknown as Record<string, string>)[extraColumn.key] ?? '—'}
                   </td>
                 )}
-                <td className="px-4 py-3 text-center">
-                  <AddToCartControl partNo={p.partNo} manufacturer={p.manufacturer} description={p.description} />
-                </td>
-                <td className="px-4 py-3 text-center">
-                  <Link
-                    href={`/rfq/search?partno=${encodeURIComponent(p.partNo)}`}
-                    className="inline-flex items-center gap-1 whitespace-nowrap bg-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent-hover"
-                  >
-                    RFQ <ArrowRight size={12} />
-                  </Link>
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/rfq/search?partno=${encodeURIComponent(p.partNo)}`}
+                      className="inline-flex items-center gap-1 whitespace-nowrap bg-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent-hover"
+                    >
+                      RFQ <ArrowRight size={12} />
+                    </Link>
+                    <AddToCartControl partNo={p.partNo} manufacturer={p.manufacturer} description={p.description} />
+                  </div>
                 </td>
               </tr>
             ))}

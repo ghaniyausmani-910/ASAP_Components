@@ -5,7 +5,7 @@ import { CATEGORIES } from '@/lib/data/catalog'
 
 export function RfqTrustSidebar() {
   return (
-    <aside className="space-y-6">
+    <aside className="space-y-6 lg:sticky lg:top-[139px] lg:self-start">
       <div className="relative overflow-hidden bg-navy p-6 text-white">
         <div className="absolute inset-0 opacity-10 [background-image:linear-gradient(135deg,#fff_1px,transparent_1px)] [background-size:20px_20px]" />
         <Flag size={28} className="relative text-white" />

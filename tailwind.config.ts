@@ -34,6 +34,7 @@ const config: Config = {
         display: ['var(--font-display)', 'sans-serif'],
         body: ['var(--font-body)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace'],
+        brand: ['var(--font-brand)', 'sans-serif'],
       },
       fontSize: {
         display: ['clamp(2.5rem,5vw,4.5rem)', { lineHeight: '1.08', letterSpacing: '-0.03em' }],
@@ -63,6 +64,10 @@ const config: Config = {
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         fade: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+        mega: {
+          '0%': { opacity: '0', transform: 'translateY(-8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
         // Content is duplicated twice, so -50% lands exactly on the seam for a
         // seamless loop. The reverse row uses animation-direction: reverse.
         marquee: {
@@ -73,6 +78,7 @@ const config: Config = {
       animation: {
         reveal: 'reveal .7s cubic-bezier(.22,1,.36,1) both',
         fade: 'fade .4s ease both',
+        mega: 'mega .22s cubic-bezier(.22,1,.36,1) both',
         marquee: 'marquee var(--marquee-duration,60s) linear infinite',
       },
     },

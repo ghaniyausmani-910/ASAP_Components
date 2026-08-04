@@ -87,15 +87,14 @@ export function SearchResults({
                 <Th>Part No.</Th>
                 <Th>Item Name</Th>
                 <Th>Manufacturer</Th>
-                <Th className="w-28 text-center">Availability</Th>
-                <Th className="w-32 text-center">Cart</Th>
-                <Th className="w-28 text-center">Action</Th>
+                <Th className="w-28">Availability</Th>
+                <Th className="w-56">Actions</Th>
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-10 text-center text-secondary">
+                  <td colSpan={5} className="px-4 py-10 text-center text-secondary">
                     No results match the selected filters.
                   </td>
                 </tr>
@@ -105,25 +104,25 @@ export function SearchResults({
                     <td className="px-4 py-3 font-mono text-navy">{p.partNo}</td>
                     <td className="px-4 py-3 text-secondary">{p.description ?? '—'}</td>
                     <td className="px-4 py-3 text-secondary">{p.manufacturer}</td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-3">
                       <span className="inline-flex items-center bg-success/10 px-2.5 py-1 text-xs font-semibold text-success">
                         In Stock
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-center">
-                      <AddToCartControl
-                        partNo={p.partNo}
-                        manufacturer={p.manufacturer}
-                        description={p.description}
-                      />
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      <Link
-                        href={`/rfq/search?partno=${encodeURIComponent(p.partNo)}`}
-                        className="inline-flex items-center gap-1 whitespace-nowrap bg-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent-hover"
-                      >
-                        Get Quote <ArrowRight size={12} />
-                      </Link>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/rfq/search?partno=${encodeURIComponent(p.partNo)}`}
+                          className="inline-flex items-center gap-1 whitespace-nowrap bg-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent-hover"
+                        >
+                          Get Quote <ArrowRight size={12} />
+                        </Link>
+                        <AddToCartControl
+                          partNo={p.partNo}
+                          manufacturer={p.manufacturer}
+                          description={p.description}
+                        />
+                      </div>
                     </td>
                   </tr>
                 ))

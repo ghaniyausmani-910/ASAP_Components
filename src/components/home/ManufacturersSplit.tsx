@@ -40,13 +40,37 @@ export function ManufacturersSplit({ items }: { items: ManufacturerCard[] }) {
   )
 }
 
+// Optical normalization map (keyed by slug). The source logos share the same
+// pixel height but read at wildly different visual weights: bold wide wordmarks
+// (Honeywell, Harwin) dominate, while compact or dense marks (GE, De Havilland)
+// look lost. Locking every logo to one CSS height therefore does NOT make them
+// look equal — it just makes them equal in a dimension the eye doesn't measure.
+// Instead each logo gets an individually-tuned render height (px) so the whole
+// wall reads at one balanced optical size. Values tuned against the live grid.
+const LOGO_HEIGHT: Record<string, number> = {
+  honeywell: 36,
+  harwin: 38,
+  eaton: 48,
+  'parker-hannifin': 46,
+  goodrich: 52,
+  'ge-aviation': 56,
+  'the-boeing-company': 44,
+  'lockheed-martin': 46,
+  flextronics: 42,
+  'freescale-semiconductor': 45,
+  'bosch-rexroth': 50,
+  'de-havilland-aircraft-of-canada': 50,
+}
+const DEFAULT_LOGO_HEIGHT = 44
+
 function ManufacturerCell({ m }: { m: ManufacturerCard }) {
+  const logoHeight = LOGO_HEIGHT[m.slug] ?? DEFAULT_LOGO_HEIGHT
   return (
     <li>
       <Link
         href={`/catalog/aviation/list/${m.slug}`}
         aria-label={`View ${m.name} parts`}
-        className="group relative flex h-full min-h-[220px] flex-col justify-between border border-hairline bg-surface p-5 transition-[transform,box-shadow,border-color,background-color] duration-300 ease-out hover:-translate-y-1 hover:border-transparent hover:bg-white hover:shadow-hover focus-visible:-translate-y-1 focus-visible:border-transparent focus-visible:bg-white focus-visible:shadow-hover focus-visible:outline-none lg:min-h-[220px] lg:p-6"
+        className="group relative flex h-full min-h-[240px] flex-col border border-hairline bg-surface p-5 transition-[transform,box-shadow,border-color,background-color] duration-300 ease-out hover:-translate-y-1 hover:border-transparent hover:bg-white hover:shadow-hover focus-visible:-translate-y-1 focus-visible:border-transparent focus-visible:bg-white focus-visible:shadow-hover focus-visible:outline-none lg:min-h-[240px] lg:p-6"
       >
         {/* Accent keyline — draws in on hover/focus to single out the active card */}
         <span className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100" />
@@ -60,21 +84,27 @@ function ManufacturerCell({ m }: { m: ManufacturerCard }) {
           />
         </div>
 
-        {/* Brand + capability */}
-        <div className="mt-auto">
-          <div className="flex h-8 items-center">
-            {/* Fixed height (not max-height) so every logo renders at the same
-                optical size regardless of its intrinsic aspect ratio. */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={m.logo}
-              alt={m.name}
-              loading="lazy"
-              className="h-7 w-auto max-w-full object-contain object-left"
-            />
-          </div>
-          <p className="mt-3 line-clamp-2 text-sm leading-snug text-secondary">{m.blurb}</p>
+        {/* Logo — the hero of the card. Left-aligned in a generous zone that fills
+            the card body so the brand is unmistakably the focal point. Height is
+            optically normalized per brand (see LOGO_HEIGHT). */}
+        <div className="flex flex-1 items-center py-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={m.logo}
+            alt={m.name}
+            loading="lazy"
+            // Height is the per-brand optical control; maxWidth caps the widest
+            // wordmarks so none spans the full card — object-contain then trims
+            // their effective height to match, pulling the whole wall together.
+            style={{ height: logoHeight, maxWidth: '12.5rem' }}
+            className="w-auto object-contain object-left"
+          />
         </div>
+
+        {/* Capability — supporting context, de-emphasized beneath the logo */}
+        <p className="line-clamp-2 text-[0.8125rem] leading-snug text-tertiary">
+          {m.blurb}
+        </p>
       </Link>
     </li>
   )

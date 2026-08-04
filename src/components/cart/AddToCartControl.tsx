@@ -28,7 +28,7 @@ export function AddToCartControl({
         type="button"
         onClick={() => addItem({ partNo, manufacturer, description })}
         aria-label={`Add ${partNo} to cart`}
-        className="inline-flex items-center justify-center gap-1 whitespace-nowrap bg-navy px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent"
+        className="inline-flex items-center justify-center gap-1 whitespace-nowrap border border-navy px-3 py-1.5 text-xs font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
       >
         <ShoppingCart size={14} />
         <span className="sr-only sm:not-sr-only">Add</span>

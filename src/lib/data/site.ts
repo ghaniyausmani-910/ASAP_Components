@@ -8,7 +8,7 @@ export const COMPANY = {
   email: 'sales@asap-components.com',
   fax: '304-868-2050',
   address: '1341 South Sunkist Street, Anaheim, CA 92806',
-  quoteSLA: 'Guaranteed quotes back within 15 minutes, 24/7 x 365',
+  quoteSLA: 'Guaranteed quotes back within 15 minutes, 24/7',
   cage: '6RE77',
 }
 

@@ -29,7 +29,11 @@
   --ink-28: rgb(var(--ink-rgb) / 0.28);
   --ink-48: rgb(var(--ink-rgb) / 0.48);
   --ink-64: rgb(var(--ink-rgb) / 0.64);
+  --ink-76: rgb(var(--ink-rgb) / 0.76);
   --ink-88: rgb(var(--ink-rgb) / 0.88);
+
+  /* marker-wipe fill behind key phrases (ScrollScrubText emphasis) */
+  --color-highlight: rgb(var(--ink-rgb) / 0.1);
 
   /* ---- Tier 2: semantic neutrals ---- */
   --color-white: #ffffff;

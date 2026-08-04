@@ -11,7 +11,7 @@ const ICONS: Record<string, typeof Truck> = {
 export function WhyChooseUs({ compact = false }: { compact?: boolean }) {
   return (
     <div className="border border-hairline bg-white">
-      <p className="border-b border-hairline px-5 py-3 text-center font-display text-sm font-medium">Why Choose Us</p>
+      <p className="border-b border-hairline px-5 py-3 text-left font-display text-sm font-medium">Why Choose Us</p>
       <ul>
         {BENEFITS.map((b) => {
           const Icon = ICONS[b.icon] ?? Truck

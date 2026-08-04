@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import { MapPin, Phone, Printer, Mail, ShieldCheck, Truck, AlertCircle, Plane } from 'lucide-react'
+import { MapPin, Phone, Printer, Mail, ShieldCheck, Truck, AlertCircle } from 'lucide-react'
 import { COMPANY, FOOTER, PAYMENTS, COMPLIANCE_RIBBON } from '@/lib/data/site'
+import { Logo } from '@/components/layout/Logo'
 
 const RIBBON_ICONS = [Truck, ShieldCheck, AlertCircle]
 
@@ -29,19 +30,7 @@ export function Footer() {
       <div className="container-x grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-12">
         {/* Get in touch */}
         <div className="lg:col-span-4">
-          <Link href="/" className="mb-6 inline-flex items-center gap-2" aria-label="ASAP Components home">
-            <span className="flex h-9 w-9 items-center justify-center bg-white text-accent">
-              <Plane size={20} strokeWidth={2.5} className="-rotate-45" />
-            </span>
-            <span className="leading-none">
-              <span className="block font-display text-[19px] font-semibold tracking-tight-2 text-white">
-                ASAP <span className="text-white">Components</span>
-              </span>
-              <span className="mt-1.5 block text-[10px] uppercase tracking-[0.14em] text-white/60">
-                An ASAP Semiconductor Website
-              </span>
-            </span>
-          </Link>
+          <Logo onDark className="mb-6" />
           <h3 className="mb-5 font-display text-lg font-medium text-white">Get In Touch</h3>
           <ul className="space-y-3 text-sm text-white/80">
             <li className="flex gap-3"><MapPin size={18} className="mt-0.5 shrink-0 text-white" /> {COMPANY.address}</li>

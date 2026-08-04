@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { QuickQuote } from '@/components/modules/QuickQuote'
 import { WhyChooseUs } from '@/components/modules/WhyChooseUs'
 import { CATEGORIES } from '@/lib/data/catalog'
 import { MANUFACTURERS } from '@/lib/data/parts'
@@ -14,14 +13,7 @@ export function RfqSidebar({
 }) {
   const searched = topSearched ?? MANUFACTURERS.slice(0, 8)
   return (
-    <aside className="space-y-6">
-      <div className="border border-hairline">
-        <p className="bg-navy px-5 py-3 font-display text-sm font-medium text-white">Send Instant RFQ</p>
-        <div className="p-5">
-          <QuickQuote variant="card" />
-        </div>
-      </div>
-
+    <aside className="space-y-6 lg:sticky lg:top-[139px] lg:self-start">
       <div className="border border-hairline">
         <p className="bg-ink px-5 py-3 font-display text-sm font-medium text-white">Browse by Categories</p>
         <ul className="p-2">

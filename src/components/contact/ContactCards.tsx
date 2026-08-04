@@ -17,7 +17,7 @@ const CARDS: ContactCard[] = [
   {
     icon: MapPin,
     label: 'Location',
-    body: <span className="text-secondary">{COMPANY.address}</span>,
+    body: <span className="text-[color:var(--ink-76)]">{COMPANY.address}</span>,
     topRight: (
       <a
         href={MAPS_HREF}
@@ -33,7 +33,7 @@ const CARDS: ContactCard[] = [
     icon: Phone,
     label: 'Phone',
     body: (
-      <a href={`tel:${COMPANY.phone}`} className="font-semibold text-ink transition-colors hover:text-accent">
+      <a href={`tel:${COMPANY.phone}`} className="font-semibold text-[color:var(--ink-76)] transition-colors hover:text-accent">
         {COMPANY.phone}
       </a>
     ),
@@ -42,7 +42,7 @@ const CARDS: ContactCard[] = [
     icon: Mail,
     label: 'Email',
     body: (
-      <a href={`mailto:${COMPANY.email}`} className="text-secondary transition-colors hover:text-accent">
+      <a href={`mailto:${COMPANY.email}`} className="text-[color:var(--ink-76)] transition-colors hover:text-accent">
         {COMPANY.email}
       </a>
     ),
@@ -50,7 +50,7 @@ const CARDS: ContactCard[] = [
   {
     icon: Clock,
     label: 'Response Time',
-    body: <span className="text-secondary">{COMPANY.quoteSLA}</span>,
+    body: <span className="text-[color:var(--ink-76)]">{COMPANY.quoteSLA}</span>,
   },
 ]
 

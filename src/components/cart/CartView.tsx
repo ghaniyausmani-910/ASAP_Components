@@ -23,7 +23,9 @@ export function CartView() {
   // ── Success state (mirrors RfqForm) ───────────────────────────
   if (sent) {
     return (
-      <div className="border border-hairline bg-white p-8 text-center sm:p-12">
+      <>
+        <PageHeader />
+        <div className="mt-10 border border-hairline bg-white p-8 text-center sm:p-12">
         <CheckCircle2 size={52} className="mx-auto text-success" />
         <h3 className="mt-4 font-display text-h4 font-medium">Your RFQ has been submitted</h3>
         <p className="mx-auto mt-2 max-w-md text-secondary">
@@ -35,14 +37,17 @@ export function CartView() {
           <Link href="/search" className="btn btn-outline">Search more parts</Link>
           <Link href="/" className="btn btn-primary">Back to home</Link>
         </div>
-      </div>
+        </div>
+      </>
     )
   }
 
   // ── Empty state ───────────────────────────────────────────────
   if (lines.length === 0) {
     return (
-      <div className="border border-hairline bg-white p-10 text-center sm:p-16">
+      <>
+        <PageHeader />
+        <div className="mt-10 border border-hairline bg-white p-10 text-center sm:p-16">
         <ShoppingCart size={48} className="mx-auto text-tertiary" />
         <h2 className="mt-4 font-display text-h4 font-medium">Your cart is empty</h2>
         <p className="mx-auto mt-2 max-w-md text-secondary">
@@ -51,16 +56,19 @@ export function CartView() {
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link href="/catalog/aviation/part-types" className="btn btn-primary">Browse catalog</Link>
         </div>
-      </div>
+        </div>
+      </>
     )
   }
 
   // ── Cart with items ───────────────────────────────────────────
   return (
-    <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
-      {/* Line items */}
+    <div className="grid gap-10 lg:grid-cols-[1fr_360px] lg:items-start">
+      {/* Header + line items — the scrolling column */}
       <div>
-        <div className="flex items-center justify-between">
+        <PageHeader />
+
+        <div className="mt-10 flex items-center justify-between">
           <h2 className="font-display text-h4 font-medium">
             {lines.length} {lines.length === 1 ? 'part' : 'parts'} · {totalCount} total qty
           </h2>
@@ -112,8 +120,8 @@ export function CartView() {
         </div>
       </div>
 
-      {/* Contact form */}
-      <form onSubmit={submit} className="h-fit border border-hairline bg-white">
+      {/* Contact form — sticky on desktop, top-aligned with the eyebrow */}
+      <form onSubmit={submit} className="h-fit border border-hairline bg-white lg:sticky lg:top-[96px] lg:self-start">
         <p className="border-b border-hairline bg-navy px-5 py-3 font-display text-sm font-medium text-white">
           Request a quote for all parts
         </p>
@@ -160,6 +168,19 @@ export function CartView() {
           </div>
         </div>
       </form>
+    </div>
+  )
+}
+
+function PageHeader() {
+  return (
+    <div className="max-w-3xl">
+      <p className="eyebrow">RFQ Cart</p>
+      <h1 className="mt-3 font-display text-h2 font-light tracking-tight-2">Your parts cart</h1>
+      <p className="mt-4 text-body-lg text-secondary">
+        Review the parts you have collected, set quantities, and submit one request for a competitive quote on
+        everything — answered within 15 minutes, 24/7.
+      </p>
     </div>
   )
 }

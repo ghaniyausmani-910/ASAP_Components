@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import {
   BadgeCheck,
   Boxes,
@@ -23,9 +24,10 @@ const ICONS: Record<AboutIcon, LucideIcon> = {
 /* ------------------------------------------------------------------ *
  * AboutCardItem — a static, text-only card in the aligned row.
  *
- * Icon top-left, title + description anchored to the bottom. On hover
- * (pointer devices) the card lifts and brightens, the icon tile fills, an
- * accent keyline sweeps in, and the copy sharpens — no imagery.
+ * Icon top-left, title + description anchored to the bottom. When the card has
+ * a background photo it sits behind a navy scrim so the copy stays legible; on
+ * hover (pointer devices) the card lifts, the photo zooms + brightens, the icon
+ * tile fills, an accent keyline sweeps in, and the copy sharpens.
  * ------------------------------------------------------------------ */
 export function AboutCardItem({ card }: { card: AboutCardData }) {
   const Icon = ICONS[card.icon] ?? BadgeCheck
@@ -39,8 +41,36 @@ export function AboutCardItem({ card }: { card: AboutCardData }) {
           '[@media(hover:hover)]:hover:z-10 [@media(hover:hover)]:hover:scale-[1.02] [@media(hover:hover)]:hover:border-white/20 [@media(hover:hover)]:hover:shadow-[0_22px_50px_-40px_rgba(0,0,0,0.55)]',
         ].join(' ')}
       >
-        {/* Accent keyline sweeps in from the left edge on hover. */}
-        <span className="absolute inset-x-0 top-0 z-20 h-[2px] origin-left scale-x-0 bg-white/70 transition-transform duration-[400ms] ease-out [@media(hover:hover)]:group-hover:scale-x-100" />
+        {/* Background photo + navy scrim (only when the card supplies an image). */}
+        {card.image && (
+          <>
+            <Image
+              src={card.image}
+              alt={card.imageAlt ?? ''}
+              fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 85vw"
+              className="object-cover object-center transition-transform duration-[600ms] ease-out [@media(hover:hover)]:group-hover:scale-105"
+            />
+            {/* Legibility scrim — navy (#0d2b44), heaviest at the bottom where the
+                copy sits, lighter at the top so the photo reads. */}
+            <span
+              aria-hidden
+              className="absolute inset-0 bg-[linear-gradient(to_top,rgba(13,43,68,0.88)_0%,rgba(13,43,68,0.60)_45%,rgba(13,43,68,0.12)_100%)]"
+            />
+            {/* Extra dim by default; lifts on hover so the photo brightens. */}
+            <span
+              aria-hidden
+              className="absolute inset-0 bg-[rgba(13,43,68,0.18)] opacity-100 transition-opacity duration-[500ms] ease-out [@media(hover:hover)]:group-hover:opacity-0"
+            />
+          </>
+        )}
+
+        {/* Accent keyline sweeps in from the left edge on hover — the site-wide
+            hover treatment (FeaturedCarousel / ManufacturersBento / ContactCards).
+            Solid white (the on-dark accent) + h-0.5 + 300ms to match those cards;
+            full opacity keeps it a crisp, deliberate edge over the photography
+            rather than the faded line a translucent fill produced. */}
+        <span className="absolute inset-x-0 top-0 z-20 h-0.5 origin-left scale-x-0 bg-white transition-transform duration-300 ease-out [@media(hover:hover)]:group-hover:scale-x-100" />
 
         {/* Icon tile — outline by default, fills solid on hover. */}
         <span className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-white/[0.04] text-white/80 transition-colors duration-[400ms] ease-out [@media(hover:hover)]:group-hover:border-white [@media(hover:hover)]:group-hover:bg-white [@media(hover:hover)]:group-hover:text-navy">
