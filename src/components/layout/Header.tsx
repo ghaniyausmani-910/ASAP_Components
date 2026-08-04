@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Mail, Phone, Menu, X, ChevronDown, ArrowUpRight, Plane } from 'lucide-react'
+import { Mail, Phone, Menu, X, ChevronDown, ArrowUpRight, ArrowRight, Plane } from 'lucide-react'
 import { CATEGORIES } from '@/lib/data/catalog'
 import { COMPANY } from '@/lib/data/site'
 import { SearchBar } from '@/components/ui/SearchBar'
@@ -110,18 +110,19 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
                   <ChevronDown size={14} className={cn('transition-transform', openMenu === cat.slug && 'rotate-180')} />
                 </button>
                 {openMenu === cat.slug && (
-                  <div className="absolute left-0 top-full z-50 w-64 border border-hairline bg-white shadow-hover animate-fade">
-                    <div className="border-b border-hairline bg-surface px-4 py-2 text-xs uppercase tracking-[0.08em] text-tertiary">
+                  <div className="absolute left-0 top-full z-50 w-64 border border-hairline bg-surface shadow-hover animate-fade">
+                    <div className="border-b border-hairline px-4 py-2 text-xs uppercase tracking-[0.08em] text-tertiary">
                       {cat.label}
                     </div>
                     {cat.items.map((item) => (
                       <Link
                         key={item.slug}
                         href={`/catalog/${cat.slug}/${item.slug}`}
-                        className="block px-4 py-2.5 text-sm text-ink transition-colors hover:bg-accent hover:text-white"
+                        className="group/item flex items-center gap-1 px-4 py-3 text-sm text-ink transition-colors hover:bg-surface-2 hover:text-accent"
                         onClick={() => setOpenMenu(null)}
                       >
                         {item.label}
+                        <ArrowRight size={13} className="-translate-x-1 opacity-0 transition-all duration-200 group-hover/item:translate-x-0 group-hover/item:opacity-100" />
                       </Link>
                     ))}
                   </div>
