@@ -1,16 +1,21 @@
-import { MANUFACTURERS, FSC_CODES } from './parts'
-import { seededRand } from '@/lib/utils'
+import { MANUFACTURERS } from './parts'
+import { CATALOG_PARTS, categoryForManufacturer } from './catalog-parts'
+import { slugify } from '@/lib/utils'
 
 /**
  * Type-scoped autocomplete for the search bar.
  *
  * The catalog has no live search index — parts are generated deterministically
  * (see parts.ts), so there is nothing to query as the user types. Instead we
- * build a small curated, in-memory suggestion index from the same seed data the
- * rest of the site draws on (manufacturers, FSC codes, part-number families) and
- * filter it client-side. Which slice of the index we search is driven by the
- * type dropdown next to the input — "Manufacturer" surfaces manufacturer names,
- * "Part Number" surfaces part numbers, and so on.
+ * build a small curated, in-memory suggestion index from the canonical parts
+ * table (catalog-parts.ts) and filter it client-side. Which slice of the index
+ * we search is driven by the type dropdown next to the input — "Manufacturer"
+ * surfaces manufacturer names, "Part Number" surfaces part numbers, and so on.
+ *
+ * Every specific suggestion (Part Number / NSN / CAGE Code) points back to the
+ * one part that owns it, so selecting a row deep-links to that part's detail
+ * page via `href`. A Manufacturer row instead links to that manufacturer's
+ * listing.
  */
 
 export type SuggestionType = 'Part Number' | 'NSN' | 'CAGE Code' | 'Manufacturer'
@@ -24,56 +29,52 @@ export interface Suggestion {
   mfr?: string
   /** Which index this came from; drives the row badge + mono styling. */
   type: SuggestionType
+  /** Where selecting this row navigates — the specific part, or a manufacturer listing. */
+  href: string
 }
 
-// ── Part-number pool ────────────────────────────────────────────
-// Realistic aerospace / defense / electronic part numbers grouped by family so
-// typing a family prefix ("MS", "NAS", "D38999"…) surfaces the whole set.
-const PART_NUMBERS: { value: string; hint: string; mfr: string }[] = [
-  { value: 'MS27039-1-08', hint: 'Screw, Machine, Pan Head', mfr: 'National Aerospace Standards Co' },
-  { value: 'MS21042-3', hint: 'Nut, Self-Locking, Hexagon', mfr: 'Kapco Valtec' },
-  { value: 'MS21919WDG4', hint: 'Clamp, Loop, Cushioned', mfr: 'Parker Hannifin' },
-  { value: 'MS35338-42', hint: 'Washer, Lock, Spring', mfr: 'National Aerospace Standards Co' },
-  { value: 'NAS1149F0332P', hint: 'Washer, Flat', mfr: 'National Aerospace Standards Co' },
-  { value: 'NAS1352-3-8', hint: 'Screw, Cap, Socket Head', mfr: 'National Aerospace Standards Co' },
-  { value: 'NAS6204-8', hint: 'Bolt, Close Tolerance', mfr: 'National Aerospace Standards Co' },
-  { value: 'AN960-10', hint: 'Washer, Flat', mfr: 'Kapco Valtec' },
-  { value: 'AN3-4A', hint: 'Bolt, Machine, Aircraft', mfr: 'Kapco Valtec' },
-  { value: 'BACB30LN6K', hint: 'Bolt, Shear, Hi-Lok', mfr: 'The Boeing Company' },
-  { value: 'BACB28AT6', hint: 'Bolt, Tension', mfr: 'The Boeing Company' },
-  { value: 'D38999/26WB35PN', hint: 'Connector, Circular, Plug', mfr: 'Amphenol' },
-  { value: 'D38999/20WB35SN', hint: 'Connector, Circular, Receptacle', mfr: 'Amphenol' },
-  { value: 'M83248/1-908', hint: 'Packing, Preformed, O-Ring', mfr: 'Parker Hannifin' },
-  { value: 'M39029/56-348', hint: 'Contact, Electrical, Socket', mfr: 'TE Connectivity' },
-  { value: 'M85049/38S15N', hint: 'Backshell, Connector', mfr: 'Amphenol' },
-  { value: 'CFM56-7B', hint: 'Turbine Engine Assembly', mfr: 'GE Aviation' },
-  { value: 'LM358N', hint: 'Amplifier, Operational, Dual', mfr: 'Fujitsu' },
-  { value: '2N2222A', hint: 'Transistor, NPN, Switching', mfr: 'Winbond Electronics' },
-  { value: '1N4148', hint: 'Diode, Small Signal, Fast', mfr: 'Fujitsu' },
-  { value: 'SN74LS00N', hint: 'IC, Quad NAND Gate', mfr: 'Fujitsu' },
-  { value: 'LM7805CT', hint: 'Regulator, Voltage, +5V', mfr: 'Winbond Electronics' },
-]
-
-// ── Numeric pools (deterministic so rows are stable across renders) ──
-function numericPool(kind: 'nsn' | 'cage'): { value: string; hint: string }[] {
-  const rand = seededRand(`suggest:${kind}`)
-  return Array.from({ length: 14 }, () => {
-    if (kind === 'nsn') {
-      const fsc = FSC_CODES[Math.floor(rand() * FSC_CODES.length)]
-      const niin = `${String(Math.floor(rand() * 90) + 10)}-${String(Math.floor(rand() * 900) + 100)}-${String(Math.floor(rand() * 9000) + 1000)}`
-      return { value: `${fsc.code}-${niin}`, hint: fsc.label }
-    }
-    const code = (Math.floor(rand() * 90000) + 10000).toString(36).toUpperCase().padStart(5, '0').slice(0, 5)
-    const mfr = MANUFACTURERS[Math.floor(rand() * MANUFACTURERS.length)]
-    return { value: code, hint: mfr }
-  })
+/** Part-detail URL for a canonical part. */
+function partHref(category: string, manufacturer: string, partNo: string): string {
+  return `/catalog/${category}/quote/${slugify(manufacturer)}/${encodeURIComponent(partNo)}`
 }
 
-const NSN_POOL = numericPool('nsn')
-const CAGE_POOL = numericPool('cage')
-const MANUFACTURER_POOL: { value: string; hint?: string }[] = MANUFACTURERS.map((name) => ({ value: name }))
+interface PoolEntry {
+  value: string
+  hint?: string
+  mfr?: string
+  href: string
+}
 
-function poolFor(type: string): { value: string; hint?: string; mfr?: string }[] {
+// ── Pools derived from the canonical parts table ────────────────
+// Each specific pool is one row per part, keyed on a different property, all
+// pointing at the same part-detail page.
+const PART_NUMBER_POOL: PoolEntry[] = CATALOG_PARTS.map((p) => ({
+  value: p.partNo,
+  hint: p.description,
+  mfr: p.manufacturer,
+  href: partHref(p.category, p.manufacturer, p.partNo),
+}))
+
+const NSN_POOL: PoolEntry[] = CATALOG_PARTS.map((p) => ({
+  value: p.nsn,
+  hint: p.description,
+  mfr: p.manufacturer,
+  href: partHref(p.category, p.manufacturer, p.partNo),
+}))
+
+const CAGE_POOL: PoolEntry[] = CATALOG_PARTS.map((p) => ({
+  value: p.cageCode,
+  hint: p.description,
+  mfr: p.manufacturer,
+  href: partHref(p.category, p.manufacturer, p.partNo),
+}))
+
+const MANUFACTURER_POOL: PoolEntry[] = MANUFACTURERS.map((name) => ({
+  value: name,
+  href: `/catalog/${categoryForManufacturer(name)}/list/${slugify(name)}`,
+}))
+
+function poolFor(type: string): PoolEntry[] {
   switch (type) {
     case 'Manufacturer':
       return MANUFACTURER_POOL
@@ -82,7 +83,7 @@ function poolFor(type: string): { value: string; hint?: string; mfr?: string }[]
     case 'CAGE Code':
       return CAGE_POOL
     default:
-      return PART_NUMBERS
+      return PART_NUMBER_POOL
   }
 }
 
@@ -114,5 +115,5 @@ export function searchSuggestions(query: string, type: string, limit = 6): Sugge
     .filter((x) => x.score >= 0)
     .sort((a, b) => a.score - b.score || a.s.value.localeCompare(b.s.value))
     .slice(0, limit)
-    .map((x) => ({ value: x.s.value, hint: x.s.hint, mfr: x.s.mfr, type: kind }))
+    .map((x) => ({ value: x.s.value, hint: x.s.hint, mfr: x.s.mfr, type: kind, href: x.s.href }))
 }

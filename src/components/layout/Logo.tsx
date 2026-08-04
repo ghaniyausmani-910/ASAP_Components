@@ -1,24 +1,19 @@
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
-// The mark is a single geometric "A" with a rocket carved out of the negative
-// space — the rocket's exhaust channel is the same void as the A's leg-gap, so
-// the two forms are one shape. Even-odd fill; scales cleanly to a 16px favicon.
-const MARK_PATH =
-  'M40 12 L60 12 L94 92 L6 92 Z M50 20 L57 36 L57 60 L66 78 L57 79 L57 92 L43 92 L43 79 L34 78 L43 60 L43 36 Z'
-
-export function LogoMark({
-  className,
-  notch = true,
-}: {
-  className?: string
-  notch?: boolean
-}) {
+// A bold, flat-top geometric "A" with a rocket carved from the negative space:
+// a single evenodd cut forms the nose cone at the apex, the fuselage down the
+// vertical axis, the angular fins, and the exhaust gap that splits the two legs
+// — so the letter and the rocket read as one monolithic shape. Monochrome
+// (inherits currentColor); stays legible down to 16px favicon size.
+export function LogoMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 100 100" className={className} role="img" aria-label="ASAP Components">
-      <path d={MARK_PATH} fill="currentColor" fillRule="evenodd" />
-      {/* Thrust notch — inherits the mark's color: navy on light, white on dark. */}
-      {notch && <rect x="46.5" y="86" width="7" height="6" fill="currentColor" />}
+    <svg viewBox="0 0 200 200" className={className} role="img" aria-label="ASAP Components">
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M18,178 L78,24 L122,24 L182,178 Z M100,42 L111,70 L111,116 L132,142 L114,152 L128,178 L72,178 L86,152 L68,142 L89,116 L89,70 Z"
+      />
     </svg>
   )
 }
@@ -38,7 +33,14 @@ export function Logo({
       className={cn('flex shrink-0 items-center gap-3', className)}
       aria-label="ASAP Components home"
     >
-      <LogoMark className={cn('h-9 w-9 shrink-0', onDark ? 'text-white' : 'text-ink')} />
+      <LogoMark
+        className={cn(
+          // Height tracks the wordmark+subtitle block via flex stretch; aspect-square
+          // keeps the mark's width equal to that height at every breakpoint.
+          'aspect-square w-auto self-stretch shrink-0',
+          onDark ? 'text-white' : 'text-ink',
+        )}
+      />
       <span className="leading-none">
         <span
           className={cn(
@@ -53,7 +55,7 @@ export function Logo({
           // so the two lines lock into one block (parent-logo relationship).
           <span
             className={cn(
-              'mt-1.5 hidden text-[8.5px] font-medium uppercase tracking-[0.053em] sm:block',
+              'mt-0.5 hidden text-[8.5px] font-medium uppercase tracking-[0.053em] sm:block',
               onDark ? 'text-white/70' : 'text-secondary',
             )}
           >

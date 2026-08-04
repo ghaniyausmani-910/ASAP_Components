@@ -50,11 +50,13 @@ export default function PartDetailPage({ params }: { params: Params }) {
             Part number <span className="font-mono font-normal">{partNo}</span> by {part.manufacturer}
           </h1>
 
-          <dl className="mt-6 grid gap-px overflow-hidden border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-4">
+          <dl className="mt-6 grid gap-px overflow-hidden border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-3">
             <Meta label="Part Number" value={partNo} mono />
             <Meta label="Alternate P/N" value={part.altPartNo ?? '—'} mono />
             <Meta label="Manufacturer" value={part.manufacturer} />
             <Meta label="NSN" value={part.nsn ?? '—'} mono />
+            <Meta label="CAGE Code" value={part.cageCode ?? '—'} mono />
+            <Meta label="NIIN" value={part.niin ?? '—'} mono />
           </dl>
 
           <p className="mt-6 max-w-3xl text-secondary">

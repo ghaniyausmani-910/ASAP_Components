@@ -8,15 +8,16 @@ import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 
 /**
  * Hero inquiry card — a frosted-glass RFQ panel that sits directly beneath the
- * hero copy. A translucent deep-navy surface (ink at 72%) over a heavy backdrop
+ * hero copy. A translucent deep-navy surface (ink at 50%) over a heavy backdrop
  * blur, with a white hairline border, sharp square edges, small muted labels
  * stacked over bold white values, thin vertical dividers between fields, and a
  * solid white submit on the right.
  *
- * The 72% ink tint is a deliberate contrast floor: because the panel floats over
- * cinematic photography whose brightness varies, a lighter tint would let bright
- * regions bleed through and drop the on-dark text below WCAG AA. 72% guarantees a
- * dark enough backing for white text everywhere the card can land.
+ * The ink tint is a deliberate contrast floor: because the panel floats over
+ * cinematic photography whose brightness varies, too light a tint would let bright
+ * regions bleed through and drop the on-dark text below WCAG AA. The heavy backdrop
+ * blur lets the tint sit lower (50%) while keeping a dark enough backing for white
+ * text everywhere the card can land.
  *
  * Three fields (Part # / NSN, Quantity, Email) hand off to the full Instant
  * RFQ flow with values prefilled, matching InstantRfqQuickForm's behaviour.
@@ -45,7 +46,7 @@ export function HeroInquiryBar() {
     <form
       onSubmit={submit}
       aria-label="Instant RFQ quick quote"
-      className="border border-white/15 bg-ink/[0.72] p-4 shadow-[0_24px_60px_-18px_rgba(11,31,51,0.45)] backdrop-blur-[64px] sm:p-5"
+      className="border border-white/15 bg-ink/[0.50] p-4 shadow-[0_24px_60px_-18px_rgba(11,31,51,0.45)] backdrop-blur-[64px] sm:p-5"
     >
       <div className="grid grid-cols-1 items-stretch gap-2 sm:grid-cols-2 md:grid-cols-[1.6fr_0.9fr_1.5fr_auto] md:gap-0 md:divide-x md:divide-white/10">
         <HeroField

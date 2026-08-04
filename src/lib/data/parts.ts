@@ -1,5 +1,6 @@
 import type { Part, DirectoryKind } from '@/lib/types'
 import { seededRand, slugify, pick } from '@/lib/utils'
+import { findCatalogPart } from './catalog-parts'
 
 // ── Manufacturers (aerospace / defense / electronic) ────────────
 export const MANUFACTURERS: string[] = [
@@ -180,6 +181,22 @@ export function generateParts(seedKey: string, count: number, opts?: { withDescr
 
 /** Find a single part by number (for the part-detail page). */
 export function findPart(category: string, manufacturerSlug: string, partNo: string): Part {
+  // Prefer the canonical parts table so a part reached from search shows the
+  // exact NSN / CAGE / NIIN that was searched. Fall back to generation for
+  // arbitrary typed-in queries (e.g. the /search "Get Quote" flow).
+  const canonical = findCatalogPart(category, manufacturerSlug, partNo)
+  if (canonical) {
+    return {
+      partNo: canonical.partNo,
+      altPartNo: canonical.partNo.replace(/-/g, ''),
+      manufacturer: canonical.manufacturer,
+      description: canonical.description,
+      nsn: canonical.nsn,
+      niin: canonical.niin,
+      cageCode: canonical.cageCode,
+      qty: 'Avl',
+    }
+  }
   const rand = seededRand(`detail:${category}:${manufacturerSlug}:${partNo}`)
   const mfr = MANUFACTURERS.find((m) => slugify(m) === manufacturerSlug) ?? 'The Boeing Company'
   const pool = category === 'electronic' || category === 'connectors' ? ELECTRONIC_PART_TYPES : AVIATION_PART_TYPES

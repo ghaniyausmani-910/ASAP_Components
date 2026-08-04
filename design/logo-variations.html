@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ASAP Components — Logo Mark Variations</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: #0d0f12; color: #e7eaee; padding: 40px 28px 80px;
+    -webkit-font-smoothing: antialiased;
+  }
+  header { max-width: 1180px; margin: 0 auto 40px; }
+  h1 { font-size: 22px; font-weight: 650; letter-spacing: .2px; }
+  .sub { color: #8b939e; font-size: 14px; margin-top: 8px; line-height: 1.5; max-width: 640px; }
+  .grid {
+    max-width: 1180px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 22px;
+  }
+  .card {
+    background: #14171c; border: 1px solid #23272e; border-radius: 16px;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .stage {
+    background: #000; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center;
+  }
+  .stage svg { width: 190px; height: 190px; }
+  .meta { padding: 16px 18px 18px; }
+  .name { font-size: 15px; font-weight: 600; }
+  .tag { color: #8b939e; font-size: 12.5px; margin-top: 4px; line-height: 1.45; }
+  .tests {
+    display: flex; align-items: center; gap: 18px; margin-top: 16px; padding-top: 14px;
+    border-top: 1px solid #23272e;
+  }
+  .chip { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .chip .box { display: flex; align-items: center; justify-content: center; border-radius: 6px; }
+  .chip .lab { font-size: 10px; color: #6f7883; letter-spacing: .3px; }
+  .b-black { background: #000; }
+  .b-white { background: #fff; }
+  .s48 { width: 48px; height: 48px; }
+  .s24 { width: 24px; height: 24px; }
+  .s16 { width: 16px; height: 16px; }
+  .note { max-width: 1180px; margin: 34px auto 0; color: #8b939e; font-size: 13px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<header>
+  <h1>ASAP Components — Logo Mark Variations</h1>
+  <p class="sub">Bold geometric “A” with a rocket carved from the negative space. All marks are flat single-color vectors — shown white-on-black, with black-on-white and favicon-scale (48 / 24 / 16 px) tests for each.</p>
+</header>
+
+<div class="grid">
+
+  <!-- ============ A — ASCENT ============ -->
+  <div class="card">
+    <div class="stage">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Variant A Ascent">
+        <path fill="#fff" fill-rule="evenodd" d="M20,178 L82,22 L118,22 L180,178 Z
+          M100,38 L109,64 L109,120 L124,138 L112,150 L130,178 L70,178 L88,150 L76,138 L91,120 L91,64 Z"/>
+      </svg>
+    </div>
+    <div class="meta">
+      <div class="name">A · Ascent</div>
+      <div class="tag">Balanced stance. One cut forms nose, fuselage, fins and the exhaust gap that splits the legs.</div>
+      <div class="tests">
+        <div class="chip"><div class="box b-black s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#fff" fill-rule="evenodd" d="M20,178 L82,22 L118,22 L180,178 Z M100,38 L109,64 L109,120 L124,138 L112,150 L130,178 L70,178 L88,150 L76,138 L91,120 L91,64 Z"/></svg></div><div class="lab">48</div></div>
+        <div class="chip"><div class="box b-black s24"><svg viewBox="0 0 200 200" class="s24"><path fill="#fff" fill-rule="evenodd" d="M20,178 L82,22 L118,22 L180,178 Z M100,38 L109,64 L109,120 L124,138 L112,150 L130,178 L70,178 L88,150 L76,138 L91,120 L91,64 Z"/></svg></div><div class="lab">24</div></div>
+        <div class="chip"><div class="box b-black s16"><svg viewBox="0 0 200 200" class="s16"><path fill="#fff" fill-rule="evenodd" d="M20,178 L82,22 L118,22 L180,178 Z M100,38 L109,64 L109,120 L124,138 L112,150 L130,178 L70,178 L88,150 L76,138 L91,120 L91,64 Z"/></svg></div><div class="lab">16</div></div>
+        <div class="chip"><div class="box b-white s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#000" fill-rule="evenodd" d="M20,178 L82,22 L118,22 L180,178 Z M100,38 L109,64 L109,120 L124,138 L112,150 L130,178 L70,178 L88,150 L76,138 L91,120 L91,64 Z"/></svg></div><div class="lab">inv</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ B — VANGUARD ============ -->
+  <div class="card">
+    <div class="stage">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Variant B Vanguard">
+        <path fill="#fff" fill-rule="evenodd" d="M14,180 L84,20 L116,20 L186,180 Z
+          M100,30 L108,66 L108,122 L120,140 L110,150 L126,180 L74,180 L90,150 L80,140 L92,122 L92,66 Z"/>
+      </svg>
+    </div>
+    <div class="meta">
+      <div class="name">B · Vanguard</div>
+      <div class="tag">Wide, grounded stance with a longer, sharper nose cone and tighter fins. Reads confident at large sizes.</div>
+      <div class="tests">
+        <div class="chip"><div class="box b-black s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#fff" fill-rule="evenodd" d="M14,180 L84,20 L116,20 L186,180 Z M100,30 L108,66 L108,122 L120,140 L110,150 L126,180 L74,180 L90,150 L80,140 L92,122 L92,66 Z"/></svg></div><div class="lab">48</div></div>
+        <div class="chip"><div class="box b-black s24"><svg viewBox="0 0 200 200" class="s24"><path fill="#fff" fill-rule="evenodd" d="M14,180 L84,20 L116,20 L186,180 Z M100,30 L108,66 L108,122 L120,140 L110,150 L126,180 L74,180 L90,150 L80,140 L92,122 L92,66 Z"/></svg></div><div class="lab">24</div></div>
+        <div class="chip"><div class="box b-black s16"><svg viewBox="0 0 200 200" class="s16"><path fill="#fff" fill-rule="evenodd" d="M14,180 L84,20 L116,20 L186,180 Z M100,30 L108,66 L108,122 L120,140 L110,150 L126,180 L74,180 L90,150 L80,140 L92,122 L92,66 Z"/></svg></div><div class="lab">16</div></div>
+        <div class="chip"><div class="box b-white s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#000" fill-rule="evenodd" d="M14,180 L84,20 L116,20 L186,180 Z M100,30 L108,66 L108,122 L120,140 L110,150 L126,180 L74,180 L90,150 L80,140 L92,122 L92,66 Z"/></svg></div><div class="lab">inv</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ C — SENTINEL ============ -->
+  <div class="card">
+    <div class="stage">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Variant C Sentinel">
+        <path fill="#fff" fill-rule="evenodd" d="M30,176 L86,24 L114,24 L170,176 Z
+          M100,40 L107,64 L107,126 L118,146 L108,152 L122,176 L78,176 L92,152 L82,146 L93,126 L93,64 Z"/>
+      </svg>
+    </div>
+    <div class="meta">
+      <div class="name">C · Sentinel</div>
+      <div class="tag">Narrower, taller silhouette. Slim fuselage and restrained fins — the most vertical, precision-forward read.</div>
+      <div class="tests">
+        <div class="chip"><div class="box b-black s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#fff" fill-rule="evenodd" d="M30,176 L86,24 L114,24 L170,176 Z M100,40 L107,64 L107,126 L118,146 L108,152 L122,176 L78,176 L92,152 L82,146 L93,126 L93,64 Z"/></svg></div><div class="lab">48</div></div>
+        <div class="chip"><div class="box b-black s24"><svg viewBox="0 0 200 200" class="s24"><path fill="#fff" fill-rule="evenodd" d="M30,176 L86,24 L114,24 L170,176 Z M100,40 L107,64 L107,126 L118,146 L108,152 L122,176 L78,176 L92,152 L82,146 L93,126 L93,64 Z"/></svg></div><div class="lab">24</div></div>
+        <div class="chip"><div class="box b-black s16"><svg viewBox="0 0 200 200" class="s16"><path fill="#fff" fill-rule="evenodd" d="M30,176 L86,24 L114,24 L170,176 Z M100,40 L107,64 L107,126 L118,146 L108,152 L122,176 L78,176 L92,152 L82,146 L93,126 L93,64 Z"/></svg></div><div class="lab">16</div></div>
+        <div class="chip"><div class="box b-white s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#000" fill-rule="evenodd" d="M30,176 L86,24 L114,24 L170,176 Z M100,40 L107,64 L107,126 L118,146 L108,152 L122,176 L78,176 L92,152 L82,146 L93,126 L93,64 Z"/></svg></div><div class="lab">inv</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ D — APEX ============ -->
+  <div class="card">
+    <div class="stage">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Variant D Apex">
+        <path fill="#fff" fill-rule="evenodd" d="M18,178 L78,24 L122,24 L182,178 Z
+          M100,42 L111,70 L111,116 L132,142 L114,152 L128,178 L72,178 L86,152 L68,142 L89,116 L89,70 Z"/>
+      </svg>
+    </div>
+    <div class="meta">
+      <div class="name">D · Apex</div>
+      <div class="tag">Widest flat top and chunkiest body, with bold angular fins. Heaviest, most monolithic “badge” presence.</div>
+      <div class="tests">
+        <div class="chip"><div class="box b-black s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#fff" fill-rule="evenodd" d="M18,178 L78,24 L122,24 L182,178 Z M100,42 L111,70 L111,116 L132,142 L114,152 L128,178 L72,178 L86,152 L68,142 L89,116 L89,70 Z"/></svg></div><div class="lab">48</div></div>
+        <div class="chip"><div class="box b-black s24"><svg viewBox="0 0 200 200" class="s24"><path fill="#fff" fill-rule="evenodd" d="M18,178 L78,24 L122,24 L182,178 Z M100,42 L111,70 L111,116 L132,142 L114,152 L128,178 L72,178 L86,152 L68,142 L89,116 L89,70 Z"/></svg></div><div class="lab">24</div></div>
+        <div class="chip"><div class="box b-black s16"><svg viewBox="0 0 200 200" class="s16"><path fill="#fff" fill-rule="evenodd" d="M18,178 L78,24 L122,24 L182,178 Z M100,42 L111,70 L111,116 L132,142 L114,152 L128,178 L72,178 L86,152 L68,142 L89,116 L89,70 Z"/></svg></div><div class="lab">16</div></div>
+        <div class="chip"><div class="box b-white s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#000" fill-rule="evenodd" d="M18,178 L78,24 L122,24 L182,178 Z M100,42 L111,70 L111,116 L132,142 L114,152 L128,178 L72,178 L86,152 L68,142 L89,116 L89,70 Z"/></svg></div><div class="lab">inv</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ E — BEACON (classic counter) ============ -->
+  <div class="card">
+    <div class="stage">
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Variant E Beacon">
+        <path fill="#fff" fill-rule="evenodd" d="M84,22 L116,22 L178,178 L140,178 L112,106 L88,106 L60,178 L22,178 Z
+          M100,42 L107,60 L107,86 L116,98 L106,98 L106,92 L94,92 L94,98 L84,98 L93,86 L93,60 Z"/>
+      </svg>
+    </div>
+    <div class="meta">
+      <div class="name">E · Beacon</div>
+      <div class="tag">Most literal letterform: open-leg “A” with the rocket held cleanly inside the counter. Reads as “A” first.</div>
+      <div class="tests">
+        <div class="chip"><div class="box b-black s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#fff" fill-rule="evenodd" d="M84,22 L116,22 L178,178 L140,178 L112,106 L88,106 L60,178 L22,178 Z M100,42 L107,60 L107,86 L116,98 L106,98 L106,92 L94,92 L94,98 L84,98 L93,86 L93,60 Z"/></svg></div><div class="lab">48</div></div>
+        <div class="chip"><div class="box b-black s24"><svg viewBox="0 0 200 200" class="s24"><path fill="#fff" fill-rule="evenodd" d="M84,22 L116,22 L178,178 L140,178 L112,106 L88,106 L60,178 L22,178 Z M100,42 L107,60 L107,86 L116,98 L106,98 L106,92 L94,92 L94,98 L84,98 L93,86 L93,60 Z"/></svg></div><div class="lab">24</div></div>
+        <div class="chip"><div class="box b-black s16"><svg viewBox="0 0 200 200" class="s16"><path fill="#fff" fill-rule="evenodd" d="M84,22 L116,22 L178,178 L140,178 L112,106 L88,106 L60,178 L22,178 Z M100,42 L107,60 L107,86 L116,98 L106,98 L106,92 L94,92 L94,98 L84,98 L93,86 L93,60 Z"/></svg></div><div class="lab">16</div></div>
+        <div class="chip"><div class="box b-white s48"><svg viewBox="0 0 200 200" class="s48"><path fill="#000" fill-rule="evenodd" d="M84,22 L116,22 L178,178 L140,178 L112,106 L88,106 L60,178 L22,178 Z M100,42 L107,60 L107,86 L116,98 L106,98 L106,92 L94,92 L94,98 L84,98 L93,86 L93,60 Z"/></svg></div><div class="lab">inv</div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p class="note">All five are pure flat vectors — no gradients, shadows, outlines or type — so they drop straight into a favicon, an embossed badge, or a CNC/laser path. Tell me which direction you like (A–E), and any tweaks (nose sharpness, stance width, fin size). Once you approve one, I’ll wire it into the site’s logo + favicon.</p>
+
+</body>
+</html>

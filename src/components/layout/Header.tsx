@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Mail, Phone, Menu, X, ChevronDown, ArrowUpRight, ArrowRight, Plane } from 'lucide-react'
+import { Menu, X, ChevronDown, ArrowUpRight, ArrowRight } from 'lucide-react'
 import { CATEGORIES } from '@/lib/data/catalog'
-import { COMPANY } from '@/lib/data/site'
+import { LogoMark } from '@/components/layout/Logo'
 import { SearchBar } from '@/components/ui/SearchBar'
 import { CartButton } from '@/components/cart/CartButton'
 import { cn } from '@/lib/utils'
@@ -48,9 +48,7 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
       <div className="container-x flex h-16 items-center gap-6 lg:h-[72px]">
         {/* Logo */}
         <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="ASAP Components home">
-          <span className={cn('flex h-9 w-9 items-center justify-center', solid ? 'bg-accent text-white' : 'bg-white text-accent')}>
-            <Plane size={20} strokeWidth={2.5} className="-rotate-45" />
-          </span>
+          <LogoMark className={cn('h-8 w-8 shrink-0', solid ? 'text-accent' : 'text-white')} />
           <span className="leading-none">
             <span className={cn('block font-display text-[17px] font-semibold tracking-tight-2 sm:text-[19px]', onDark ? 'text-white' : 'text-ink')}>
               ASAP <span className={onDark ? 'text-white' : 'text-accent'}>Components</span>
@@ -61,22 +59,15 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
           </span>
         </Link>
 
-        {/* Divider between logo and contact */}
-        <span aria-hidden className={cn('hidden h-9 w-px xl:block', onDark ? 'bg-white/20' : 'bg-hairline')} />
-
-        {/* Contact (desktop, left) */}
-        <div className="hidden items-center gap-5 xl:flex">
-          <a href={`mailto:${COMPANY.email}`} className={cn('flex items-center gap-2 text-sm', onDark ? 'text-white/90' : 'text-secondary hover:text-ink')}>
-            <Mail size={16} className={onDark ? 'text-white/80' : 'text-accent'} /> {COMPANY.email}
-          </a>
-          <a href={`tel:${COMPANY.phone}`} className={cn('flex items-center gap-2 text-sm font-semibold', onDark ? 'text-white' : 'text-ink')}>
-            <Phone size={16} className={onDark ? 'text-white/80' : 'text-accent'} /> {COMPANY.phone}
-          </a>
-        </div>
-
-        {/* Search (desktop, top-right) — flexes to fill available space, capped */}
-        <div className="ml-auto hidden min-w-0 flex-1 lg:block xl:max-w-[34rem]">
-          <SearchBar size="sm" />
+        {/* Search + CTAs (desktop, top-right) — search flexes, CTAs stay pinned right */}
+        <div className="ml-auto hidden min-w-0 flex-1 items-center gap-4 lg:flex xl:max-w-[46rem]">
+          <div className="min-w-0 flex-1">
+            <SearchBar size="sm" />
+          </div>
+          <CartButton onDark={onDark} />
+          <Link href="/instant-rfq" className="btn btn-primary group shrink-0">
+            Instant RFQ <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
         </div>
 
         {/* Mobile controls */}
@@ -92,15 +83,15 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
       {/* Nav row (desktop) */}
       <div className={cn('hidden lg:block border-t', solid ? 'border-hairline' : 'border-white/15')}>
         <div className="container-x flex items-center">
-          {/* -ml-4 cancels the first link's px-4 so "Home" sits flush with the
+          {/* -ml-5 cancels the first link's px-5 so "Home" sits flush with the
               container edge — aligned with the logo and breadcrumb above/below. */}
-          <nav className="-ml-4 flex items-center">
+          <nav className="-ml-5 flex items-center">
             <TopLink href="/" onDark={onDark}>Home</TopLink>
             {CATEGORIES.map((cat) => (
               <div key={cat.slug} className="relative" onMouseEnter={() => setOpenMenu(cat.slug)}>
                 <button
                   className={cn(
-                    'flex items-center gap-1 px-4 py-3.5 text-sm font-medium transition-colors',
+                    'flex items-center gap-1 px-5 py-3.5 text-sm font-medium transition-colors',
                     onDark ? 'text-white/90 hover:text-white' : 'text-ink hover:text-accent',
                     openMenu === cat.slug && (onDark ? 'text-white' : 'text-accent'),
                   )}
@@ -133,12 +124,6 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
               <TopLink key={l.href} href={l.href} onDark={onDark}>{l.label}</TopLink>
             ))}
           </nav>
-          <div className="ml-auto flex items-center gap-4">
-            <CartButton onDark={onDark} />
-            <Link href="/instant-rfq" className="my-2 btn btn-primary group">
-              Instant RFQ <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </Link>
-          </div>
         </div>
       </div>
 
@@ -180,7 +165,7 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
 
 function TopLink({ href, children, onDark }: { href: string; children: React.ReactNode; onDark: boolean }) {
   return (
-    <Link href={href} className={cn('px-4 py-3.5 text-sm font-medium transition-colors', onDark ? 'text-white/90 hover:text-white' : 'text-ink hover:text-accent')}>
+    <Link href={href} className={cn('px-5 py-3.5 text-sm font-medium transition-colors', onDark ? 'text-white/90 hover:text-white' : 'text-ink hover:text-accent')}>
       {children}
     </Link>
   )

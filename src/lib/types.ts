@@ -37,6 +37,7 @@ export interface Part {
   manufacturer: string
   description?: string
   nsn?: string
+  niin?: string
   cageCode?: string
   qty: string // e.g. "Avl"
   aircraftModel?: string

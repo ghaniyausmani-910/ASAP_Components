@@ -31,9 +31,15 @@ export function SearchBar({
     router.push(`/search?q=${encodeURIComponent(v)}&type=${encodeURIComponent(searchType)}`)
   }
 
-  function handleSelect(s: { value: string; type: string }) {
+  function handleSelect(s: { value: string; type: string; href?: string }) {
     setQ(s.value)
-    go(s.value, s.type)
+    // A suggestion points at one specific thing — deep-link to its page.
+    // Falls back to the listing if a row ever lacks an href.
+    if (s.href) {
+      router.push(s.href)
+    } else {
+      go(s.value, s.type)
+    }
   }
 
   const ac = useAutocomplete({ query: q, type, onSelect: handleSelect })

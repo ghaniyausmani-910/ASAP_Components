@@ -1,7 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
   <style>
     .m { fill: #0b1f33 }
-    @media (prefers-color-scheme: dark) { .m { fill: #ffffff } }
+    @media (prefers-color-scheme: dark) {
+      .m { fill: #ffffff }
+    }
   </style>
-  <path class="m" fill-rule="evenodd" d="M40 12 L60 12 L94 92 L6 92 Z M50 20 L57 36 L57 60 L66 78 L57 79 L57 92 L43 92 L43 79 L34 78 L43 60 L43 36 Z"/>
+  <path class="m" fill-rule="evenodd" d="M18,178 L78,24 L122,24 L182,178 Z M100,42 L111,70 L111,116 L132,142 L114,152 L128,178 L72,178 L86,152 L68,142 L89,116 L89,70 Z"/>
 </svg>
