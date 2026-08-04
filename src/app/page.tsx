@@ -23,19 +23,17 @@ export default function HomePage() {
         {/* Background photo */}
         <Image
           src="/hero.jpg"
-          alt="A commercial airliner with a red engine cowl taxiing on an airport runway at dusk"
+          alt="A row of fighter jets lined up on a flightline, with the afterburner nozzle of the nearest aircraft in sharp focus"
           fill
           priority
           sizes="100vw"
           className="object-cover"
         />
-        {/* Navy grade (reduced) + whitish light lift + readability scrims */}
-        <div className="absolute inset-0 bg-ink/22" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,31,51,0.6)_0%,rgba(11,31,51,0.2)_48%,rgba(11,31,51,0)_100%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(55%_50%_at_68%_18%,rgba(255,255,255,0.05)_0%,rgba(255,255,255,0)_72%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(62%_60%_at_40%_25%,rgba(56,132,204,0.2)_0%,rgba(56,132,204,0)_75%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(0deg,rgba(11,31,51,0.72)_0%,rgba(11,31,51,0)_100%)]" />
-        <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(11,31,51,0.42),rgba(11,31,51,0))]" />
+        {/* Navy grade + readability scrims — lighter, less blue; darkening focused where the text sits */}
+        <div className="absolute inset-0 bg-ink/18" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(11,31,51,0.6)_0%,rgba(11,31,51,0.2)_50%,rgba(11,31,51,0)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-3/4 bg-[linear-gradient(0deg,rgba(11,31,51,0.78)_0%,rgba(11,31,51,0.18)_44%,rgba(11,31,51,0)_100%)]" />
+        <div className="absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgba(11,31,51,0.38),rgba(11,31,51,0))]" />
 
         {/* Heading block — fills the hero, with the inquiry card sitting right after the copy */}
         <Container className="relative z-10 flex flex-1 flex-col justify-end pb-[60px] pt-32">
