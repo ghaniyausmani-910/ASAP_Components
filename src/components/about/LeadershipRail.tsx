@@ -36,10 +36,10 @@ type Leader = {
   name: string
   role: string
   bio: string
-  /** DUMMY placeholder portrait — professional studio headshot from
-   *  randomuser.me, standing in for a real team photo. Swap for a real,
-   *  self-hosted image in /public/about before shipping (external URLs won't
-   *  work fully offline; source is only 128px so it may look soft when large). */
+  /** DUMMY placeholder portrait — high-res professional headshot from Unsplash
+   *  (~800×1000), standing in for a real team photo. Swap for a real,
+   *  self-hosted image in /public/about before shipping (external URLs need a
+   *  network connection to render). */
   photo: string
 }
 
@@ -48,31 +48,31 @@ const LEADERS: Leader[] = [
     name: 'Marcus Feld',
     role: 'President & Chief Executive Officer',
     bio: 'Sets the strategy that turns a 10-million-part catalog into a same-day sourcing partner for civil and defense programs.',
-    photo: 'https://randomuser.me/api/portraits/men/32.jpg',
+    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&h=1000&q=80',
   },
   {
     name: 'Elena Vasquez',
     role: 'VP, Global Sourcing & Procurement',
     bio: 'Runs the 5,100-manufacturer supplier network and vendor relationships behind every quote we return.',
-    photo: 'https://randomuser.me/api/portraits/women/44.jpg',
+    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&h=1000&q=80',
   },
   {
     name: 'David Chen',
     role: 'Director, Quality & Compliance',
     bio: 'Owns the AS9120B and ISO 9001:2015 systems that keep every shipment fully traceable and audit-ready.',
-    photo: 'https://randomuser.me/api/portraits/men/75.jpg',
+    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&h=1000&q=80',
   },
   {
     name: 'Priya Nair',
     role: 'Head of AOG Rapid-Response',
     bio: 'Leads the 24/7 desk that gets AOG-critical hardware identified, quoted, and moving in minutes.',
-    photo: 'https://randomuser.me/api/portraits/women/68.jpg',
+    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&h=1000&q=80',
   },
   {
     name: 'James Whitmore',
     role: 'VP, Customer Success',
     bio: 'Makes sure procurement teams stay on schedule from first quote through delivery and reorder.',
-    photo: 'https://randomuser.me/api/portraits/men/51.jpg',
+    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&h=1000&q=80',
   },
 ]
 
@@ -229,7 +229,7 @@ function PlateBackground({ photo, isActive }: { photo: string; isActive: boolean
           e.currentTarget.style.display = 'none'
         }}
         className={cn(
-          'absolute inset-0 -z-10 h-full w-full object-cover object-center',
+          'absolute inset-0 -z-10 h-full w-full object-cover object-top',
           'motion-safe:transition-[transform,filter,opacity] motion-safe:duration-700 motion-safe:[transition-timing-function:cubic-bezier(.22,1,.36,1)]',
           isActive
             ? 'opacity-100 [filter:saturate(1)] motion-safe:scale-105'
