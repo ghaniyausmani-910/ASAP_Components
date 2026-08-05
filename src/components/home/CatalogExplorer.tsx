@@ -152,8 +152,6 @@ export function CatalogExplorer({ columns }: { columns: CatalogColumn[] }) {
             ))}
             {/* Navy scrim for caption legibility. */}
             <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(5,7,13,0)_38%,rgba(5,7,13,0.74)_100%)]" />
-            {/* Accent keyline on the top edge — ties to the card hover language. */}
-            <span className="absolute inset-x-0 top-0 h-0.5 bg-accent" />
             <div className="absolute inset-x-0 bottom-0 p-4">
               <p className="font-mono text-[11px] leading-none text-white/75">{active.code}</p>
               <p className="mt-1.5 font-display text-base font-medium leading-tight text-white [text-wrap:balance]">

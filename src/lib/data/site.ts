@@ -125,15 +125,15 @@ const FSC_SUBTEXT = [
   'Couplings, converters, and speed changers for power transmission.',
 ]
 
-// Gutter-peek shot per FSC rank (index-aligned). Reuses the topical /public/featured
-// photography until real per-item shots land under /public/catalog/preview/.
+// Gutter-peek shot per FSC rank (index-aligned) — topical component photography
+// from /public/Parts, chosen to match each FSC's part family.
 const FSC_IMAGE = [
-  '/featured/components.jpg', // Airframe Structural
-  '/featured/instruments.jpg', // Hydraulic, Vacuum & De-Icing
-  '/featured/windows.jpg', // Misc Aircraft Accessories
-  '/featured/engine.jpg', // Engine Fuel System
-  '/featured/fasteners.jpg', // Engine Electrical
-  '/featured/bearings.jpg', // Torque Converters & Speed Changers
+  '/Parts/shutterstock_2757380735.jpg', // Airframe Structural — bolted structural flange joint
+  '/Parts/shutterstock_2517125055.jpg', // Hydraulic, Vacuum & De-Icing — pump/actuator component
+  '/Parts/shutterstock_2756479961.jpg', // Misc Aircraft Accessories — machined disc/hub set
+  '/Parts/shutterstock_1811145394.jpg', // Engine Fuel System — CNC-turned nozzle part
+  '/Parts/shutterstock_2686697953.jpg', // Engine Electrical — generator rotor / copper armature
+  '/Parts/shutterstock_2744219647.jpg', // Torque Converters & Speed Changers — gearbox drive train
 ]
 
 // FSCs reuse the canonical codes + counts from the catalog data engine.
@@ -152,12 +152,12 @@ const NSN_TREND = [22, 11, 14, 9, 8, 19]
 
 // Top-demanding NSNs, ordered by units sourced this year (rank 01 = highest).
 const NSN_PREVIEWS: CatalogPreviewItem[] = [
-  { nsn: '5310-01-414-2030', name: 'Nut, Self-Locking, Hexagon', subtext: 'Corrosion-resistant hex nut, MS-spec and fully traceable.', metric: '3,410 sourced', image: '/featured/fasteners.jpg' },
-  { nsn: '4730-00-908-9516', name: 'Elbow, Tube', subtext: 'Tube-fitting elbow for fluid and pneumatic line routing.', metric: '1,880 sourced', image: '/featured/components.jpg' },
-  { nsn: '5340-01-560-3234', name: 'Bracket, Mounting', subtext: 'Structural mounting bracket for equipment and system installs.', metric: '1,240 sourced', image: '/featured/bearings.jpg' },
-  { nsn: '5935-01-278-3059', name: 'Connector, Receptacle, Electrical', subtext: 'Receptacle connector for airframe wiring harnesses.', metric: '980 sourced', image: '/featured/instruments.jpg' },
-  { nsn: '1560-01-190-8815', name: 'Panel, Structural, Aircraft', subtext: 'Structural aircraft panel, inspected and quote-ready.', metric: '740 sourced', image: '/featured/windows.jpg' },
-  { nsn: '2915-01-641-6570', name: 'Fuel Nozzle Assembly', subtext: 'Engine fuel nozzle assembly, flow-tested to spec.', metric: '620 sourced', image: '/featured/engine.jpg' },
+  { nsn: '5310-01-414-2030', name: 'Nut, Self-Locking, Hexagon', subtext: 'Corrosion-resistant hex nut, MS-spec and fully traceable.', metric: '3,410 sourced', image: '/Parts/shutterstock_2660442247.jpg' },
+  { nsn: '4730-00-908-9516', name: 'Elbow, Tube', subtext: 'Tube-fitting elbow for fluid and pneumatic line routing.', metric: '1,880 sourced', image: '/Parts/shutterstock_775471702.jpg' },
+  { nsn: '5340-01-560-3234', name: 'Bracket, Mounting', subtext: 'Structural mounting bracket for equipment and system installs.', metric: '1,240 sourced', image: '/Parts/shutterstock_1676702179.jpg' },
+  { nsn: '5935-01-278-3059', name: 'Connector, Receptacle, Electrical', subtext: 'Receptacle connector for airframe wiring harnesses.', metric: '980 sourced', image: '/Parts/shutterstock_2640251741.jpg' },
+  { nsn: '1560-01-190-8815', name: 'Panel, Structural, Aircraft', subtext: 'Structural aircraft panel, inspected and quote-ready.', metric: '740 sourced', image: '/Parts/01.jpg' },
+  { nsn: '2915-01-641-6570', name: 'Fuel Nozzle Assembly', subtext: 'Engine fuel nozzle assembly, flow-tested to spec.', metric: '620 sourced', image: '/Parts/shutterstock_2490827973.jpg' },
 ].map((n, i) => ({
   id: `nsn-${n.nsn}`,
   code: n.nsn,
@@ -173,12 +173,12 @@ const PART_TREND = [27, 16, 9, 12, 21, 6]
 
 // Hot-stock part numbers — all in stock, ordered by recent order velocity.
 const PART_PREVIEWS: CatalogPreviewItem[] = [
-  { pn: '3202975-001', name: 'Actuator Assembly', subtext: 'Actuator assembly on the shelf — ships same day.', metric: 'Ships same day', image: '/featured/engine.jpg' },
-  { pn: 'CBL-DATA-2013', name: 'Data Bus Cable', subtext: 'Data bus cable for avionics interconnect, in stock now.', metric: 'Ships same day', image: '/featured/components.jpg' },
-  { pn: 'EPO-3019', name: 'Bearing, Roller', subtext: 'Precision roller bearing, ready for immediate dispatch.', metric: 'Ships same day', image: '/featured/bearings.jpg' },
-  { pn: '43-4746594-01', name: 'Cabin Window Pane', subtext: 'Cabin window pane, inspected and cleared to ship.', metric: 'Ships same day', image: '/featured/windows.jpg' },
-  { pn: '3234TS1-1', name: 'Temperature Sensor', subtext: 'Temperature sensor, calibrated and quote-ready.', metric: 'Ships same day', image: '/featured/instruments.jpg' },
-  { pn: '652-4001-001', name: 'Fastener, Panel', subtext: 'Panel fastener stocked in volume for quick turnaround.', metric: 'Ships same day', image: '/featured/fasteners.jpg' },
+  { pn: '3202975-001', name: 'Actuator Assembly', subtext: 'Actuator assembly on the shelf — ships same day.', metric: 'Ships same day', image: '/Parts/shutterstock_2517125055.jpg' },
+  { pn: 'CBL-DATA-2013', name: 'Data Bus Cable', subtext: 'Data bus cable for avionics interconnect, in stock now.', metric: 'Ships same day', image: '/Parts/02.jpg' },
+  { pn: 'EPO-3019', name: 'Bearing, Roller', subtext: 'Precision roller bearing, ready for immediate dispatch.', metric: 'Ships same day', image: '/Parts/shutterstock_1676702179.jpg' },
+  { pn: '43-4746594-01', name: 'Cabin Window Pane', subtext: 'Cabin window pane, inspected and cleared to ship.', metric: 'Ships same day', image: '/Parts/shutterstock_2756479961.jpg' },
+  { pn: '3234TS1-1', name: 'Temperature Sensor', subtext: 'Temperature sensor, calibrated and quote-ready.', metric: 'Ships same day', image: '/Parts/shutterstock_2772311775.jpg' },
+  { pn: '652-4001-001', name: 'Fastener, Panel', subtext: 'Panel fastener stocked in volume for quick turnaround.', metric: 'Ships same day', image: '/Parts/shutterstock_2490827973.jpg' },
 ].map((p, i) => ({
   id: `pn-${p.pn}`,
   code: p.pn,
