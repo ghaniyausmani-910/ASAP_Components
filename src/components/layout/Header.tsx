@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Menu, X, ChevronDown, ArrowUpRight, ArrowRight } from 'lucide-react'
 import { CATEGORIES } from '@/lib/data/catalog'
-import { LogoMark } from '@/components/layout/Logo'
+import { Logo } from '@/components/layout/Logo'
 import { SearchBar } from '@/components/ui/SearchBar'
 import { CartButton } from '@/components/cart/CartButton'
 import { cn } from '@/lib/utils'
@@ -47,18 +47,10 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
     >
       {/* Top row */}
       <div className="container-x flex h-16 items-center gap-6 lg:h-[72px]">
-        {/* Logo */}
-        <Link href="/" className="flex shrink-0 items-center gap-2" aria-label="ASAP Components home">
-          <LogoMark className={cn('h-8 w-8 shrink-0', solid ? 'text-accent' : 'text-white')} />
-          <span className="leading-none">
-            <span className={cn('block font-display text-[17px] font-semibold tracking-tight-2 sm:text-[19px]', onDark ? 'text-white' : 'text-ink')}>
-              ASAP <span className={onDark ? 'text-white' : 'text-accent'}>Components</span>
-            </span>
-            <span className={cn('mt-1.5 hidden text-[10px] uppercase tracking-[0.14em] sm:block', onDark ? 'text-white/60' : 'text-tertiary')}>
-              An ASAP Semiconductor Website
-            </span>
-          </span>
-        </Link>
+        {/* Logo — shared canonical component (see Logo.tsx). onDark maps the
+            monochrome mark+wordmark to white over the hero and to ink on the
+            solid white header, identical formation to the footer. */}
+        <Logo onDark={onDark} />
 
         {/* Search + CTAs (desktop, top-right) — search flexes, CTAs stay pinned right */}
         <div className="ml-auto hidden min-w-0 flex-1 items-center gap-4 lg:flex xl:max-w-[46rem]">
