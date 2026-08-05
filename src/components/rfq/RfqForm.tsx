@@ -16,6 +16,13 @@ export interface RfqDefaults {
 export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; defaults?: RfqDefaults }) {
   const [sent, setSent] = useState(false)
   const [ref, setRef] = useState('')
+  const [aog, setAog] = useState(false)
+  const [needBy, setNeedBy] = useState('')
+
+  function toggleAog(checked: boolean) {
+    setAog(checked)
+    if (checked) setNeedBy('Immediately')
+  }
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
@@ -61,50 +68,69 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
 
   return (
     <form onSubmit={submit} className="border border-hairline bg-white">
-      <div className="grid md:grid-cols-2">
-        {/* Part details */}
-        <fieldset className="border-b border-hairline p-6 md:border-b-0 md:border-r">
-          <legend className="float-left mb-4 w-full font-display text-sm font-medium text-navy">Part Details</legend>
-          <div className="clear-both space-y-4">
-            <Field id="pn" label="Mfg Part Number" required defaultValue={defaults?.partNo} />
-            <Field id="mfr" label="Manufacturer" required defaultValue={defaults?.manufacturer} />
-            <Field id="qty" label="Quantity (ea)" required defaultValue={defaults?.qty} />
-            <div>
-              <label htmlFor="need" className="field-label">Need Parts By <span className="text-accent">*</span></label>
-              <Select
-                id="need"
-                required
-                ariaLabel="Need Parts By"
-                options={['Immediately (AOG)', '1–2 weeks', '1 month', 'Flexible']}
-              />
-            </div>
+      {/* Part details */}
+      <fieldset className="border-b border-hairline p-6">
+        <legend className="float-left mb-4 w-full font-display text-sm font-medium text-navy">Part Details</legend>
+        <div className="clear-both grid gap-x-6 gap-y-5 sm:grid-cols-2">
+          <Field id="pn" label="Mfg Part Number" required defaultValue={defaults?.partNo} />
+          <Field id="mfr" label="Manufacturer" required defaultValue={defaults?.manufacturer} />
+          <Field id="qty" label="Quantity (ea)" required defaultValue={defaults?.qty} />
+          <div>
+            <label htmlFor="need" className="field-label">Need Parts By <span className="text-accent">*</span></label>
+            <Select
+              id="need"
+              required
+              ariaLabel="Need Parts By"
+              value={needBy}
+              onChange={setNeedBy}
+              options={['Immediately', '1–2 weeks', '1 month', 'Flexible']}
+            />
           </div>
-        </fieldset>
+          <label htmlFor="aog" className="flex cursor-pointer items-start gap-3 text-sm text-secondary sm:col-span-2">
+            <input
+              id="aog"
+              type="checkbox"
+              checked={aog}
+              onChange={(e) => toggleAog(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-warning)]"
+            />
+            <span>
+              <span className="font-medium text-ink">This is an AOG (Aircraft on Ground) request.</span>{' '}
+              We&rsquo;ll prioritize it and expedite your quote.
+            </span>
+          </label>
+        </div>
+      </fieldset>
 
-        {/* Contact info */}
-        <fieldset className="p-6">
-          <legend className="float-left mb-4 w-full font-display text-sm font-medium text-navy">Contact Information</legend>
-          <div className="clear-both space-y-4">
-            <Field id="name" label="Contact Name" required />
-            <Field id="company" label="Company Name" required />
-            <div>
-              <label htmlFor="ctype" className="field-label">Company Type <span className="text-accent">*</span></label>
-              <Select
-                id="ctype"
-                required
-                ariaLabel="Company Type"
-                options={['Manufacturer', 'Distributor', 'Airline', 'Broker']}
-              />
-            </div>
-            <Field id="phone" label="Phone" type="tel" required defaultValue={defaults?.email ? '' : ''} />
-            <Field id="email" label="Email" type="email" required defaultValue={defaults?.email} />
-            <div>
-              <label htmlFor="comments" className="field-label">Comments</label>
-              <textarea id="comments" rows={2} className="field-input" />
-            </div>
+      {/* Contact info */}
+      <fieldset className="p-6">
+        <legend className="float-left mb-4 w-full font-display text-sm font-medium text-navy">Contact Information</legend>
+        <div className="clear-both grid gap-x-6 gap-y-5 sm:grid-cols-2">
+          <Field id="first" label="First Name" required />
+          <Field id="last" label="Last Name" required />
+          <Field id="company" label="Company Name" required />
+          <div>
+            <label htmlFor="ctype" className="field-label">Company Type <span className="text-accent">*</span></label>
+            <Select
+              id="ctype"
+              required
+              ariaLabel="Company Type"
+              options={['Manufacturer', 'Distributor', 'Airline', 'Broker']}
+            />
           </div>
-        </fieldset>
-      </div>
+          <Field id="phone" label="Phone" type="tel" required />
+          <Field id="email" label="Email" type="email" required defaultValue={defaults?.email} />
+          <div className="sm:col-span-2">
+            <label htmlFor="comments" className="field-label">Comments</label>
+            <textarea
+              id="comments"
+              rows={2}
+              className="field-input"
+              placeholder="Share anything that helps us quote — a target price, acceptable alternates, or preferred condition."
+            />
+          </div>
+        </div>
+      </fieldset>
 
       {/* Consent + submit */}
       <div className="border-t border-hairline p-6">
