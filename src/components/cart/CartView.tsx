@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { CheckCircle2, Clock, ShieldCheck, ShoppingCart, Trash2 } from 'lucide-react'
 import { useCart } from '@/lib/cart/CartContext'
 import { QtyStepper } from '@/components/cart/QtyStepper'
+import { Select } from '@/components/ui/Select'
 import { cn } from '@/lib/utils'
 
 export function CartView() {
@@ -130,25 +131,23 @@ export function CartView() {
           <Field id="cart-company" label="Company Name" required />
           <div>
             <label htmlFor="cart-ctype" className="field-label">Company Type <span className="text-accent">*</span></label>
-            <select id="cart-ctype" required className="field-input">
-              <option value="">Select…</option>
-              <option>Commercial</option>
-              <option>Military / Defense</option>
-              <option>Government</option>
-              <option>MRO / FBO</option>
-            </select>
+            <Select
+              id="cart-ctype"
+              required
+              ariaLabel="Company Type"
+              options={['Manufacturer', 'Distributor', 'Airline', 'Broker']}
+            />
           </div>
           <Field id="cart-phone" label="Phone" type="tel" required />
           <Field id="cart-email" label="Email" type="email" required />
           <div>
             <label htmlFor="cart-need" className="field-label">Need Parts By <span className="text-accent">*</span></label>
-            <select id="cart-need" required className="field-input">
-              <option value="">Select…</option>
-              <option>Immediately (AOG)</option>
-              <option>1–2 weeks</option>
-              <option>1 month</option>
-              <option>Flexible</option>
-            </select>
+            <Select
+              id="cart-need"
+              required
+              ariaLabel="Need Parts By"
+              options={['Immediately (AOG)', '1–2 weeks', '1 month', 'Flexible']}
+            />
           </div>
           <div>
             <label htmlFor="cart-comments" className="field-label">Comments</label>

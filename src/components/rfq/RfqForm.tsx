@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { CheckCircle2, Clock, ShieldCheck } from 'lucide-react'
+import { Select } from '@/components/ui/Select'
 
 type Variant = 'full' | 'compact'
 
@@ -70,15 +71,13 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
             <Field id="qty" label="Quantity (ea)" required defaultValue={defaults?.qty} />
             <div>
               <label htmlFor="need" className="field-label">Need Parts By <span className="text-accent">*</span></label>
-              <select id="need" required className="field-input">
-                <option value="">Select…</option>
-                <option>Immediately (AOG)</option>
-                <option>1–2 weeks</option>
-                <option>1 month</option>
-                <option>Flexible</option>
-              </select>
+              <Select
+                id="need"
+                required
+                ariaLabel="Need Parts By"
+                options={['Immediately (AOG)', '1–2 weeks', '1 month', 'Flexible']}
+              />
             </div>
-            <Field id="target" label="Target Price (ea) USD" />
           </div>
         </fieldset>
 
@@ -90,13 +89,12 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
             <Field id="company" label="Company Name" required />
             <div>
               <label htmlFor="ctype" className="field-label">Company Type <span className="text-accent">*</span></label>
-              <select id="ctype" required className="field-input">
-                <option value="">Select…</option>
-                <option>Commercial</option>
-                <option>Military / Defense</option>
-                <option>Government</option>
-                <option>MRO / FBO</option>
-              </select>
+              <Select
+                id="ctype"
+                required
+                ariaLabel="Company Type"
+                options={['Manufacturer', 'Distributor', 'Airline', 'Broker']}
+              />
             </div>
             <Field id="phone" label="Phone" type="tel" required defaultValue={defaults?.email ? '' : ''} />
             <Field id="email" label="Email" type="email" required defaultValue={defaults?.email} />

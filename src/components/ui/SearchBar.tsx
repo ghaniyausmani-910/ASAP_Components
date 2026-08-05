@@ -6,6 +6,7 @@ import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
+import { Select } from '@/components/ui/Select'
 
 const TYPES = ['Part Number', 'NSN', 'CAGE Code', 'Manufacturer']
 
@@ -85,18 +86,16 @@ export function SearchBar({
           className={cn('min-w-0 flex-1 bg-transparent px-4 font-body text-ink outline-none placeholder:text-tertiary', text)}
         />
         {showType && (
-          <div className="relative hidden sm:flex items-center border-l border-inputline">
-            <select
+          <div className="hidden sm:flex items-center border-l border-inputline">
+            <Select
+              variant="bare"
+              size={size}
               value={type}
-              onChange={(e) => setType(e.target.value)}
-              aria-label="Search type"
-              className={cn('h-full appearance-none bg-transparent pl-4 pr-9 font-body text-secondary outline-none cursor-pointer', size === 'lg' ? 'text-body' : 'text-sm')}
-            >
-              {TYPES.map((t) => (
-                <option key={t}>{t}</option>
-              ))}
-            </select>
-            <span className="pointer-events-none absolute right-3 text-tertiary">▾</span>
+              onChange={setType}
+              options={TYPES}
+              ariaLabel="Search type"
+              className="h-full"
+            />
           </div>
         )}
         <button
