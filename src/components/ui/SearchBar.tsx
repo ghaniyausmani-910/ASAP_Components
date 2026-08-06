@@ -67,7 +67,8 @@ export function SearchBar({
   const text = size === 'lg' ? 'text-body-lg' : 'text-body'
 
   return (
-    <div className={cn('relative', className)}>
+    <div className={cn('flex items-stretch gap-2', className)}>
+      <div className="relative min-w-0 flex-1">
       <form
         onSubmit={submit}
         role="search"
@@ -98,16 +99,6 @@ export function SearchBar({
           autoComplete="off"
           className={cn('min-w-0 flex-1 bg-transparent px-4 font-body text-ink outline-none placeholder:text-tertiary', text)}
         />
-        {shortcut && (
-          // The input interior is always white (onDark only affects the field
-          // stroke), so the hint keeps the dark-on-white treatment either way.
-          <kbd
-            aria-hidden="true"
-            className="mr-1 hidden shrink-0 items-center gap-0.5 self-center border border-inputline px-1.5 py-0.5 font-mono text-xs text-tertiary lg:flex"
-          >
-            {isMac ? '⌘' : 'Ctrl'} K
-          </kbd>
-        )}
         {showType && (
           <div className="hidden sm:flex items-center border-l border-inputline">
             <Select
@@ -142,6 +133,22 @@ export function SearchBar({
           onPick={handleSelect}
           onHover={ac.setActive}
         />
+      )}
+      </div>
+
+      {shortcut && (
+        // Standalone key-cap sitting beside the field (outside it). The same
+        // ⌘K / Ctrl+K shortcut opens the global command palette.
+        <kbd
+          aria-hidden="true"
+          className={cn(
+            'hidden shrink-0 items-center gap-0.5 self-center border px-2 font-mono text-xs lg:flex',
+            h,
+            onDark ? 'border-white/30 text-white/70' : 'border-inputline text-tertiary',
+          )}
+        >
+          {isMac ? '⌘' : 'Ctrl'} K
+        </kbd>
       )}
     </div>
   )
