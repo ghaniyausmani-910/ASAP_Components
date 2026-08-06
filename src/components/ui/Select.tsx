@@ -140,7 +140,7 @@ export function Select({
         className={cn(
           'flex w-full items-center justify-between gap-2 text-left',
           bare
-            ? cn('h-full cursor-pointer bg-transparent pl-4 pr-9 font-body text-secondary outline-none', triggerText)
+            ? cn('h-full cursor-pointer bg-transparent pl-3 pr-3 font-body text-secondary outline-none', triggerText)
             : cn('field-input !pr-3', triggerText, !selected && 'text-tertiary'),
         )}
       >
@@ -158,8 +158,7 @@ export function Select({
           role="listbox"
           aria-label={ariaLabel}
           className={cn(
-            'absolute top-full z-30 mt-1 max-h-72 overflow-auto border border-inputline bg-white py-1 shadow-hover animate-fade',
-            bare ? 'right-0 min-w-[12rem]' : 'left-0 right-0',
+            'absolute top-full left-0 right-0 z-30 mt-1 max-h-72 overflow-auto border border-inputline bg-white py-1 shadow-hover animate-fade',
           )}
         >
           {options.map((o, i) => {

@@ -115,8 +115,8 @@ export function SearchBar({
         <button
           type="submit"
           className={cn(
-            'flex items-center gap-2 whitespace-nowrap bg-accent px-5 font-body font-semibold text-white transition-colors hover:bg-accent-hover',
-            size === 'lg' ? 'text-body px-7' : 'text-sm',
+            'flex items-center gap-2 whitespace-nowrap bg-accent px-3.5 font-body font-semibold text-white transition-colors hover:bg-accent-hover',
+            size === 'lg' ? 'text-body px-6' : 'text-sm',
           )}
         >
           <Search size={size === 'lg' ? 20 : 16} strokeWidth={2.5} />
