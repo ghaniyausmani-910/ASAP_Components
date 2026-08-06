@@ -50,7 +50,7 @@ const PROOF_PILLARS: ProofPillar[] = [
       src: '/about/warehouse-aisle.jpg',
       alt: 'Rows of labelled parts bins on warehouse racking, spanning the full catalog',
     },
-    cta: { label: 'View Manufacturers', href: '/catalog/aviation/manufacturers' },
+    cta: { label: 'Request a Quote', href: '/instant-rfq' },
   },
   {
     id: 'speed',
@@ -61,7 +61,7 @@ const PROOF_PILLARS: ProofPillar[] = [
       src: '/partners.jpg',
       alt: 'Palletized freight being loaded into the cargo hold of a wide-body aircraft',
     },
-    cta: { label: 'Request a Quote', href: '/instant-rfq' },
+    cta: { label: 'Request AOG', href: '/instant-rfq' },
   },
   {
     id: 'trust',

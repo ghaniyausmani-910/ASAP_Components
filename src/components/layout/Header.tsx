@@ -55,7 +55,10 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
         {/* Search + CTAs (desktop, top-right) — search flexes, CTAs stay pinned right */}
         <div className="ml-auto hidden min-w-0 flex-1 items-center gap-4 lg:flex xl:max-w-[46rem]">
           <div className="min-w-0 flex-1">
-            <SearchBar size="sm" />
+            {/* Over the hero the header is dark → the search bar's active stroke
+                flips to white (brand-on-dark); on the solid/scrolled header it
+                stays the navy brand stroke. */}
+            <SearchBar size="sm" onDark={onDark} shortcut />
           </div>
           <CartButton onDark={onDark} />
           <Link href="/instant-rfq" className="btn btn-primary group shrink-0">

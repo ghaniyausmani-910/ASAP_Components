@@ -1,14 +1,22 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useId, useState, type ReactNode } from 'react'
+import { useEffect, useId, useState, type ReactNode } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 
 /**
+ * Real catalog examples the part-number placeholder types through, deliberately
+ * spanning formats — an MS spec, a NAS, a short AN, and a raw NSN — so the
+ * animation teaches that the field accepts all of them. Real strings so a
+ * curious user who types one verbatim actually resolves in the catalog.
+ */
+const PART_PLACEHOLDERS = ['MS27039-1-08', 'NAS1352-3-8', 'AN960-10', '5306-01-234-7788'] as const
+
+/**
  * Hero inquiry card — a frosted-glass RFQ panel that sits directly beneath the
- * hero copy. A translucent deep-navy surface (ink at 50%) over a heavy backdrop
+ * hero copy. A translucent deep-navy surface (ink at 42%) over a heavy backdrop
  * blur, with a white hairline border, sharp square edges, small muted labels
  * stacked over bold white values, thin vertical dividers between fields, and a
  * solid white submit on the right.
@@ -16,7 +24,7 @@ import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
  * The ink tint is a deliberate contrast floor: because the panel floats over
  * cinematic photography whose brightness varies, too light a tint would let bright
  * regions bleed through and drop the on-dark text below WCAG AA. The heavy backdrop
- * blur lets the tint sit lower (50%) while keeping a dark enough backing for white
+ * blur lets the tint sit lower (42%) while keeping a dark enough backing for white
  * text everywhere the card can land.
  *
  * Three fields (Part # / NSN, Quantity, Email) hand off to the full Instant
@@ -25,7 +33,15 @@ import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 export function HeroInquiryBar() {
   const router = useRouter()
   const [f, setF] = useState({ partNo: '', qty: '', email: '' })
+  const [partFocused, setPartFocused] = useState(false)
   const partListId = useId()
+
+  // Typewriter runs only while the part field is untouched — it retreats the
+  // moment the user focuses or has typed something, so it never fights a cursor.
+  const partPh = useTypewriterPlaceholder(PART_PLACEHOLDERS, {
+    enabled: !partFocused && f.partNo === '',
+    fallback: PART_PLACEHOLDERS[0],
+  })
 
   const partAc = useAutocomplete({
     query: f.partNo,
@@ -46,7 +62,7 @@ export function HeroInquiryBar() {
     <form
       onSubmit={submit}
       aria-label="Instant RFQ quick quote"
-      className="border border-white/15 bg-ink/[0.50] p-4 shadow-[0_24px_60px_-18px_rgba(11,31,51,0.45)] backdrop-blur-[64px] sm:p-5"
+      className="border border-white/15 bg-ink/[0.55] p-4 shadow-[0_24px_60px_-18px_rgba(11,31,51,0.45)] backdrop-blur-[64px] sm:p-5"
     >
       <div className="grid grid-cols-1 items-stretch gap-2 sm:grid-cols-2 md:grid-cols-[1.6fr_0.9fr_1.5fr_auto] md:gap-0 md:divide-x md:divide-white/10">
         <HeroField
@@ -58,10 +74,16 @@ export function HeroInquiryBar() {
             setF({ ...f, partNo: v })
             partAc.setOpen(true)
           }}
-          onFocus={() => partAc.setOpen(true)}
-          onBlur={() => partAc.setOpen(false)}
+          onFocus={() => {
+            setPartFocused(true)
+            partAc.setOpen(true)
+          }}
+          onBlur={() => {
+            setPartFocused(false)
+            partAc.setOpen(false)
+          }}
           onKeyDown={partAc.onKeyDown}
-          placeholder="MS27039-1-08"
+          placeholder={partPh.placeholder}
           autoComplete="off"
           mono
           combobox={{
@@ -258,4 +280,91 @@ function QtyCounter({
       </button>
     </div>
   )
+}
+
+const TYPE_MS = 62 // per-character typing cadence
+const HOLD_MS = 1600 // dwell on the completed string
+const ERASE_MS = 34 // per-character backspace cadence (quicker than typing)
+const GAP_MS = 220 // blank beat after erasing, before the next example types in
+
+/** Tracks the user's `prefers-reduced-motion` setting, reacting to live changes. */
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sync = () => setReduced(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+  return reduced
+}
+
+/**
+ * Drives a field's placeholder as a looping typewriter: types each example one
+ * character at a time, holds, then backspaces it away character by character
+ * before typing the next — cycling forever so the field keeps drawing the eye
+ * until the user engages.
+ *
+ * It stands down completely in two cases. Under `prefers-reduced-motion` the
+ * placeholder is a single static example with no motion at all. While `enabled`
+ * is false (the field is focused, or already holds a value) the placeholder is
+ * blank, so the animation never competes with a live cursor; it resumes cycling
+ * if the user leaves an empty field.
+ */
+function useTypewriterPlaceholder(
+  examples: readonly string[],
+  { enabled, fallback }: { enabled: boolean; fallback: string },
+) {
+  const reduced = usePrefersReducedMotion()
+  const [placeholder, setPlaceholder] = useState(fallback)
+
+  useEffect(() => {
+    if (reduced) {
+      setPlaceholder(fallback)
+      return
+    }
+    if (!enabled) {
+      setPlaceholder('')
+      return
+    }
+
+    let cancelled = false
+    let timer: ReturnType<typeof setTimeout>
+    let word = 0
+    let char = 0
+
+    const schedule = (fn: () => void, ms: number) => {
+      timer = setTimeout(() => {
+        if (!cancelled) fn()
+      }, ms)
+    }
+
+    const type = () => {
+      const current = examples[word]
+      char += 1
+      setPlaceholder(current.slice(0, char))
+      schedule(char < current.length ? type : erase, char < current.length ? TYPE_MS : HOLD_MS)
+    }
+    const erase = () => {
+      char -= 1
+      setPlaceholder(examples[word].slice(0, Math.max(0, char)))
+      if (char > 0) {
+        schedule(erase, ERASE_MS)
+      } else {
+        word = (word + 1) % examples.length
+        schedule(type, GAP_MS)
+      }
+    }
+
+    setPlaceholder('')
+    schedule(type, GAP_MS)
+
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [enabled, reduced, fallback, examples])
+
+  return { placeholder }
 }

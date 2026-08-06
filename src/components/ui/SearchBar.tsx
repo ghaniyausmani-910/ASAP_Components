@@ -1,12 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 import { Select } from '@/components/ui/Select'
+import { searchTargetHref } from '@/lib/data/suggestions'
 
 const TYPES = ['Part Number', 'NSN', 'CAGE Code', 'Manufacturer']
 
@@ -14,22 +15,34 @@ export function SearchBar({
   size = 'md',
   onDark = false,
   showType = true,
+  shortcut = false,
   className,
 }: {
   size?: 'sm' | 'md' | 'lg'
   onDark?: boolean
   showType?: boolean
+  /** Show a ⌘K / Ctrl+K hint — the same shortcut opens the global command palette. */
+  shortcut?: boolean
   className?: string
 }) {
   const router = useRouter()
   const [q, setQ] = useState('')
   const [type, setType] = useState(TYPES[0])
   const listId = useId()
+  // Platform-aware modifier label; defaults to ⌘ (matches server render) and
+  // corrects on non-mac after mount, so there's no hydration mismatch.
+  const [isMac, setIsMac] = useState(true)
+  useEffect(() => {
+    setIsMac(/mac|iphone|ipad|ipod/i.test(navigator.platform || navigator.userAgent))
+  }, [])
 
   function go(value: string, searchType: string) {
-    const v = value.trim()
-    if (!v) return
-    router.push(`/search?q=${encodeURIComponent(v)}&type=${encodeURIComponent(searchType)}`)
+    // A query with no genuine catalog match dead-ends on the results page (which
+    // fabricates a row for anything), so `searchTargetHref` routes it straight to
+    // a pre-filled RFQ instead — keeping /search out of history so Back doesn't
+    // loop. Shared with the command palette so both agree on the destination.
+    const href = searchTargetHref(value, searchType)
+    if (href) router.push(href)
   }
 
   function handleSelect(s: { value: string; type: string; href?: string }) {
@@ -54,14 +67,15 @@ export function SearchBar({
   const text = size === 'lg' ? 'text-body-lg' : 'text-body'
 
   return (
-    <div className={cn('relative', className)}>
+    <div className={cn('flex items-stretch gap-2', className)}>
+      <div className="relative min-w-0 flex-1">
       <form
         onSubmit={submit}
         role="search"
         aria-label="Search parts"
         className={cn(
-          'flex items-stretch bg-white border',
-          onDark ? 'border-transparent shadow-hover' : 'border-inputline',
+          'flex items-stretch bg-white',
+          onDark ? 'field-shell-dark' : 'field-shell',
           h,
         )}
       >
@@ -119,6 +133,22 @@ export function SearchBar({
           onPick={handleSelect}
           onHover={ac.setActive}
         />
+      )}
+      </div>
+
+      {shortcut && (
+        // Standalone key-cap sitting beside the field (outside it). The same
+        // ⌘K / Ctrl+K shortcut opens the global command palette.
+        <kbd
+          aria-hidden="true"
+          className={cn(
+            'hidden shrink-0 items-center gap-0.5 self-center border px-2 font-mono text-xs lg:flex',
+            h,
+            onDark ? 'border-white/30 text-white/70' : 'border-inputline text-tertiary',
+          )}
+        >
+          {isMac ? '⌘' : 'Ctrl'} K
+        </kbd>
       )}
     </div>
   )

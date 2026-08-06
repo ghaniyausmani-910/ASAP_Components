@@ -54,6 +54,23 @@ export const CATALOG_PARTS: CatalogPart[] = [
   { partNo: 'LM7805CT', manufacturer: 'Winbond Electronics', category: 'electronic', description: 'Regulator, Voltage, +5V', nsn: '5961-01-078-0500', niin: '01-078-0500', cageCode: '78051' },
 ]
 
+/** Normalize a part number for tolerant matching (drop case + punctuation). */
+const normPartNo = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+
+/**
+ * Resolve a raw part number typed into the cart's line-item field to its
+ * canonical part, if one exists. Used to auto-fill the item name (and offer a
+ * manufacturer) for parts the user types out in full without picking an
+ * autocomplete suggestion. Matches case-/punctuation-insensitively so
+ * `d38999/26wb35pn` resolves the same as `D38999/26WB35PN`. Returns undefined
+ * for anything not in the canonical table — the caller must NOT fabricate a name.
+ */
+export function lookupPartByNumber(partNo: string): CatalogPart | undefined {
+  const q = normPartNo(partNo)
+  if (!q) return undefined
+  return CATALOG_PARTS.find((p) => normPartNo(p.partNo) === q)
+}
+
 /** Look up a canonical part by the segments in a part-detail URL. */
 export function findCatalogPart(
   category: string,

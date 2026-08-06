@@ -87,7 +87,7 @@ function poolFor(type: string): PoolEntry[] {
   }
 }
 
-const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
+export const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
 
 /**
  * Rank suggestions for `query` within the index slice named by `type`.
@@ -116,4 +116,31 @@ export function searchSuggestions(query: string, type: string, limit = 6): Sugge
     .sort((a, b) => a.score - b.score || a.s.value.localeCompare(b.s.value))
     .slice(0, limit)
     .map((x) => ({ value: x.s.value, hint: x.s.hint, mfr: x.s.mfr, type: kind, href: x.s.href }))
+}
+
+/**
+ * True when `query` genuinely matches catalog inventory (part number / NSN /
+ * CAGE / manufacturer). Shared "do we have this?" test — reuses the same scorer
+ * that powers autocomplete so the search bar and the /search route agree on what
+ * counts as a match. A miss routes the user into a pre-filled RFQ instead.
+ */
+export function hasCatalogMatch(query: string, type?: string): boolean {
+  return searchSuggestions(query, type ?? 'Part Number', 1).length > 0
+}
+
+/**
+ * Where a free-text query submitted from a search field should navigate.
+ * A genuine catalog match goes to the results page; a miss dead-ends there
+ * (the results page fabricates a row for anything), so it routes straight into
+ * a pre-filled RFQ instead. Shared by the header search bar and the command
+ * palette so both agree — the `/search` route mirrors this via `hasCatalogMatch`.
+ * Returns `null` for an empty query (caller should no-op).
+ */
+export function searchTargetHref(query: string, type: string): string | null {
+  const v = query.trim()
+  if (!v) return null
+  if (!hasCatalogMatch(v, type)) {
+    return `/rfq/search?partno=${encodeURIComponent(v)}`
+  }
+  return `/search?q=${encodeURIComponent(v)}&type=${encodeURIComponent(type)}`
 }

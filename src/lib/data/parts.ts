@@ -1,6 +1,6 @@
 import type { Part, DirectoryKind } from '@/lib/types'
 import { seededRand, slugify, pick } from '@/lib/utils'
-import { findCatalogPart } from './catalog-parts'
+import { findCatalogPart, lookupPartByNumber } from './catalog-parts'
 
 // ── Manufacturers (aerospace / defense / electronic) ────────────
 export const MANUFACTURERS: string[] = [
@@ -209,6 +209,19 @@ export function findPart(category: string, manufacturerSlug: string, partNo: str
     cageCode: (Math.floor(rand() * 90000) + 10000).toString(36).toUpperCase().slice(0, 5),
     qty: 'Avl',
   }
+}
+
+/**
+ * Item name for a part number typed into the cart's line-item field. Prefers
+ * the canonical table (a real, curated description) and otherwise falls back to
+ * the same deterministic name the /search result page would show for that
+ * query — so the cart never leaves the item name blank and stays consistent
+ * with the rest of the site. Empty query → empty string (no name to show yet).
+ */
+export function describePartNo(partNo: string): string {
+  const q = partNo.trim()
+  if (!q) return ''
+  return lookupPartByNumber(q)?.description ?? searchResult(q).part.description ?? ''
 }
 
 // ── Global search — single exact-match result ───────────────────

@@ -43,7 +43,8 @@ export function QtyStepper({
     size === 'md' ? 'h-9 w-9' : 'h-8 w-8',
   )
   const input = cn(
-    'min-w-0 border-y border-inputline bg-white text-center font-mono text-ink outline-none focus:border-accent',
+    'min-w-0 border-y border-inputline bg-white text-center font-mono text-ink outline-none transition-[border-color,box-shadow] duration-200',
+    'focus:relative focus:z-10 focus:border-accent focus:shadow-[0_0_0_3px_var(--color-accent-100)]',
     size === 'md' ? 'h-9 w-14 text-sm' : 'h-8 w-12 text-xs',
   )
 

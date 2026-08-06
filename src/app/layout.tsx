@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/Footer'
 import { CookieBanner } from '@/components/layout/CookieBanner'
 import { ChatWidget } from '@/components/layout/ChatWidget'
 import { CartProvider } from '@/lib/cart/CartContext'
+import { SearchCommandProvider } from '@/lib/search/SearchCommandContext'
 
 const sora = Sora({
   subsets: ['latin'],
@@ -47,11 +48,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${sora.variable} ${inter.variable} ${plexMono.variable} ${archivo.variable}`}>
       <body>
         <CartProvider>
-          <SiteHeader />
-          <main>{children}</main>
-          <Footer />
-          <CookieBanner />
-          <ChatWidget />
+          <SearchCommandProvider>
+            <SiteHeader />
+            <main>{children}</main>
+            <Footer />
+            <CookieBanner />
+            <ChatWidget />
+          </SearchCommandProvider>
         </CartProvider>
       </body>
     </html>
