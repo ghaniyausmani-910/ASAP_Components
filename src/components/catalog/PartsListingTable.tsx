@@ -42,7 +42,7 @@ export function PartsListingTable({
     <div>
       {/* Filter bar */}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center border border-inputline">
+        <div className="field-shell flex items-center">
           <Search size={16} className="ml-3 text-tertiary" />
           <input
             value={q}

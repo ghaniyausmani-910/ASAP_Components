@@ -45,7 +45,7 @@ export function DirectoryIndex({
     <div>
       {/* Search + range pills */}
       <div className="mb-6 flex flex-col gap-4">
-        <div className="flex items-center border border-inputline bg-white">
+        <div className="field-shell flex items-center bg-white">
           <Search size={18} className="ml-3 text-tertiary" />
           <input
             value={q}

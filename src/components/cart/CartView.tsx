@@ -1,20 +1,65 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
-import { CheckCircle2, Clock, ShieldCheck, ShoppingCart, Trash2 } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { CheckCircle2, Plus, ShoppingCart, Trash2 } from 'lucide-react'
 import { useCart } from '@/lib/cart/CartContext'
 import { QtyStepper } from '@/components/cart/QtyStepper'
+import { DraftLineRow, emptyDraft, isDraftValid, type DraftLine } from '@/components/cart/DraftLineRow'
 import { Select } from '@/components/ui/Select'
 import { cn } from '@/lib/utils'
 
 export function CartView() {
-  const { lines, totalCount, setQuantity, removeItem, clear } = useCart()
+  const { lines, totalCount, keyFor, getLine, addItem, setQuantity, removeItem, clear } = useCart()
   const [sent, setSent] = useState(false)
   const [ref, setRef] = useState('')
 
+  // In-place "Add Line Item" entry. The draft is local UI state — never a real
+  // CartLine until committed — so a half-typed row never hits localStorage.
+  const [draft, setDraft] = useState<DraftLine | null>(null)
+  const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map())
+  const [flashKey, setFlashKey] = useState<string | null>(null)
+
+  function flashRow(key: string) {
+    setFlashKey(key)
+    const el = rowRefs.current.get(key)
+    if (el) {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' })
+    }
+    window.setTimeout(() => setFlashKey((k) => (k === key ? null : k)), 1300)
+  }
+
+  /** Fold a valid draft into the cart: merge into an existing line, else add. */
+  function commitDraft(d: DraftLine) {
+    if (!isDraftValid(d)) return
+    const partNo = d.partNo.trim()
+    const manufacturer = d.manufacturer.trim()
+    const existing = getLine(partNo, manufacturer)
+    if (existing) {
+      setQuantity(partNo, manufacturer, existing.quantity + d.quantity)
+      flashRow(keyFor(partNo, manufacturer))
+    } else {
+      addItem({ partNo, manufacturer, description: d.description || undefined, quantity: d.quantity })
+    }
+  }
+
+  // Opens the first draft, or — when a valid draft is already open — commits it
+  // and opens a fresh one (one editable draft at a time).
+  function handleAddLineItem() {
+    if (draft) {
+      if (!isDraftValid(draft)) return
+      commitDraft(draft)
+      setDraft(emptyDraft())
+    } else {
+      setDraft(emptyDraft())
+    }
+  }
+
   function submit(e: React.FormEvent) {
     e.preventDefault()
+    if (draft && isDraftValid(draft)) commitDraft(draft)
+    setDraft(null)
     const id = 'ASAP-' + Math.floor(100000 + Math.random() * 899999)
     setRef(id)
     setSent(true)
@@ -44,7 +89,9 @@ export function CartView() {
   }
 
   // ── Empty state ───────────────────────────────────────────────
-  if (lines.length === 0) {
+  // Skipped once a draft is open so the first typed part flips straight to the
+  // table view (a memory-only RFQ needs no catalog visit).
+  if (lines.length === 0 && !draft) {
     return (
       <>
         <PageHeader />
@@ -52,10 +99,14 @@ export function CartView() {
         <ShoppingCart size={48} className="mx-auto text-tertiary" />
         <h2 className="mt-4 font-display text-h4 font-medium">Your cart is empty</h2>
         <p className="mx-auto mt-2 max-w-md text-secondary">
-          Add parts from any search result or catalog listing to build a single quote request for everything you need.
+          Add parts from any search result or catalog listing — or, if you already know the part number, add a line
+          item here to build your quote request without searching.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link href="/catalog/aviation/part-types" className="btn btn-primary">Browse catalog</Link>
+          <button type="button" onClick={handleAddLineItem} className="btn btn-tertiary">
+            <Plus size={16} /> Add Line Item
+          </button>
         </div>
         </div>
       </>
@@ -73,9 +124,11 @@ export function CartView() {
           <h2 className="font-display text-h4 font-medium">
             {lines.length} {lines.length === 1 ? 'part' : 'parts'} · {totalCount} total qty
           </h2>
-          <button onClick={clear} className="text-sm text-tertiary underline underline-offset-2 hover:text-accent">
-            Clear cart
-          </button>
+          {lines.length > 0 && (
+            <button onClick={clear} className="text-sm text-tertiary underline underline-offset-2 hover:text-accent">
+              Clear cart
+            </button>
+          )}
         </div>
 
         <div className="mt-4 overflow-x-auto border border-hairline">
@@ -90,33 +143,71 @@ export function CartView() {
               </tr>
             </thead>
             <tbody>
-              {lines.map((l) => (
-                <tr key={`${l.manufacturer}-${l.partNo}`} className="border-t border-hairline hover:bg-surface">
-                  <td className="px-4 py-3 font-mono text-navy">{l.partNo}</td>
-                  <td className="px-4 py-3 text-secondary">{l.manufacturer}</td>
-                  <td className="px-4 py-3 text-secondary">{l.description ?? '—'}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-center">
-                      <QtyStepper
-                        size="md"
-                        quantity={l.quantity}
-                        onChange={(n) => setQuantity(l.partNo, l.manufacturer, n)}
-                        onDecrementBelowOne={() => removeItem(l.partNo, l.manufacturer)}
-                      />
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <button
-                      onClick={() => removeItem(l.partNo, l.manufacturer)}
-                      aria-label={`Remove ${l.partNo}`}
-                      className="inline-flex h-8 w-8 items-center justify-center text-tertiary transition-colors hover:text-accent"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {lines.map((l) => {
+                const k = keyFor(l.partNo, l.manufacturer)
+                return (
+                  <tr
+                    key={k}
+                    ref={(el) => {
+                      if (el) rowRefs.current.set(k, el)
+                      else rowRefs.current.delete(k)
+                    }}
+                    className={cn('border-t border-hairline hover:bg-surface', flashKey === k && 'row-flash')}
+                  >
+                    <td className="px-4 py-3 font-mono text-navy">{l.partNo}</td>
+                    <td className="px-4 py-3 text-secondary">{l.manufacturer}</td>
+                    <td className="px-4 py-3 text-secondary">{l.description ?? '—'}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-center">
+                        <QtyStepper
+                          size="md"
+                          quantity={l.quantity}
+                          onChange={(n) => setQuantity(l.partNo, l.manufacturer, n)}
+                          onDecrementBelowOne={() => removeItem(l.partNo, l.manufacturer)}
+                        />
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <button
+                        onClick={() => removeItem(l.partNo, l.manufacturer)}
+                        aria-label={`Remove ${l.partNo}`}
+                        className="inline-flex h-8 w-8 items-center justify-center text-tertiary transition-colors hover:text-accent"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
+
+              {draft && (
+                <DraftLineRow
+                  draft={draft}
+                  onChange={setDraft}
+                  onCommit={() => {
+                    commitDraft(draft)
+                    setDraft(null)
+                  }}
+                  onDiscard={() => setDraft(null)}
+                />
+              )}
             </tbody>
+
+            <tfoot>
+              <tr className="border-t border-hairline">
+                <td colSpan={5} className="p-3">
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={handleAddLineItem}
+                    disabled={draft !== null && !isDraftValid(draft)}
+                    className="btn btn-tertiary w-full justify-center"
+                  >
+                    <Plus size={16} /> Add Line Item
+                  </button>
+                </td>
+              </tr>
+            </tfoot>
           </table>
         </div>
       </div>
@@ -130,10 +221,9 @@ export function CartView() {
           <Field id="cart-name" label="Contact Name" required />
           <Field id="cart-company" label="Company Name" required />
           <div>
-            <label htmlFor="cart-ctype" className="field-label">Company Type <span className="text-accent">*</span></label>
+            <label htmlFor="cart-ctype" className="field-label">Company Type</label>
             <Select
               id="cart-ctype"
-              required
               ariaLabel="Company Type"
               options={['Manufacturer', 'Distributor', 'Airline', 'Broker']}
             />
@@ -161,10 +251,6 @@ export function CartView() {
             </span>
           </label>
           <button type="submit" className="btn btn-primary w-full justify-center">Submit RFQ</button>
-          <div className="space-y-1.5 pt-1">
-            <span className="flex items-center gap-2 text-xs text-tertiary"><Clock size={14} className="text-accent" /> Quotes back within 15 minutes</span>
-            <span className="flex items-center gap-2 text-xs text-tertiary"><ShieldCheck size={14} className="text-accent" /> We never share your information</span>
-          </div>
         </div>
       </form>
     </div>

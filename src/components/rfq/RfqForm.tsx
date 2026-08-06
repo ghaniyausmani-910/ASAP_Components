@@ -110,10 +110,9 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
           <Field id="last" label="Last Name" required />
           <Field id="company" label="Company Name" required />
           <div>
-            <label htmlFor="ctype" className="field-label">Company Type <span className="text-accent">*</span></label>
+            <label htmlFor="ctype" className="field-label">Company Type</label>
             <Select
               id="ctype"
-              required
               ariaLabel="Company Type"
               options={['Manufacturer', 'Distributor', 'Airline', 'Broker']}
             />

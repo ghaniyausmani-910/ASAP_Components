@@ -5,7 +5,7 @@ import { BLOG_POSTS, BLOG_CATEGORIES } from '@/lib/data/blog'
 export function BlogSidebar() {
   return (
     <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
-      <form className="flex items-center border border-inputline" role="search">
+      <form className="field-shell flex items-center" role="search">
         <input className="min-w-0 flex-1 px-3 py-2.5 text-sm outline-none" placeholder="Search the blog…" aria-label="Search blog" />
         <button className="bg-accent p-2.5 text-white" aria-label="Search"><Search size={16} /></button>
       </form>

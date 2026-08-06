@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { ArrowRight } from 'lucide-react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container } from '@/components/ui/primitives'
@@ -7,6 +8,7 @@ import { SearchBar } from '@/components/ui/SearchBar'
 import { SearchResults } from '@/components/catalog/SearchResults'
 import { Certifications } from '@/components/modules/Certifications'
 import { searchResult } from '@/lib/data/parts'
+import { hasCatalogMatch } from '@/lib/data/suggestions'
 
 export const metadata: Metadata = {
   title: 'Search Results',
@@ -20,6 +22,13 @@ export default function SearchPage({
 }) {
   const q = searchParams.q?.trim()
   const type = searchParams.type
+
+  // Direct / shared link to a query we don't stock: funnel to a pre-filled RFQ,
+  // mirroring what the search bar does client-side. (Bar submits normally never
+  // reach here for a no-match.)
+  if (q && !hasCatalogMatch(q, type)) {
+    redirect(`/rfq/search?partno=${encodeURIComponent(q)}`)
+  }
 
   return (
     <>

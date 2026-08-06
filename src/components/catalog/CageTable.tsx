@@ -26,7 +26,7 @@ export function CageTable({ rows }: { rows: { code: string; manufacturer: string
   return (
     <div>
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center border border-inputline">
+        <div className="field-shell flex items-center">
           <Search size={16} className="ml-3 text-tertiary" />
           <input value={q} onChange={(e) => { setQ(e.target.value); setPage(1) }} placeholder="Search CAGE code or manufacturer…" className="w-72 max-w-full px-3 py-2.5 text-sm outline-none" aria-label="Search CAGE codes" />
         </div>

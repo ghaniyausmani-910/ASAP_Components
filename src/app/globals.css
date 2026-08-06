@@ -146,6 +146,25 @@
     border-color: rgba(255, 255, 255, 0.5);
   }
   .btn-on-dark:hover { background: #fff; color: var(--color-ink); }
+  /* Tertiary — lowest-emphasis action (e.g. "Add Line Item" in the cart table).
+     Quieter than .btn-outline: secondary-ink text on a hairline input-line
+     border, filling toward the accent on hover. Square, per the design system. */
+  .btn-tertiary {
+    background: transparent;
+    color: var(--color-text-secondary);
+    border-color: var(--color-inputline);
+  }
+  .btn-tertiary:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: var(--color-surface);
+  }
+  .btn-tertiary:disabled {
+    color: var(--color-text-tertiary);
+    border-color: var(--color-border);
+    background: transparent;
+    cursor: not-allowed;
+  }
 
   /* Form controls */
   .field-label {
@@ -175,6 +194,40 @@
     outline: none;
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px var(--color-accent-100);
+  }
+
+  /* Composite field wrappers — an input sharing one bordered box with an icon,
+     a type selector, or a submit button (search bars, filter fields, the chat
+     composer). The inner control drops its own outline (a ring around a
+     partial-width child reads as a bug), so the WRAPPER carries the active
+     state: the same accent border + soft ring as .field-input:focus, keyed on
+     :focus-within so a click OR a Tab lights the whole control. The class owns
+     its resting border so no Tailwind border utility competes with it. */
+  .field-shell {
+    border: 1px solid var(--color-inputline);
+    transition:
+      border-color var(--dur-fast) var(--ease),
+      box-shadow var(--dur-fast) var(--ease);
+  }
+  .field-shell:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-accent-100);
+  }
+  /* Dark-band variant (e.g. a search bar over the navy hero): the navy ring
+     disappears into the background, so the active edge goes white. Resting
+     lift is baked in so the focus rule can keep it while adding the ring. */
+  .field-shell-dark {
+    border: 1px solid transparent;
+    box-shadow: 0 8px 24px rgba(11, 31, 51, 0.1);
+    transition:
+      border-color var(--dur-fast) var(--ease),
+      box-shadow var(--dur-fast) var(--ease);
+  }
+  .field-shell-dark:focus-within {
+    border-color: #fff;
+    box-shadow:
+      0 0 0 3px rgba(255, 255, 255, 0.45),
+      0 8px 24px rgba(11, 31, 51, 0.1);
   }
 
   /* Hairline card */
@@ -234,6 +287,17 @@
   @media (prefers-reduced-motion: reduce) {
     .about-marquee-track { animation: none; }
   }
+  /* Merge feedback — when a manually-typed line item duplicates a part already
+     in the cart, its quantity folds into the existing row and that row flashes
+     briefly so the user sees where their part went. Ends on a transparent
+     background so the row returns to its resting state. Global reduced-motion
+     reset (bottom of file) collapses the duration to ~0 automatically. */
+  .row-flash { animation: row-flash 1200ms var(--ease-out) both; }
+  @keyframes row-flash {
+    0%, 40% { background-color: var(--color-highlight); }
+    100% { background-color: transparent; }
+  }
+
   /* One consistent vertical rhythm for every section site-wide */
   .section-y { padding-block: clamp(64px, 10vw, 160px); }
   .section-y-sm { padding-block: clamp(48px, 7vw, 96px); }

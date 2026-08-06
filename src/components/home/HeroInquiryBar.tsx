@@ -1,23 +1,30 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useId, useState, type ReactNode } from 'react'
+import { useEffect, useId, useState, type ReactNode } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 
 /**
- * Hero inquiry card — a frosted-glass RFQ panel that sits directly beneath the
- * hero copy. A translucent deep-navy surface (ink at 50%) over a heavy backdrop
- * blur, with a white hairline border, sharp square edges, small muted labels
- * stacked over bold white values, thin vertical dividers between fields, and a
- * solid white submit on the right.
+ * Real catalog examples the part-number placeholder types through, deliberately
+ * spanning formats — an MS spec, a NAS, a short AN, and a raw NSN — so the
+ * animation teaches that the field accepts all of them. Real strings so a
+ * curious user who types one verbatim actually resolves in the catalog.
+ */
+const PART_PLACEHOLDERS = ['MS27039-1-08', 'NAS1352-3-8', 'AN960-10', '5306-01-234-7788'] as const
+
+/**
+ * Hero inquiry card — a solid white RFQ panel that sits directly beneath the
+ * hero copy. An opaque white surface with a hairline border, sharp square edges,
+ * and a soft drop shadow lifting it off the dark hero photography. Small muted
+ * labels sit over bold ink values, thin hairline dividers separate the fields,
+ * and a solid accent submit anchors the right.
  *
- * The ink tint is a deliberate contrast floor: because the panel floats over
- * cinematic photography whose brightness varies, too light a tint would let bright
- * regions bleed through and drop the on-dark text below WCAG AA. The heavy backdrop
- * blur lets the tint sit lower (50%) while keeping a dark enough backing for white
- * text everywhere the card can land.
+ * Opaque white (rather than the earlier translucent navy) is a deliberate
+ * contrast choice: the card floats over cinematic photography whose brightness
+ * varies, and a solid backing keeps the ink text at full WCAG contrast no matter
+ * what lands behind it — no backdrop blur or tint gymnastics required.
  *
  * Three fields (Part # / NSN, Quantity, Email) hand off to the full Instant
  * RFQ flow with values prefilled, matching InstantRfqQuickForm's behaviour.
@@ -25,7 +32,15 @@ import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 export function HeroInquiryBar() {
   const router = useRouter()
   const [f, setF] = useState({ partNo: '', qty: '', email: '' })
+  const [partFocused, setPartFocused] = useState(false)
   const partListId = useId()
+
+  // Typewriter runs only while the part field is untouched — it retreats the
+  // moment the user focuses or has typed something, so it never fights a cursor.
+  const partPh = useTypewriterPlaceholder(PART_PLACEHOLDERS, {
+    enabled: !partFocused && f.partNo === '',
+    fallback: PART_PLACEHOLDERS[0],
+  })
 
   const partAc = useAutocomplete({
     query: f.partNo,
@@ -46,9 +61,9 @@ export function HeroInquiryBar() {
     <form
       onSubmit={submit}
       aria-label="Instant RFQ quick quote"
-      className="border border-white/15 bg-ink/[0.50] p-4 shadow-[0_24px_60px_-18px_rgba(11,31,51,0.45)] backdrop-blur-[64px] sm:p-5"
+      className="border border-hairline bg-white p-4 shadow-[0_24px_60px_-18px_rgba(11,31,51,0.35)] sm:p-5"
     >
-      <div className="grid grid-cols-1 items-stretch gap-2 sm:grid-cols-2 md:grid-cols-[1.6fr_0.9fr_1.5fr_auto] md:gap-0 md:divide-x md:divide-white/10">
+      <div className="grid grid-cols-1 items-stretch gap-2 sm:grid-cols-2 md:grid-cols-[1.6fr_0.9fr_1.5fr_auto] md:gap-0 md:divide-x md:divide-hairline">
         <HeroField
           id="hero-part"
           label="Part Number / NSN"
@@ -58,10 +73,16 @@ export function HeroInquiryBar() {
             setF({ ...f, partNo: v })
             partAc.setOpen(true)
           }}
-          onFocus={() => partAc.setOpen(true)}
-          onBlur={() => partAc.setOpen(false)}
+          onFocus={() => {
+            setPartFocused(true)
+            partAc.setOpen(true)
+          }}
+          onBlur={() => {
+            setPartFocused(false)
+            partAc.setOpen(false)
+          }}
           onKeyDown={partAc.onKeyDown}
-          placeholder="MS27039-1-08"
+          placeholder={partPh.placeholder}
           autoComplete="off"
           mono
           combobox={{
@@ -76,7 +97,7 @@ export function HeroInquiryBar() {
                 items={partAc.items}
                 active={partAc.active}
                 query={f.partNo}
-                variant="dark"
+                variant="light"
                 onPick={(s) => setF((prev) => ({ ...prev, partNo: s.value }))}
                 onHover={partAc.setActive}
               />
@@ -107,7 +128,7 @@ export function HeroInquiryBar() {
         <div className="flex items-center sm:col-span-2 md:col-span-1 md:pl-3">
           <button
             type="submit"
-            className="h-[60px] w-full whitespace-nowrap bg-white px-9 font-body text-base font-semibold tracking-[0.02em] text-ink transition-colors hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[color:var(--ocean)] active:bg-white/80 md:w-auto"
+            className="h-[60px] w-full whitespace-nowrap bg-accent px-9 font-body text-base font-semibold tracking-[0.02em] text-white transition-colors hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white active:brightness-95 md:w-auto"
           >
             Get Instant Quote
           </button>
@@ -155,14 +176,14 @@ function HeroField({
   overlay?: ReactNode
 }) {
   return (
-    <div className="relative px-5 py-3 transition-colors focus-within:bg-white/[0.06] focus-within:ring-2 focus-within:ring-inset focus-within:ring-white/70">
+    <div className="relative px-5 py-3 transition-colors focus-within:bg-accent-100 focus-within:ring-2 focus-within:ring-inset focus-within:ring-accent">
       <label
         htmlFor={id}
-        className="block font-body text-xs font-semibold uppercase tracking-[0.14em] text-white"
+        className="block font-body text-xs font-semibold uppercase tracking-[0.14em] text-secondary"
       >
         {label}
         {required && (
-          <span className="ml-0.5 text-white" aria-hidden="true">
+          <span className="ml-0.5 text-accent" aria-hidden="true">
             *
           </span>
         )}
@@ -189,7 +210,7 @@ function HeroField({
           aria-activedescendant={combobox?.activeId}
           aria-autocomplete={combobox ? 'list' : undefined}
           placeholder={placeholder}
-          className={`mt-1.5 block h-9 w-full border-0 bg-transparent p-0 font-body text-body-lg font-medium text-white outline-none placeholder:font-normal placeholder:text-white/65 focus-visible:outline-none ${
+          className={`mt-1.5 block h-9 w-full border-0 bg-transparent p-0 font-body text-body-lg font-medium text-ink outline-none placeholder:font-normal placeholder:text-tertiary focus-visible:outline-none ${
             mono ? 'font-mono text-base placeholder:font-mono' : ''
           }`}
         />
@@ -200,7 +221,7 @@ function HeroField({
 }
 
 /**
- * `– n +` quantity counter styled for the frosted-glass card. Replaces the
+ * `– n +` quantity counter styled for the white card. Replaces the
  * native number-input spinner. Typing is allowed and clamped to whole numbers
  * ≥ 0; an empty value stays empty so the placeholder shows. Keyboard focus on
  * either stepper is surfaced by the parent field's focus-within ring.
@@ -225,7 +246,7 @@ function QtyCounter({
   }
 
   const btn =
-    'flex h-9 w-9 shrink-0 items-center justify-center text-white/60 transition-colors hover:text-white disabled:opacity-30 disabled:hover:text-white/60'
+    'flex h-9 w-9 shrink-0 items-center justify-center text-tertiary transition-colors hover:text-ink disabled:opacity-30 disabled:hover:text-tertiary'
 
   return (
     <div className="mt-1.5 flex items-stretch">
@@ -246,7 +267,7 @@ function QtyCounter({
         value={value}
         onChange={(e) => onChange(e.target.value.replace(/[^0-9]/g, ''))}
         placeholder={placeholder}
-        className="block h-9 w-full min-w-0 bg-transparent p-0 text-center font-body text-body-lg font-medium text-white outline-none placeholder:font-normal placeholder:text-white/65 focus-visible:outline-none"
+        className="block h-9 w-full min-w-0 bg-transparent p-0 text-center font-body text-body-lg font-medium text-ink outline-none placeholder:font-normal placeholder:text-tertiary focus-visible:outline-none"
       />
       <button
         type="button"
@@ -258,4 +279,91 @@ function QtyCounter({
       </button>
     </div>
   )
+}
+
+const TYPE_MS = 62 // per-character typing cadence
+const HOLD_MS = 1600 // dwell on the completed string
+const ERASE_MS = 34 // per-character backspace cadence (quicker than typing)
+const GAP_MS = 220 // blank beat after erasing, before the next example types in
+
+/** Tracks the user's `prefers-reduced-motion` setting, reacting to live changes. */
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const sync = () => setReduced(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+  return reduced
+}
+
+/**
+ * Drives a field's placeholder as a looping typewriter: types each example one
+ * character at a time, holds, then backspaces it away character by character
+ * before typing the next — cycling forever so the field keeps drawing the eye
+ * until the user engages.
+ *
+ * It stands down completely in two cases. Under `prefers-reduced-motion` the
+ * placeholder is a single static example with no motion at all. While `enabled`
+ * is false (the field is focused, or already holds a value) the placeholder is
+ * blank, so the animation never competes with a live cursor; it resumes cycling
+ * if the user leaves an empty field.
+ */
+function useTypewriterPlaceholder(
+  examples: readonly string[],
+  { enabled, fallback }: { enabled: boolean; fallback: string },
+) {
+  const reduced = usePrefersReducedMotion()
+  const [placeholder, setPlaceholder] = useState(fallback)
+
+  useEffect(() => {
+    if (reduced) {
+      setPlaceholder(fallback)
+      return
+    }
+    if (!enabled) {
+      setPlaceholder('')
+      return
+    }
+
+    let cancelled = false
+    let timer: ReturnType<typeof setTimeout>
+    let word = 0
+    let char = 0
+
+    const schedule = (fn: () => void, ms: number) => {
+      timer = setTimeout(() => {
+        if (!cancelled) fn()
+      }, ms)
+    }
+
+    const type = () => {
+      const current = examples[word]
+      char += 1
+      setPlaceholder(current.slice(0, char))
+      schedule(char < current.length ? type : erase, char < current.length ? TYPE_MS : HOLD_MS)
+    }
+    const erase = () => {
+      char -= 1
+      setPlaceholder(examples[word].slice(0, Math.max(0, char)))
+      if (char > 0) {
+        schedule(erase, ERASE_MS)
+      } else {
+        word = (word + 1) % examples.length
+        schedule(type, GAP_MS)
+      }
+    }
+
+    setPlaceholder('')
+    schedule(type, GAP_MS)
+
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [enabled, reduced, fallback, examples])
+
+  return { placeholder }
 }

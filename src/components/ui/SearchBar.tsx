@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 import { Select } from '@/components/ui/Select'
+import { hasCatalogMatch } from '@/lib/data/suggestions'
 
 const TYPES = ['Part Number', 'NSN', 'CAGE Code', 'Manufacturer']
 
@@ -29,6 +30,14 @@ export function SearchBar({
   function go(value: string, searchType: string) {
     const v = value.trim()
     if (!v) return
+    // A query with no genuine catalog match dead-ends on the results page (which
+    // fabricates a row for anything). Send it straight to a pre-filled RFQ so the
+    // "we don't stock it" case becomes a sourcing request. Routing here — before
+    // any /search push — keeps /search out of history, so Back doesn't loop.
+    if (!hasCatalogMatch(v, searchType)) {
+      router.push(`/rfq/search?partno=${encodeURIComponent(v)}`)
+      return
+    }
     router.push(`/search?q=${encodeURIComponent(v)}&type=${encodeURIComponent(searchType)}`)
   }
 
@@ -60,8 +69,8 @@ export function SearchBar({
         role="search"
         aria-label="Search parts"
         className={cn(
-          'flex items-stretch bg-white border',
-          onDark ? 'border-transparent shadow-hover' : 'border-inputline',
+          'flex items-stretch bg-white',
+          onDark ? 'field-shell-dark' : 'field-shell',
           h,
         )}
       >

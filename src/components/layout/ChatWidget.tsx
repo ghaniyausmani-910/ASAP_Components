@@ -65,7 +65,7 @@ export function ChatWidget() {
             <div className="bg-surface p-3 text-secondary">
               Hi! Need help finding a part or getting a quote? Message us and a sourcing specialist will respond right away.
             </div>
-            <div className="flex items-center gap-2 border border-inputline p-1">
+            <div className="field-shell flex items-center gap-2 p-1">
               <input className="min-w-0 flex-1 px-2 py-1.5 text-sm outline-none" placeholder="Type a message…" />
               <button className="bg-accent p-2 text-white" aria-label="Send"><Send size={16} /></button>
             </div>

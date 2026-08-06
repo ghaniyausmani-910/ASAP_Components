@@ -19,7 +19,12 @@ export function InlineRfqForm({ theme = 'dark' }: { theme?: 'dark' | 'light' }) 
   return (
     <form
       onSubmit={submit}
-      className={cn('flex items-stretch border', light ? 'border-hairline bg-white' : 'border-white/15 bg-white/5')}
+      className={cn(
+        'flex items-stretch border transition-[border-color,box-shadow] duration-200',
+        light
+          ? 'border-hairline bg-white focus-within:border-accent focus-within:shadow-[0_0_0_3px_var(--color-accent-100)]'
+          : 'border-white/15 bg-white/5 focus-within:border-white/90 focus-within:shadow-[0_0_0_3px_rgba(255,255,255,0.22)]',
+      )}
     >
       <input
         value={partNo}
