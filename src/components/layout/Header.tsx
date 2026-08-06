@@ -58,7 +58,7 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
             {/* Over the hero the header is dark → the search bar's active stroke
                 flips to white (brand-on-dark); on the solid/scrolled header it
                 stays the navy brand stroke. */}
-            <SearchBar size="sm" onDark={onDark} />
+            <SearchBar size="sm" onDark={onDark} shortcut />
           </div>
           <CartButton onDark={onDark} />
           <Link href="/instant-rfq" className="btn btn-primary group shrink-0">

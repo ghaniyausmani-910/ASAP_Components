@@ -7,6 +7,7 @@ import { useCart } from '@/lib/cart/CartContext'
 import { QtyStepper } from '@/components/cart/QtyStepper'
 import { DraftLineRow, emptyDraft, isDraftValid, type DraftLine } from '@/components/cart/DraftLineRow'
 import { Select } from '@/components/ui/Select'
+import { describePartNo } from '@/lib/data/parts'
 import { cn } from '@/lib/utils'
 
 export function CartView() {
@@ -40,7 +41,7 @@ export function CartView() {
       setQuantity(partNo, manufacturer, existing.quantity + d.quantity)
       flashRow(keyFor(partNo, manufacturer))
     } else {
-      addItem({ partNo, manufacturer, description: d.description || undefined, quantity: d.quantity })
+      addItem({ partNo, manufacturer, description: d.description || describePartNo(partNo) || undefined, quantity: d.quantity })
     }
   }
 
@@ -192,24 +193,18 @@ export function CartView() {
                 />
               )}
             </tbody>
-
-            <tfoot>
-              <tr className="border-t border-hairline">
-                <td colSpan={5} className="p-3">
-                  <button
-                    type="button"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={handleAddLineItem}
-                    disabled={draft !== null && !isDraftValid(draft)}
-                    className="btn btn-tertiary w-full justify-center"
-                  >
-                    <Plus size={16} /> Add Line Item
-                  </button>
-                </td>
-              </tr>
-            </tfoot>
           </table>
         </div>
+
+        <button
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={handleAddLineItem}
+          disabled={draft !== null && !isDraftValid(draft)}
+          className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-accent underline-offset-4 transition-colors hover:text-accent-hover hover:underline disabled:cursor-not-allowed disabled:text-tertiary disabled:no-underline"
+        >
+          <Plus size={16} /> Add Line Item
+        </button>
       </div>
 
       {/* Contact form — sticky on desktop, top-aligned with the eyebrow */}

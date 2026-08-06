@@ -40,7 +40,6 @@ export function PageHero({
   return (
     <section className="relative overflow-hidden bg-ink-900 text-white">
       <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_-20%,#0d2b44_0%,#0b1f33_65%)]" />
-      <div className="absolute inset-0 opacity-[0.10] [background-image:linear-gradient(#fff_1px,transparent_1px),linear-gradient(90deg,#fff_1px,transparent_1px)] [background-size:56px_56px]" />
       <div className="container-x relative py-16 lg:py-24">
         {eyebrow && <p className="eyebrow !text-white/70">{eyebrow}</p>}
         <h1 className="mt-3 max-w-4xl font-display text-h1 font-extralight tracking-tight-2">{title}</h1>

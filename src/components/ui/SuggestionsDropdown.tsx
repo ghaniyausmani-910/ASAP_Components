@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import type { Suggestion } from '@/lib/data/suggestions'
 
 /** Bold the substring of `text` that matches `query` (case-insensitive). */
-function Highlight({ text, query }: { text: string; query: string }) {
+export function Highlight({ text, query }: { text: string; query: string }) {
   const q = query.trim()
   if (!q) return <>{text}</>
   const i = text.toLowerCase().indexOf(q.toLowerCase())
@@ -28,6 +28,7 @@ export function SuggestionsDropdown({
   onPick,
   onHover,
   variant = 'light',
+  positioned = true,
 }: {
   id: string
   items: Suggestion[]
@@ -36,6 +37,8 @@ export function SuggestionsDropdown({
   onPick: (s: Suggestion) => void
   onHover: (i: number) => void
   variant?: 'light' | 'dark'
+  /** When false, the caller positions the list (e.g. inside a PortalDropdown). */
+  positioned?: boolean
 }) {
   const dark = variant === 'dark'
   return (
@@ -43,7 +46,8 @@ export function SuggestionsDropdown({
       id={id}
       role="listbox"
       className={cn(
-        'absolute left-0 right-0 top-full z-30 mt-1 max-h-80 overflow-auto border py-1 text-left shadow-hover',
+        positioned ? 'absolute left-0 right-0 top-full z-30 mt-1' : 'w-full',
+        'max-h-80 overflow-auto border py-1 text-left shadow-hover',
         dark
           ? 'border-white/15 bg-ink/95 backdrop-blur-xl'
           : 'border-inputline bg-white',

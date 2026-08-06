@@ -15,16 +15,17 @@ import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 const PART_PLACEHOLDERS = ['MS27039-1-08', 'NAS1352-3-8', 'AN960-10', '5306-01-234-7788'] as const
 
 /**
- * Hero inquiry card — a solid white RFQ panel that sits directly beneath the
- * hero copy. An opaque white surface with a hairline border, sharp square edges,
- * and a soft drop shadow lifting it off the dark hero photography. Small muted
- * labels sit over bold ink values, thin hairline dividers separate the fields,
- * and a solid accent submit anchors the right.
+ * Hero inquiry card — a frosted-glass RFQ panel that sits directly beneath the
+ * hero copy. A translucent deep-navy surface (ink at 42%) over a heavy backdrop
+ * blur, with a white hairline border, sharp square edges, small muted labels
+ * stacked over bold white values, thin vertical dividers between fields, and a
+ * solid white submit on the right.
  *
- * Opaque white (rather than the earlier translucent navy) is a deliberate
- * contrast choice: the card floats over cinematic photography whose brightness
- * varies, and a solid backing keeps the ink text at full WCAG contrast no matter
- * what lands behind it — no backdrop blur or tint gymnastics required.
+ * The ink tint is a deliberate contrast floor: because the panel floats over
+ * cinematic photography whose brightness varies, too light a tint would let bright
+ * regions bleed through and drop the on-dark text below WCAG AA. The heavy backdrop
+ * blur lets the tint sit lower (42%) while keeping a dark enough backing for white
+ * text everywhere the card can land.
  *
  * Three fields (Part # / NSN, Quantity, Email) hand off to the full Instant
  * RFQ flow with values prefilled, matching InstantRfqQuickForm's behaviour.
@@ -61,9 +62,9 @@ export function HeroInquiryBar() {
     <form
       onSubmit={submit}
       aria-label="Instant RFQ quick quote"
-      className="border border-hairline bg-white p-4 shadow-[0_24px_60px_-18px_rgba(11,31,51,0.35)] sm:p-5"
+      className="border border-white/15 bg-ink/[0.55] p-4 shadow-[0_24px_60px_-18px_rgba(11,31,51,0.45)] backdrop-blur-[64px] sm:p-5"
     >
-      <div className="grid grid-cols-1 items-stretch gap-2 sm:grid-cols-2 md:grid-cols-[1.6fr_0.9fr_1.5fr_auto] md:gap-0 md:divide-x md:divide-hairline">
+      <div className="grid grid-cols-1 items-stretch gap-2 sm:grid-cols-2 md:grid-cols-[1.6fr_0.9fr_1.5fr_auto] md:gap-0 md:divide-x md:divide-white/10">
         <HeroField
           id="hero-part"
           label="Part Number / NSN"
@@ -97,7 +98,7 @@ export function HeroInquiryBar() {
                 items={partAc.items}
                 active={partAc.active}
                 query={f.partNo}
-                variant="light"
+                variant="dark"
                 onPick={(s) => setF((prev) => ({ ...prev, partNo: s.value }))}
                 onHover={partAc.setActive}
               />
@@ -128,7 +129,7 @@ export function HeroInquiryBar() {
         <div className="flex items-center sm:col-span-2 md:col-span-1 md:pl-3">
           <button
             type="submit"
-            className="h-[60px] w-full whitespace-nowrap bg-accent px-9 font-body text-base font-semibold tracking-[0.02em] text-white transition-colors hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white active:brightness-95 md:w-auto"
+            className="h-[60px] w-full whitespace-nowrap bg-white px-9 font-body text-base font-semibold tracking-[0.02em] text-ink transition-colors hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[color:var(--ocean)] active:bg-white/80 md:w-auto"
           >
             Get Instant Quote
           </button>
@@ -176,14 +177,14 @@ function HeroField({
   overlay?: ReactNode
 }) {
   return (
-    <div className="relative px-5 py-3 transition-colors focus-within:bg-accent-100 focus-within:ring-2 focus-within:ring-inset focus-within:ring-accent">
+    <div className="relative px-5 py-3 transition-colors focus-within:bg-white/[0.06] focus-within:ring-2 focus-within:ring-inset focus-within:ring-white/70">
       <label
         htmlFor={id}
-        className="block font-body text-xs font-semibold uppercase tracking-[0.14em] text-secondary"
+        className="block font-body text-xs font-semibold uppercase tracking-[0.14em] text-white"
       >
         {label}
         {required && (
-          <span className="ml-0.5 text-accent" aria-hidden="true">
+          <span className="ml-0.5 text-white" aria-hidden="true">
             *
           </span>
         )}
@@ -210,7 +211,7 @@ function HeroField({
           aria-activedescendant={combobox?.activeId}
           aria-autocomplete={combobox ? 'list' : undefined}
           placeholder={placeholder}
-          className={`mt-1.5 block h-9 w-full border-0 bg-transparent p-0 font-body text-body-lg font-medium text-ink outline-none placeholder:font-normal placeholder:text-tertiary focus-visible:outline-none ${
+          className={`mt-1.5 block h-9 w-full border-0 bg-transparent p-0 font-body text-body-lg font-medium text-white outline-none placeholder:font-normal placeholder:text-white/65 focus-visible:outline-none ${
             mono ? 'font-mono text-base placeholder:font-mono' : ''
           }`}
         />
@@ -221,7 +222,7 @@ function HeroField({
 }
 
 /**
- * `– n +` quantity counter styled for the white card. Replaces the
+ * `– n +` quantity counter styled for the frosted-glass card. Replaces the
  * native number-input spinner. Typing is allowed and clamped to whole numbers
  * ≥ 0; an empty value stays empty so the placeholder shows. Keyboard focus on
  * either stepper is surfaced by the parent field's focus-within ring.
@@ -246,7 +247,7 @@ function QtyCounter({
   }
 
   const btn =
-    'flex h-9 w-9 shrink-0 items-center justify-center text-tertiary transition-colors hover:text-ink disabled:opacity-30 disabled:hover:text-tertiary'
+    'flex h-9 w-9 shrink-0 items-center justify-center text-white/60 transition-colors hover:text-white disabled:opacity-30 disabled:hover:text-white/60'
 
   return (
     <div className="mt-1.5 flex items-stretch">
@@ -267,7 +268,7 @@ function QtyCounter({
         value={value}
         onChange={(e) => onChange(e.target.value.replace(/[^0-9]/g, ''))}
         placeholder={placeholder}
-        className="block h-9 w-full min-w-0 bg-transparent p-0 text-center font-body text-body-lg font-medium text-ink outline-none placeholder:font-normal placeholder:text-tertiary focus-visible:outline-none"
+        className="block h-9 w-full min-w-0 bg-transparent p-0 text-center font-body text-body-lg font-medium text-white outline-none placeholder:font-normal placeholder:text-white/65 focus-visible:outline-none"
       />
       <button
         type="button"

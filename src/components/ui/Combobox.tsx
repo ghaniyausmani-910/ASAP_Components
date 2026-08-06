@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Check, ChevronDown } from 'lucide-react'
+import { PortalDropdown } from '@/components/ui/PortalDropdown'
 import { cn } from '@/lib/utils'
 
 /**
@@ -59,11 +60,16 @@ export function Combobox({
   // never commit the wrong row.
   useEffect(() => setActive(-1), [filtered])
 
-  // Close when a click lands outside the component.
+  // Close when a click lands outside the component. The menu is portaled to
+  // document.body (see PortalDropdown), so it isn't inside rootRef — allow it
+  // explicitly via its data attribute so picking an option doesn't self-close.
   useEffect(() => {
     if (!open) return
     function onDown(e: MouseEvent) {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false)
+      const t = e.target as Element | null
+      if (rootRef.current?.contains(t as Node)) return
+      if (t?.closest?.('[data-combobox-menu]')) return
+      setOpen(false)
     }
     document.addEventListener('mousedown', onDown)
     return () => document.removeEventListener('mousedown', onDown)
@@ -149,12 +155,13 @@ export function Combobox({
         <ChevronDown size={16} aria-hidden className={cn('transition-transform', open && 'rotate-180')} />
       </button>
 
-      {listOpen && (
+      <PortalDropdown anchorEl={rootRef.current} open={listOpen}>
         <ul
           id={listId}
+          data-combobox-menu
           role="listbox"
           aria-label={ariaLabel}
-          className="absolute left-0 right-0 top-full z-30 mt-1 max-h-72 overflow-auto border border-inputline bg-white py-1 shadow-hover animate-fade"
+          className="max-h-72 w-full overflow-auto border border-inputline bg-white py-1 shadow-hover animate-fade"
         >
           {filtered.map((o, i) => {
             const isSelected = o.toLowerCase() === value.trim().toLowerCase()
@@ -180,7 +187,7 @@ export function Combobox({
             )
           })}
         </ul>
-      )}
+      </PortalDropdown>
     </div>
   )
 }

@@ -1,13 +1,13 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useId, useState } from 'react'
+import { useEffect, useId, useState } from 'react'
 import { Search } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 import { Select } from '@/components/ui/Select'
-import { hasCatalogMatch } from '@/lib/data/suggestions'
+import { searchTargetHref } from '@/lib/data/suggestions'
 
 const TYPES = ['Part Number', 'NSN', 'CAGE Code', 'Manufacturer']
 
@@ -15,30 +15,34 @@ export function SearchBar({
   size = 'md',
   onDark = false,
   showType = true,
+  shortcut = false,
   className,
 }: {
   size?: 'sm' | 'md' | 'lg'
   onDark?: boolean
   showType?: boolean
+  /** Show a ⌘K / Ctrl+K hint — the same shortcut opens the global command palette. */
+  shortcut?: boolean
   className?: string
 }) {
   const router = useRouter()
   const [q, setQ] = useState('')
   const [type, setType] = useState(TYPES[0])
   const listId = useId()
+  // Platform-aware modifier label; defaults to ⌘ (matches server render) and
+  // corrects on non-mac after mount, so there's no hydration mismatch.
+  const [isMac, setIsMac] = useState(true)
+  useEffect(() => {
+    setIsMac(/mac|iphone|ipad|ipod/i.test(navigator.platform || navigator.userAgent))
+  }, [])
 
   function go(value: string, searchType: string) {
-    const v = value.trim()
-    if (!v) return
     // A query with no genuine catalog match dead-ends on the results page (which
-    // fabricates a row for anything). Send it straight to a pre-filled RFQ so the
-    // "we don't stock it" case becomes a sourcing request. Routing here — before
-    // any /search push — keeps /search out of history, so Back doesn't loop.
-    if (!hasCatalogMatch(v, searchType)) {
-      router.push(`/rfq/search?partno=${encodeURIComponent(v)}`)
-      return
-    }
-    router.push(`/search?q=${encodeURIComponent(v)}&type=${encodeURIComponent(searchType)}`)
+    // fabricates a row for anything), so `searchTargetHref` routes it straight to
+    // a pre-filled RFQ instead — keeping /search out of history so Back doesn't
+    // loop. Shared with the command palette so both agree on the destination.
+    const href = searchTargetHref(value, searchType)
+    if (href) router.push(href)
   }
 
   function handleSelect(s: { value: string; type: string; href?: string }) {
@@ -94,6 +98,16 @@ export function SearchBar({
           autoComplete="off"
           className={cn('min-w-0 flex-1 bg-transparent px-4 font-body text-ink outline-none placeholder:text-tertiary', text)}
         />
+        {shortcut && (
+          // The input interior is always white (onDark only affects the field
+          // stroke), so the hint keeps the dark-on-white treatment either way.
+          <kbd
+            aria-hidden="true"
+            className="mr-1 hidden shrink-0 items-center gap-0.5 self-center border border-inputline px-1.5 py-0.5 font-mono text-xs text-tertiary lg:flex"
+          >
+            {isMac ? '⌘' : 'Ctrl'} K
+          </kbd>
+        )}
         {showType && (
           <div className="hidden sm:flex items-center border-l border-inputline">
             <Select
