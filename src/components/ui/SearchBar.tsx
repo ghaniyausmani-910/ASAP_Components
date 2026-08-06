@@ -142,9 +142,11 @@ export function SearchBar({
         <kbd
           aria-hidden="true"
           className={cn(
-            'hidden shrink-0 items-center gap-0.5 self-center border px-2 font-mono text-xs lg:flex',
+            'hidden shrink-0 items-center gap-1 self-center border px-2.5 font-mono text-sm font-medium lg:flex',
             h,
-            onDark ? 'border-white/30 text-white/70' : 'border-inputline text-tertiary',
+            onDark
+              ? 'border-white/50 bg-white/10 text-white'
+              : 'border-inputline bg-surface text-secondary',
           )}
         >
           {isMac ? '⌘' : 'Ctrl'} K
