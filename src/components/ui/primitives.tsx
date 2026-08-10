@@ -32,18 +32,29 @@ export function PageHero({
   eyebrow,
   title,
   intro,
+  center = false,
 }: {
   eyebrow?: string
   title: string
   intro?: string
+  center?: boolean
 }) {
   return (
     <section className="relative overflow-hidden bg-ink-900 text-white">
       <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_80%_-20%,#0d2b44_0%,#0b1f33_65%)]" />
-      <div className="container-x relative py-16 lg:py-24">
+      <div className={cn('container-x relative py-16 lg:py-24', center && 'text-center')}>
         {eyebrow && <p className="eyebrow !text-white/70">{eyebrow}</p>}
-        <h1 className="mt-3 max-w-4xl font-display text-h1 font-extralight tracking-tight-2">{title}</h1>
-        {intro && <p className="mt-5 max-w-2xl text-body-lg text-white/70">{intro}</p>}
+        <h1
+          className={cn(
+            'mt-3 max-w-4xl font-display text-h1 font-extralight tracking-tight-2',
+            center && 'mx-auto',
+          )}
+        >
+          {title}
+        </h1>
+        {intro && (
+          <p className={cn('mt-5 max-w-2xl text-body-lg text-white/70', center && 'mx-auto')}>{intro}</p>
+        )}
       </div>
     </section>
   )
