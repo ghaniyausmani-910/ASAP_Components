@@ -230,6 +230,22 @@
       0 8px 24px rgba(11, 31, 51, 0.1);
   }
 
+  /* Hero inquiry fields sit on the frosted-glass card: transparent surface,
+     white text. Browser autofill (Chrome/Safari) would otherwise repaint the
+     field with an opaque light background and dark text — as it does the moment
+     the Work Email field matches a saved value. An opaque box-shadow mask can't
+     be used here (it would blot out the frosted glass), so we keep the fill's
+     background transparent by parking its background-color transition
+     effectively forever, and force the text/caret white to match the siblings. */
+  .hero-field-input:-webkit-autofill,
+  .hero-field-input:-webkit-autofill:hover,
+  .hero-field-input:-webkit-autofill:focus,
+  .hero-field-input:-webkit-autofill:active {
+    -webkit-text-fill-color: #fff;
+    caret-color: #fff;
+    transition: background-color 100000s ease-in-out 0s;
+  }
+
   /* Hairline card */
   .card {
     @apply bg-white;

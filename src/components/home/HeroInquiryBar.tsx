@@ -5,6 +5,7 @@ import { useEffect, useId, useState, type ReactNode } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
+import { track } from '@/lib/analytics'
 
 /**
  * Real catalog examples the part-number placeholder types through, deliberately
@@ -51,6 +52,7 @@ export function HeroInquiryBar() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
+    track('rfq_start', { source: 'hero', part_no: f.partNo || undefined })
     const p = new URLSearchParams()
     if (f.partNo) p.set('partno', f.partNo)
     if (f.qty) p.set('qty', f.qty)
@@ -211,7 +213,7 @@ function HeroField({
           aria-activedescendant={combobox?.activeId}
           aria-autocomplete={combobox ? 'list' : undefined}
           placeholder={placeholder}
-          className={`mt-1.5 block h-9 w-full border-0 bg-transparent p-0 font-body text-body-lg font-medium text-white outline-none placeholder:font-normal placeholder:text-white/65 focus-visible:outline-none ${
+          className={`hero-field-input mt-1.5 block h-9 w-full border-0 bg-transparent p-0 font-body text-body-lg font-medium text-white outline-none placeholder:font-normal placeholder:text-white/65 focus-visible:outline-none ${
             mono ? 'font-mono text-base placeholder:font-mono' : ''
           }`}
         />
@@ -268,7 +270,7 @@ function QtyCounter({
         value={value}
         onChange={(e) => onChange(e.target.value.replace(/[^0-9]/g, ''))}
         placeholder={placeholder}
-        className="block h-9 w-full min-w-0 bg-transparent p-0 text-center font-body text-body-lg font-medium text-white outline-none placeholder:font-normal placeholder:text-white/65 focus-visible:outline-none"
+        className="hero-field-input block h-9 w-full min-w-0 bg-transparent p-0 text-center font-body text-body-lg font-medium text-white outline-none placeholder:font-normal placeholder:text-white/65 focus-visible:outline-none"
       />
       <button
         type="button"
