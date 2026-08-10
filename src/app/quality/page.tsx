@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import { ShieldCheck } from 'lucide-react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container, PageHero } from '@/components/ui/primitives'
-import { Certifications } from '@/components/modules/Certifications'
 import { CERTIFICATIONS } from '@/lib/data/site'
 
 export const metadata: Metadata = {
@@ -32,7 +31,6 @@ export default function QualityPage() {
           </div>
         </Container>
       </section>
-      <Certifications />
     </>
   )
 }
