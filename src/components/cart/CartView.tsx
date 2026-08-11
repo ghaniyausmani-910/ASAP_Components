@@ -9,11 +9,14 @@ import { DraftLineRow, emptyDraft, isDraftValid, type DraftLine } from '@/compon
 import { Select } from '@/components/ui/Select'
 import { describePartNo } from '@/lib/data/parts'
 import { cn } from '@/lib/utils'
+import { track } from '@/lib/analytics'
 
 export function CartView() {
   const { lines, totalCount, keyFor, getLine, addItem, setQuantity, removeItem, clear } = useCart()
   const [sent, setSent] = useState(false)
   const [ref, setRef] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // In-place "Add Line Item" entry. The draft is local UI state — never a real
   // CartLine until committed — so a half-typed row never hits localStorage.
@@ -57,14 +60,47 @@ export function CartView() {
     }
   }
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    if (submitting) return
+    const form = e.currentTarget
     if (draft && isDraftValid(draft)) commitDraft(draft)
     setDraft(null)
-    const id = 'ASAP-' + Math.floor(100000 + Math.random() * 899999)
-    setRef(id)
-    setSent(true)
-    clear()
+    // Snapshot the cart before we clear it on success.
+    const snapshot = lines
+    const partsCount = snapshot.length
+    setError(null)
+    setSubmitting(true)
+
+    const payload: Record<string, string> = Object.fromEntries(
+      Array.from(new FormData(form).entries()).map(([k, v]) => [k, String(v)]),
+    )
+    payload.method = 'cart'
+    payload.partsCount = String(partsCount)
+    payload.parts = snapshot
+      .map((l) => `${l.partNo} | ${l.manufacturer} | qty ${l.quantity}${l.description ? ` | ${l.description}` : ''}`)
+      .join('\n')
+
+    try {
+      const res = await fetch('/api/rfq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string }
+        throw new Error(data.error || 'We could not submit your RFQ. Please try again.')
+      }
+      const { reference } = (await res.json()) as { reference: string }
+      setRef(reference)
+      setSent(true)
+      track('generate_lead', { method: 'cart', parts_count: partsCount, reference })
+      clear()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   // ── Success state (mirrors RfqForm) ───────────────────────────
@@ -213,22 +249,24 @@ export function CartView() {
           Request a quote for all parts
         </p>
         <div className="space-y-4 p-5">
-          <Field id="cart-name" label="Contact Name" required />
-          <Field id="cart-company" label="Company Name" required />
+          <Field id="cart-name" name="contactName" label="Contact Name" required />
+          <Field id="cart-company" name="company" label="Company Name" required />
           <div>
             <label htmlFor="cart-ctype" className="field-label">Company Type</label>
             <Select
               id="cart-ctype"
+              name="companyType"
               ariaLabel="Company Type"
               options={['Manufacturer', 'Distributor', 'Airline', 'Broker']}
             />
           </div>
-          <Field id="cart-phone" label="Phone" type="tel" required />
-          <Field id="cart-email" label="Email" type="email" required />
+          <Field id="cart-phone" name="phone" label="Phone" type="tel" required />
+          <Field id="cart-email" name="email" label="Email" type="email" required />
           <div>
             <label htmlFor="cart-need" className="field-label">Need Parts By <span className="text-accent">*</span></label>
             <Select
               id="cart-need"
+              name="needBy"
               required
               ariaLabel="Need Parts By"
               options={['Immediately (AOG)', '1–2 weeks', '1 month', 'Flexible']}
@@ -236,7 +274,7 @@ export function CartView() {
           </div>
           <div>
             <label htmlFor="cart-comments" className="field-label">Comments</label>
-            <textarea id="cart-comments" rows={2} className="field-input" />
+            <textarea id="cart-comments" name="comments" rows={2} className="field-input" />
           </div>
           <label className="flex items-start gap-3 text-sm text-secondary">
             <input type="checkbox" required className="mt-1 accent-[var(--color-accent)]" />
@@ -245,7 +283,10 @@ export function CartView() {
               <a href="/policies/customer-terms" className="text-accent underline">Terms &amp; Conditions</a>.
             </span>
           </label>
-          <button type="submit" className="btn btn-primary w-full justify-center">Submit RFQ</button>
+          {error && <p className="text-sm text-warning">{error}</p>}
+          <button type="submit" disabled={submitting} className="btn btn-primary w-full justify-center disabled:opacity-60">
+            {submitting ? 'Submitting…' : 'Submit RFQ'}
+          </button>
         </div>
       </form>
     </div>
@@ -271,11 +312,13 @@ function Th({ children, className }: { children: React.ReactNode; className?: st
 
 function Field({
   id,
+  name,
   label,
   type = 'text',
   required = false,
 }: {
   id: string
+  name?: string
   label: string
   type?: string
   required?: boolean
@@ -285,7 +328,7 @@ function Field({
       <label htmlFor={id} className="field-label">
         {label} {required && <span className="text-accent">*</span>}
       </label>
-      <input id={id} type={type} required={required} className="field-input" />
+      <input id={id} name={name ?? id} type={type} required={required} className="field-input" />
     </div>
   )
 }

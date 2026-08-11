@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container } from '@/components/ui/primitives'
@@ -7,6 +6,7 @@ import { RfqSidebar } from '@/components/modules/RfqSidebar'
 import { DirectoryIndex } from '@/components/catalog/DirectoryIndex'
 import { PartsListingTable } from '@/components/catalog/PartsListingTable'
 import { CageTable } from '@/components/catalog/CageTable'
+import { FscTable } from '@/components/catalog/FscTable'
 import { Certifications } from '@/components/modules/Certifications'
 import { CATEGORIES, getAxis } from '@/lib/data/catalog'
 import type { DropdownItem } from '@/lib/types'
@@ -85,36 +85,9 @@ function renderBody(categorySlug: string, item: DropdownItem) {
     case 'cage':
       return <CageTable rows={cageRows(`${categorySlug}:cage`, 240)} />
     case 'fsc':
-      return <FscTable categorySlug={categorySlug} />
+      return <FscTable rows={FSC_CODES} categorySlug={categorySlug} />
     case 'part-type':
     default:
       return <DirectoryIndex groups={groupAlphabetical(partTypePool(categorySlug, item.slug))} categorySlug={categorySlug} searchLabel="Search part types…" />
   }
-}
-
-function FscTable({ categorySlug }: { categorySlug: string }) {
-  return (
-    <div className="overflow-x-auto border border-hairline">
-      <table className="w-full min-w-[560px] text-sm">
-        <thead>
-          <tr className="bg-navy text-left text-white">
-            <th className="px-4 py-3 font-medium">FSC</th>
-            <th className="px-4 py-3 font-medium">Description</th>
-            <th className="px-4 py-3 text-right font-medium">Parts</th>
-          </tr>
-        </thead>
-        <tbody>
-          {FSC_CODES.map((f) => (
-            <tr key={f.code} className="border-t border-hairline hover:bg-surface">
-              <td className="px-4 py-3 font-mono text-navy">{f.code}</td>
-              <td className="px-4 py-3">
-                <Link href={`/catalog/${categorySlug}/list/${f.code}`} className="text-secondary hover:text-accent hover:underline">{f.label}</Link>
-              </td>
-              <td className="px-4 py-3 text-right text-tertiary">{f.count.toLocaleString()}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
 }

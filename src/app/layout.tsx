@@ -7,6 +7,8 @@ import { CookieBanner } from '@/components/layout/CookieBanner'
 import { ChatWidget } from '@/components/layout/ChatWidget'
 import { CartProvider } from '@/lib/cart/CartContext'
 import { SearchCommandProvider } from '@/lib/search/SearchCommandContext'
+import { Analytics } from '@/components/analytics/Analytics'
+import { OutboundLinkTracker } from '@/components/analytics/OutboundLinkTracker'
 
 const sora = Sora({
   subsets: ['latin'],
@@ -47,6 +49,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${sora.variable} ${inter.variable} ${plexMono.variable} ${archivo.variable}`}>
       <body>
+        <Analytics />
+        <OutboundLinkTracker />
         <CartProvider>
           <SearchCommandProvider>
             <SiteHeader />

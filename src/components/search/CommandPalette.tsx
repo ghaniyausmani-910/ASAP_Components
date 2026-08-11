@@ -21,6 +21,7 @@ import { cn } from '@/lib/utils'
 import { Highlight } from '@/components/ui/SuggestionsDropdown'
 import { searchCommand } from '@/lib/data/command-search'
 import { searchTargetHref } from '@/lib/data/suggestions'
+import { track } from '@/lib/analytics'
 
 const MONO_TYPES = new Set(['Part Number', 'NSN', 'CAGE Code'])
 
@@ -117,6 +118,13 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   }, [active])
 
   function navigate(href: string) {
+    if (query.trim()) {
+      track('search', {
+        query: query.trim(),
+        source: 'command_palette',
+        results_count: parts.length + pages.length,
+      })
+    }
     onClose()
     router.push(href)
   }

@@ -3,6 +3,7 @@
 import { ShoppingCart } from 'lucide-react'
 import { useCart } from '@/lib/cart/CartContext'
 import { QtyStepper } from '@/components/cart/QtyStepper'
+import { track } from '@/lib/analytics'
 
 /**
  * Row-level cart control. Renders an "Add to Cart" icon button until the part
@@ -26,7 +27,10 @@ export function AddToCartControl({
     return (
       <button
         type="button"
-        onClick={() => addItem({ partNo, manufacturer, description })}
+        onClick={() => {
+          addItem({ partNo, manufacturer, description })
+          track('add_to_cart', { part_no: partNo, manufacturer })
+        }}
         aria-label={`Add ${partNo} to cart`}
         className="inline-flex items-center justify-center gap-1 whitespace-nowrap border border-navy px-3 py-1.5 text-xs font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
       >

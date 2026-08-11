@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { CheckCircle2, Clock, ShieldCheck, FileCheck2 } from 'lucide-react'
 import { Select } from '@/components/ui/Select'
+import { track } from '@/lib/analytics'
 
 type Variant = 'full' | 'compact'
 
@@ -35,6 +36,11 @@ export function RfqForm({
   const [ref, setRef] = useState('')
   const [aog, setAog] = useState(false)
   const [needBy, setNeedBy] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  // Fire `rfq_form_start` once, on the first field interaction — the top of the
+  // form-completion funnel step.
+  const started = useRef(false)
 
   const bomActive = bom !== null
 
@@ -43,12 +49,56 @@ export function RfqForm({
     if (checked) setNeedBy('Immediately')
   }
 
-  function submit(e: React.FormEvent) {
+  function handleFormFocus() {
+    if (started.current) return
+    started.current = true
+    track('rfq_form_start', { variant })
+  }
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    const id = 'ASAP-' + Math.floor(100000 + Math.random() * 899999)
-    setRef(id)
-    setSent(true)
-    onSentChange?.(true)
+    if (submitting) return
+    // Capture the form node now — React nulls the event's currentTarget after await.
+    const form = e.currentTarget
+    setError(null)
+    setSubmitting(true)
+
+    const payload: Record<string, string> = Object.fromEntries(
+      Array.from(new FormData(form).entries()).map(([k, v]) => [k, String(v)]),
+    )
+    payload.method = bomActive ? 'bom' : 'rfq'
+    payload.aog = String(aog)
+    if (bom) {
+      payload.bomFile = bom.fileName
+      payload.bomPartsCount = String(bom.partsCount)
+    }
+
+    try {
+      const res = await fetch('/api/rfq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { error?: string }
+        throw new Error(data.error || 'We could not submit your RFQ. Please try again.')
+      }
+      const { reference } = (await res.json()) as { reference: string }
+      setRef(reference)
+      setSent(true)
+      onSentChange?.(true)
+      // Fire the conversion only on server-confirmed success.
+      track('generate_lead', {
+        method: bomActive ? 'bom' : 'rfq',
+        parts_count: bom?.partsCount,
+        aog,
+        reference,
+      })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   function reset() {
@@ -109,7 +159,7 @@ export function RfqForm({
 
   if (variant === 'compact') {
     return (
-      <form onSubmit={submit} className="border border-hairline bg-white">
+      <form onSubmit={submit} onFocus={handleFormFocus} className="border border-hairline bg-white">
         <p className="border-b border-hairline bg-navy px-5 py-3 font-display text-sm font-medium text-white">
           {bomActive ? <>Add your details — we&rsquo;ll quote {partsPhrase} from your BOM</> : <>Please fill out the form below for {defaults?.partNo ?? 'this part'}</>}
         </p>
@@ -118,15 +168,18 @@ export function RfqForm({
             <div className="sm:col-span-2">{bomNote}</div>
           ) : (
             <>
-              <Field id="c-pn" label="Mfg Part Number" required defaultValue={defaults?.partNo} />
-              <Field id="c-mfr" label="Manufacturer" required defaultValue={defaults?.manufacturer} />
+              <Field id="c-pn" name="partNo" label="Mfg Part Number" required defaultValue={defaults?.partNo} />
+              <Field id="c-mfr" name="manufacturer" label="Manufacturer" required defaultValue={defaults?.manufacturer} />
             </>
           )}
-          <Field id="c-name" label="Contact Name" required />
-          <Field id="c-email" label="Email" type="email" required defaultValue={defaults?.email} />
+          <Field id="c-name" name="contactName" label="Contact Name" required />
+          <Field id="c-email" name="email" label="Email" type="email" required defaultValue={defaults?.email} />
           {bomActive && <div className="sm:col-span-2">{aogField}</div>}
           <div className="sm:col-span-2">
-            <button className="btn btn-primary w-full sm:w-auto">Submit RFQ</button>
+            {error && <p className="mb-3 text-sm text-warning">{error}</p>}
+            <button type="submit" disabled={submitting} className="btn btn-primary w-full disabled:opacity-60 sm:w-auto">
+              {submitting ? 'Submitting…' : 'Submit RFQ'}
+            </button>
           </div>
         </div>
       </form>
@@ -134,7 +187,7 @@ export function RfqForm({
   }
 
   return (
-    <form onSubmit={submit} className="border border-hairline bg-white">
+    <form onSubmit={submit} onFocus={handleFormFocus} className="border border-hairline bg-white">
       {/* Part details — collapse to a BOM note + AOG once a list is attached */}
       <fieldset className="border-b border-hairline p-6">
         <legend className="float-left mb-4 w-full font-display text-sm font-medium text-navy">
@@ -147,13 +200,14 @@ export function RfqForm({
           </div>
         ) : (
           <div className="clear-both grid gap-x-6 gap-y-5 sm:grid-cols-2">
-            <Field id="pn" label="Mfg Part Number" required defaultValue={defaults?.partNo} />
-            <Field id="mfr" label="Manufacturer" required defaultValue={defaults?.manufacturer} />
-            <Field id="qty" label="Quantity (ea)" required defaultValue={defaults?.qty} />
+            <Field id="pn" name="partNo" label="Mfg Part Number" required defaultValue={defaults?.partNo} />
+            <Field id="mfr" name="manufacturer" label="Manufacturer" required defaultValue={defaults?.manufacturer} />
+            <Field id="qty" name="quantity" label="Quantity (ea)" required defaultValue={defaults?.qty} />
             <div>
               <label htmlFor="need" className="field-label">Need Parts By <span className="text-accent">*</span></label>
               <Select
                 id="need"
+                name="needBy"
                 required
                 ariaLabel="Need Parts By"
                 value={needBy}
@@ -170,23 +224,25 @@ export function RfqForm({
       <fieldset className="p-6">
         <legend className="float-left mb-4 w-full font-display text-sm font-medium text-navy">Contact Information</legend>
         <div className="clear-both grid gap-x-6 gap-y-5 sm:grid-cols-2">
-          <Field id="first" label="First Name" required />
-          <Field id="last" label="Last Name" required />
-          <Field id="company" label="Company Name" required />
+          <Field id="first" name="firstName" label="First Name" required />
+          <Field id="last" name="lastName" label="Last Name" required />
+          <Field id="company" name="company" label="Company Name" required />
           <div>
             <label htmlFor="ctype" className="field-label">Company Type</label>
             <Select
               id="ctype"
+              name="companyType"
               ariaLabel="Company Type"
               options={['Manufacturer', 'Distributor', 'Airline', 'Broker']}
             />
           </div>
-          <Field id="phone" label="Phone" type="tel" required />
-          <Field id="email" label="Email" type="email" required defaultValue={defaults?.email} />
+          <Field id="phone" name="phone" label="Phone" type="tel" required />
+          <Field id="email" name="email" label="Email" type="email" required defaultValue={defaults?.email} />
           <div className="sm:col-span-2">
             <label htmlFor="comments" className="field-label">Comments</label>
             <textarea
               id="comments"
+              name="comments"
               rows={2}
               className="field-input"
               placeholder="Share anything that helps us quote — a target price, acceptable alternates, or preferred condition."
@@ -205,10 +261,13 @@ export function RfqForm({
           </span>
         </label>
         <div className="mt-5 flex flex-wrap items-center gap-5">
-          <button type="submit" className="btn btn-primary">Submit RFQ</button>
+          <button type="submit" disabled={submitting} className="btn btn-primary disabled:opacity-60">
+            {submitting ? 'Submitting…' : 'Submit RFQ'}
+          </button>
           <span className="flex items-center gap-2 text-sm text-tertiary"><Clock size={15} className="text-accent" /> Quotes back within 15 minutes</span>
           <span className="flex items-center gap-2 text-sm text-tertiary"><ShieldCheck size={15} className="text-accent" /> We never share your information</span>
         </div>
+        {error && <p className="mt-3 text-sm text-warning">{error}</p>}
       </div>
     </form>
   )
@@ -216,12 +275,15 @@ export function RfqForm({
 
 function Field({
   id,
+  name,
   label,
   type = 'text',
   required = false,
   defaultValue,
 }: {
   id: string
+  /** FormData key; defaults to `id`. */
+  name?: string
   label: string
   type?: string
   required?: boolean
@@ -232,7 +294,7 @@ function Field({
       <label htmlFor={id} className="field-label">
         {label} {required && <span className="text-accent">*</span>}
       </label>
-      <input id={id} type={type} required={required} defaultValue={defaultValue} className="field-input" />
+      <input id={id} name={name ?? id} type={type} required={required} defaultValue={defaultValue} className="field-input" />
     </div>
   )
 }

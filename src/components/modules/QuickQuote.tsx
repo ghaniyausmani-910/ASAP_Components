@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { track } from '@/lib/analytics'
 
 export function QuickQuote({ variant = 'bar' }: { variant?: 'bar' | 'card' }) {
   const router = useRouter()
@@ -10,6 +11,7 @@ export function QuickQuote({ variant = 'bar' }: { variant?: 'bar' | 'card' }) {
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
+    track('rfq_start', { source: variant === 'card' ? 'quickquote_card' : 'quickquote_bar', part_no: f.partNo || undefined })
     const params = new URLSearchParams()
     if (f.partNo) params.set('partno', f.partNo)
     if (f.qty) params.set('qty', f.qty)

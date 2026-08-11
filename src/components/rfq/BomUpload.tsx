@@ -5,6 +5,7 @@ import { Upload, FileCheck2, Download, AlertCircle, X } from 'lucide-react'
 import { BomReview } from '@/components/rfq/BomReview'
 import { parseBomText, type ParsedBomRow } from '@/lib/rfq/parseBom'
 import { cn } from '@/lib/utils'
+import { track } from '@/lib/analytics'
 
 /** File extensions we parse client-side for instant auto-fill. */
 const PARSEABLE = ['.csv', '.txt']
@@ -62,6 +63,7 @@ export function BomUpload({
     if (!parseable) {
       // .xls / .xlsx / .pdf → attach only, we'll process manually. The form still
       // collapses (the file carries the parts), just with no on-screen count.
+      track('bom_upload', { file_name: file.name, parts_count: 0, format: ext })
       onActiveChange?.(true, 0, file.name)
       return
     }
@@ -78,6 +80,7 @@ export function BomUpload({
       }
       setRows(result.rows)
       setSkipped(result.skipped)
+      track('bom_upload', { file_name: file.name, parts_count: result.rows.length, format: ext })
       onActiveChange?.(true, result.rows.length, file.name)
     }
     reader.onerror = () => {

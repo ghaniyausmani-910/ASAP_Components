@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { track } from '@/lib/analytics'
 
 export function InstantRfqQuickForm() {
   const router = useRouter()
@@ -11,6 +12,7 @@ export function InstantRfqQuickForm() {
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
+    track('rfq_start', { source: 'quick_form', part_no: f.partNo || undefined })
     const p = new URLSearchParams()
     if (f.partNo) p.set('partno', f.partNo)
     if (f.qty) p.set('qty', f.qty)

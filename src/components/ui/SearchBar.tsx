@@ -8,6 +8,7 @@ import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 import { Select } from '@/components/ui/Select'
 import { searchTargetHref } from '@/lib/data/suggestions'
+import { track } from '@/lib/analytics'
 
 const TYPES = ['Part Number', 'NSN', 'CAGE Code', 'Manufacturer']
 
@@ -42,6 +43,7 @@ export function SearchBar({
     // a pre-filled RFQ instead — keeping /search out of history so Back doesn't
     // loop. Shared with the command palette so both agree on the destination.
     const href = searchTargetHref(value, searchType)
+    if (value.trim()) track('search', { query: value.trim(), source: 'searchbar' })
     if (href) router.push(href)
   }
 
@@ -50,6 +52,7 @@ export function SearchBar({
     // A suggestion points at one specific thing — deep-link to its page.
     // Falls back to the listing if a row ever lacks an href.
     if (s.href) {
+      track('search', { query: s.value, source: 'searchbar' })
       router.push(s.href)
     } else {
       go(s.value, s.type)

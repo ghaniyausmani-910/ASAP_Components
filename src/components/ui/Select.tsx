@@ -20,6 +20,7 @@ export function Select({
   placeholder = 'Select…',
   required,
   id,
+  name,
   ariaLabel,
   variant = 'field',
   size = 'md',
@@ -32,6 +33,8 @@ export function Select({
   placeholder?: string
   required?: boolean
   id?: string
+  /** Sets the hidden native <select> name so the value is captured in FormData. */
+  name?: string
   ariaLabel?: string
   variant?: 'field' | 'bare'
   size?: 'sm' | 'md' | 'lg'
@@ -115,6 +118,7 @@ export function Select({
       <select
         aria-hidden
         tabIndex={-1}
+        name={name}
         required={required}
         value={selected}
         onChange={(e) => choose(e.target.value)}
