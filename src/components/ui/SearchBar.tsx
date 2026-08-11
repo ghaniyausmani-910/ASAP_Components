@@ -8,6 +8,7 @@ import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 import { Select } from '@/components/ui/Select'
 import { searchTargetHref } from '@/lib/data/suggestions'
+import { track } from '@/lib/analytics'
 
 const TYPES = ['Part Number', 'NSN', 'CAGE Code', 'Manufacturer']
 
@@ -42,6 +43,7 @@ export function SearchBar({
     // a pre-filled RFQ instead — keeping /search out of history so Back doesn't
     // loop. Shared with the command palette so both agree on the destination.
     const href = searchTargetHref(value, searchType)
+    if (value.trim()) track('search', { query: value.trim(), source: 'searchbar' })
     if (href) router.push(href)
   }
 
@@ -50,6 +52,7 @@ export function SearchBar({
     // A suggestion points at one specific thing — deep-link to its page.
     // Falls back to the listing if a row ever lacks an href.
     if (s.href) {
+      track('search', { query: s.value, source: 'searchbar' })
       router.push(s.href)
     } else {
       go(s.value, s.type)
@@ -115,8 +118,8 @@ export function SearchBar({
         <button
           type="submit"
           className={cn(
-            'flex items-center gap-2 whitespace-nowrap bg-accent px-5 font-body font-semibold text-white transition-colors hover:bg-accent-hover',
-            size === 'lg' ? 'text-body px-7' : 'text-sm',
+            'flex items-center gap-2 whitespace-nowrap bg-accent px-3.5 font-body font-semibold text-white transition-colors hover:bg-accent-hover',
+            size === 'lg' ? 'text-body px-6' : 'text-sm',
           )}
         >
           <Search size={size === 'lg' ? 20 : 16} strokeWidth={2.5} />
@@ -142,9 +145,11 @@ export function SearchBar({
         <kbd
           aria-hidden="true"
           className={cn(
-            'hidden shrink-0 items-center gap-0.5 self-center border px-2 font-mono text-xs lg:flex',
+            'hidden shrink-0 items-center gap-1 self-center border px-2.5 font-mono text-sm font-medium lg:flex',
             h,
-            onDark ? 'border-white/30 text-white/70' : 'border-inputline text-tertiary',
+            onDark
+              ? 'border-white/50 bg-white/10 text-white'
+              : 'border-inputline bg-surface text-secondary',
           )}
         >
           {isMac ? '⌘' : 'Ctrl'} K

@@ -3,8 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container } from '@/components/ui/primitives'
-import { RfqForm } from '@/components/rfq/RfqForm'
-import { BomUpload } from '@/components/rfq/BomUpload'
+import { RfqWithBom } from '@/components/rfq/RfqWithBom'
 import { Certifications } from '@/components/modules/Certifications'
 import { getCategory } from '@/lib/data/catalog'
 import { findPart, relatedParts } from '@/lib/data/parts'
@@ -67,13 +66,7 @@ export default function PartDetailPage({ params }: { params: Params }) {
           </p>
 
           {/* Compact RFQ */}
-          <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-start">
-            <RfqForm variant="compact" defaults={{ partNo, manufacturer: part.manufacturer }} />
-          </div>
-
-          <div className="mt-6">
-            <BomUpload />
-          </div>
+          <RfqWithBom variant="compact" defaults={{ partNo, manufacturer: part.manufacturer }} className="mt-8" />
 
           <p className="mt-8 max-w-3xl text-sm text-secondary">
             Thank you for your interest in ASAP Components, an ASAP Semiconductor owned website with a large inventory of

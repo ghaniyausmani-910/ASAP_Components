@@ -20,7 +20,7 @@ export default function PolicyPage({ params }: { params: { slug: string } }) {
   return (
     <>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: policy.title }]} />
-      <PageHero eyebrow="Policies" title={policy.title} intro={policy.intro} />
+      <PageHero eyebrow="Policies" title={policy.title} intro={policy.intro} center />
       <section className="section-y bg-white">
         <Container>
           <div className="mx-auto max-w-2xl space-y-6">

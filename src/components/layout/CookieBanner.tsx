@@ -1,13 +1,20 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { updateConsent } from '@/lib/analytics'
+
+const CONSENT_KEY = 'asap-cookie-consent'
 
 export function CookieBanner() {
   const [show, setShow] = useState(false)
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem('asap-cookie-consent')) setShow(true)
+      const prior = localStorage.getItem(CONSENT_KEY)
+      if (!prior) setShow(true)
+      // Re-apply a prior choice on every load so analytics honours it before
+      // the visitor sees the banner again.
+      else updateConsent(prior === 'accepted')
     } catch {
       setShow(true)
     }
@@ -15,8 +22,9 @@ export function CookieBanner() {
 
   function decide(value: 'accepted' | 'declined') {
     try {
-      localStorage.setItem('asap-cookie-consent', value)
+      localStorage.setItem(CONSENT_KEY, value)
     } catch {}
+    updateConsent(value === 'accepted')
     setShow(false)
   }
 

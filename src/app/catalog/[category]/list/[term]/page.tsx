@@ -24,6 +24,7 @@ export default function ListingPage({ params }: { params: { category: string; te
   const category = getCategory(params.category)
   if (!category) notFound()
   const label = deslug(params.term)
+  const isManufacturer = MANUFACTURERS.some((x) => slugify(x) === params.term)
   const parts = generateParts(`term:${params.category}:${params.term}`, 75, { withDescription: true })
 
   return (
@@ -46,7 +47,7 @@ export default function ListingPage({ params }: { params: { category: string; te
                 request a quote directly — answered within 15 minutes, 24/7.
               </p>
               <div className="mt-10">
-                <PartsListingTable parts={parts} categorySlug={category.slug} showDescription />
+                <PartsListingTable parts={parts} categorySlug={category.slug} showDescription hideManufacturerFacet={isManufacturer} />
               </div>
             </div>
             <RfqSidebar contextLabel={category.label.split(' ')[0]} />

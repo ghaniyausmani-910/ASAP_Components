@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container } from '@/components/ui/primitives'
-import { RfqForm } from '@/components/rfq/RfqForm'
-import { BomUpload } from '@/components/rfq/BomUpload'
+import { RfqWithBom } from '@/components/rfq/RfqWithBom'
 import { RfqTrustSidebar } from '@/components/rfq/RfqTrustSidebar'
 import { Certifications } from '@/components/modules/Certifications'
 
@@ -34,10 +33,7 @@ export default function InstantRfqPage({
           </div>
 
           <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_320px]">
-            <div className="space-y-6">
-              <RfqForm variant="full" defaults={{ partNo: searchParams.partno, qty: searchParams.qty, email: searchParams.email }} />
-              <BomUpload />
-            </div>
+            <RfqWithBom variant="full" defaults={{ partNo: searchParams.partno, qty: searchParams.qty, email: searchParams.email }} />
             <RfqTrustSidebar />
           </div>
         </Container>

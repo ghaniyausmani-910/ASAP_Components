@@ -33,6 +33,8 @@ export function SearchResults({
 
   // Selected category slugs. Empty set = no refinement (show everything).
   const [selected, setSelected] = useState<Set<string>>(new Set())
+  // Selected manufacturer names.
+  const [makers, setMakers] = useState<Set<string>>(new Set())
 
   function toggle(slug: string) {
     setSelected((prev) => {
@@ -43,8 +45,18 @@ export function SearchResults({
     })
   }
 
-  const visible = selected.size === 0 || selected.has(categorySlug)
-  const rows = visible ? [part] : []
+  function toggleMaker(name: string) {
+    setMakers((prev) => {
+      const next = new Set(prev)
+      if (next.has(name)) next.delete(name)
+      else next.add(name)
+      return next
+    })
+  }
+
+  const categoryOk = selected.size === 0 || selected.has(categorySlug)
+  const makerOk = makers.size === 0 || makers.has(part.manufacturer)
+  const rows = categoryOk && makerOk ? [part] : []
 
   return (
     <div className="grid gap-10 lg:grid-cols-[220px_1fr]">
@@ -71,6 +83,27 @@ export function SearchResults({
                 </label>
               </li>
             ))}
+          </ul>
+        </div>
+
+        <div className="mt-6 border-t border-hairline pt-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.08em] text-tertiary">Manufacturer</p>
+          <ul className="mt-3 space-y-2.5">
+            <li>
+              <label className="flex cursor-pointer items-center justify-between gap-2 text-sm text-secondary hover:text-ink">
+                <span className="flex items-center gap-2.5">
+                  <input
+                    type="checkbox"
+                    checked={makers.has(part.manufacturer)}
+                    onChange={() => toggleMaker(part.manufacturer)}
+                    className="h-4 w-4 accent-accent"
+                    aria-label={`Filter by ${part.manufacturer}`}
+                  />
+                  {part.manufacturer}
+                </span>
+                <span className="tabular-nums text-tertiary">1</span>
+              </label>
+            </li>
           </ul>
         </div>
       </aside>

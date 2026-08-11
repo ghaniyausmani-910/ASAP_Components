@@ -70,7 +70,7 @@ function ManufacturerCell({ m }: { m: ManufacturerCard }) {
       <Link
         href={`/catalog/aviation/list/${m.slug}`}
         aria-label={`View ${m.name} parts`}
-        className="group relative flex h-full min-h-[240px] flex-col border border-hairline bg-surface p-5 transition-[transform,box-shadow,border-color,background-color] duration-300 ease-out hover:-translate-y-1 hover:border-transparent hover:bg-white hover:shadow-hover focus-visible:-translate-y-1 focus-visible:border-transparent focus-visible:bg-white focus-visible:shadow-hover focus-visible:outline-none lg:min-h-[240px] lg:p-6"
+        className="group relative flex h-full min-h-[240px] flex-col border border-[color:var(--ink-8)] bg-surface p-5 transition-[transform,box-shadow,border-color,background-color] duration-300 ease-out hover:-translate-y-1 hover:border-transparent hover:bg-white hover:shadow-hover focus-visible:-translate-y-1 focus-visible:border-transparent focus-visible:bg-white focus-visible:shadow-hover focus-visible:outline-none lg:min-h-[240px] lg:p-6"
       >
         {/* Accent keyline — draws in on hover/focus to single out the active card */}
         <span className="absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-x-100 group-focus-visible:scale-x-100" />

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { track } from '@/lib/analytics'
 
 export function InlineRfqForm({ theme = 'dark' }: { theme?: 'dark' | 'light' }) {
   const router = useRouter()
@@ -11,6 +12,7 @@ export function InlineRfqForm({ theme = 'dark' }: { theme?: 'dark' | 'light' }) 
   function submit(e: React.FormEvent) {
     e.preventDefault()
     const q = partNo.trim()
+    track('rfq_start', { source: 'inline', part_no: q || undefined })
     router.push(q ? `/instant-rfq?partno=${encodeURIComponent(q)}` : '/instant-rfq')
   }
 

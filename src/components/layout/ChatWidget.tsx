@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { MessageSquare, X, Send } from 'lucide-react'
+import { track } from '@/lib/analytics'
 
 /** Parse an rgb/rgba string into [r,g,b,a]; returns null if fully transparent/unparseable. */
 function parseColor(value: string): [number, number, number, number] | null {
@@ -74,7 +75,10 @@ export function ChatWidget() {
       )}
       <button
         ref={buttonRef}
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          if (!open) track('chat_open', {})
+          setOpen((v) => !v)
+        }}
         aria-label="Open chat"
         className={
           onDark

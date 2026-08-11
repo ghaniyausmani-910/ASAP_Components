@@ -5,15 +5,14 @@ import { useMemo, useState } from 'react'
 import { Search } from 'lucide-react'
 import type { DirectoryGroup } from '@/lib/data/parts'
 import { cn } from '@/lib/utils'
+import { RangePills, rangeTest, ALPHA_RANGES, type AlphaRange } from '@/components/catalog/filters/RangePills'
 
-const ALPHA_RANGES: { label: string; test: (k: string) => boolean }[] = [
+// Numeric directories (NIIN / NSN) are grouped by leading digit — bucket the pills accordingly.
+const NUMERIC_RANGES: AlphaRange[] = [
   { label: 'All', test: () => true },
-  { label: '0-9', test: (k) => /[0-9]/.test(k) },
-  { label: 'A-E', test: (k) => k >= 'A' && k <= 'E' },
-  { label: 'F-J', test: (k) => k >= 'F' && k <= 'J' },
-  { label: 'K-O', test: (k) => k >= 'K' && k <= 'O' },
-  { label: 'P-T', test: (k) => k >= 'P' && k <= 'T' },
-  { label: 'U-Z', test: (k) => k >= 'U' && k <= 'Z' },
+  { label: '0–2', test: (k) => k >= '0' && k <= '2' },
+  { label: '3–5', test: (k) => k >= '3' && k <= '5' },
+  { label: '6–9', test: (k) => k >= '6' && k <= '9' },
 ]
 
 export function DirectoryIndex({
@@ -30,16 +29,19 @@ export function DirectoryIndex({
   const [q, setQ] = useState('')
   const [range, setRange] = useState('All')
 
+  const ranges = numeric ? NUMERIC_RANGES : ALPHA_RANGES
+
   const view = useMemo(() => {
     const term = q.trim().toLowerCase()
+    const inRange = rangeTest(range, ranges)
     return groups
-      .filter((g) => (numeric ? true : ALPHA_RANGES.find((r) => r.label === range)!.test(g.key)))
+      .filter((g) => inRange(g.key.toUpperCase()))
       .map((g) => ({
         ...g,
         entries: term ? g.entries.filter((e) => e.label.toLowerCase().includes(term)) : g.entries,
       }))
       .filter((g) => g.entries.length > 0)
-  }, [groups, q, range, numeric])
+  }, [groups, q, range, ranges])
 
   return (
     <div>
@@ -55,22 +57,7 @@ export function DirectoryIndex({
             aria-label="Search directory"
           />
         </div>
-        {!numeric && (
-          <div className="flex flex-wrap gap-1.5">
-            {ALPHA_RANGES.map((r) => (
-              <button
-                key={r.label}
-                onClick={() => setRange(r.label)}
-                className={cn(
-                  'px-3 py-1.5 text-xs font-semibold',
-                  range === r.label ? 'bg-accent text-white' : 'border border-hairline text-secondary hover:border-accent hover:text-accent',
-                )}
-              >
-                {r.label}
-              </button>
-            ))}
-          </div>
-        )}
+        <RangePills value={range} onChange={setRange} ranges={ranges} />
       </div>
 
       {/* Groups */}
