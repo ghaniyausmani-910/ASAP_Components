@@ -36,11 +36,11 @@ type Leader = {
   name: string
   role: string
   bio: string
-  /** DUMMY placeholder portrait — high-res professional headshot from Unsplash
-   *  (~800×1000), standing in for a real team photo. Swap for a real,
-   *  self-hosted image in /public/about before shipping (external URLs need a
-   *  network connection to render). */
-  photo: string
+  /** Portrait for the plate. Intentionally omitted for now — the client will
+   *  supply real headshots. When provided (self-hosted under /public/about),
+   *  PlateBackground renders it under the scrim; until then the plate shows the
+   *  deep-navy backdrop alone. No stand-in/stock imagery. */
+  photo?: string
 }
 
 const LEADERS: Leader[] = [
@@ -48,31 +48,26 @@ const LEADERS: Leader[] = [
     name: 'Marcus Feld',
     role: 'President & Chief Executive Officer',
     bio: 'Sets the strategy that turns a 10-million-part catalog into a same-day sourcing partner for civil and defense programs.',
-    photo: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&h=1000&q=80',
   },
   {
     name: 'Elena Vasquez',
     role: 'VP, Global Sourcing & Procurement',
     bio: 'Runs the 5,100-manufacturer supplier network and vendor relationships behind every quote we return.',
-    photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=800&h=1000&q=80',
   },
   {
     name: 'David Chen',
     role: 'Director, Quality & Compliance',
     bio: 'Owns the AS9120B and ISO 9001:2015 systems that keep every shipment fully traceable and audit-ready.',
-    photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&h=1000&q=80',
   },
   {
     name: 'Priya Nair',
     role: 'Head of AOG Rapid-Response',
     bio: 'Leads the 24/7 desk that gets AOG-critical hardware identified, quoted, and moving in minutes.',
-    photo: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=800&h=1000&q=80',
   },
   {
     name: 'James Whitmore',
     role: 'VP, Customer Success',
     bio: 'Makes sure procurement teams stay on schedule from first quote through delivery and reorder.',
-    photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&h=1000&q=80',
   },
 ]
 
@@ -209,33 +204,40 @@ export function LeadershipRail() {
 }
 
 /**
- * Shared plate backdrop: a photo under a bottom-heavy navy scrim. The photo
- * sits slightly dimmed + desaturated when the plate is idle and warms to full
- * colour on focus; the scrim keeps the white name/role/bio legible over any
- * image (DESIGN.md §2 usage rule, §7 imagery).
+ * Shared plate backdrop: an optional photo under a bottom-heavy navy scrim.
+ * When a photo is supplied it sits slightly dimmed + desaturated while idle and
+ * warms to full colour on focus; the scrim keeps the white name/role/bio
+ * legible over any image (DESIGN.md §2 usage rule, §7 imagery).
+ *
+ * No photo yet (awaiting client imagery): the plate is the deep-navy backdrop
+ * (bg-ink-900 on the parent) plus this scrim — the container, expansion, and
+ * hover/focus micro-interactions are unchanged.
  */
-function PlateBackground({ photo, isActive }: { photo: string; isActive: boolean }) {
+function PlateBackground({ photo, isActive }: { photo?: string; isActive: boolean }) {
   return (
     <>
-      {/* Photo layer — object-top keeps faces in frame as the plate narrows.
-          On load error (offline/CSP) it hides itself, leaving the navy plate
-          as a clean fallback. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={photo}
-        alt=""
-        loading="lazy"
-        onError={(e) => {
-          e.currentTarget.style.display = 'none'
-        }}
-        className={cn(
-          'absolute inset-0 -z-10 h-full w-full object-cover object-top',
-          'motion-safe:transition-[transform,filter,opacity] motion-safe:duration-700 motion-safe:[transition-timing-function:cubic-bezier(.22,1,.36,1)]',
-          isActive
-            ? 'opacity-100 [filter:saturate(1)] motion-safe:scale-105'
-            : 'opacity-90 [filter:saturate(0.55)_brightness(0.85)]',
-        )}
-      />
+      {/* Photo layer — rendered only once a real portrait is supplied.
+          object-top keeps faces in frame as the plate narrows; on load error
+          (offline/CSP) it hides itself, leaving the navy plate as a clean
+          fallback. */}
+      {photo && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={photo}
+          alt=""
+          loading="lazy"
+          onError={(e) => {
+            e.currentTarget.style.display = 'none'
+          }}
+          className={cn(
+            'absolute inset-0 -z-10 h-full w-full object-cover object-top',
+            'motion-safe:transition-[transform,filter,opacity] motion-safe:duration-700 motion-safe:[transition-timing-function:cubic-bezier(.22,1,.36,1)]',
+            isActive
+              ? 'opacity-100 [filter:saturate(1)] motion-safe:scale-105'
+              : 'opacity-90 [filter:saturate(0.55)_brightness(0.85)]',
+          )}
+        />
+      )}
       {/* Navy scrim — bottom-heavy for text legibility */}
       <span
         aria-hidden
