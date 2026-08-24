@@ -8,6 +8,7 @@ import { Container } from '@/components/ui/primitives'
 import { BlogSidebar } from '@/components/blog/BlogSidebar'
 import { SearchBar } from '@/components/ui/SearchBar'
 import { Certifications } from '@/components/modules/Certifications'
+import { EndPageCta } from '@/components/modules/EndPageCta'
 import { BLOG_POSTS, getPost } from '@/lib/data/blog'
 import { gradient } from '@/lib/gradients'
 import { formatDate } from '@/lib/utils'
@@ -127,6 +128,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           </div>
         </Container>
       </section>
+
+      <EndPageCta />
 
       <Certifications />
     </>

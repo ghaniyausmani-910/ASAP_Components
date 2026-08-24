@@ -4,6 +4,7 @@ import { AboutVision } from '@/components/about/AboutVision'
 import { LeadershipRail } from '@/components/about/LeadershipRail'
 import { Container } from '@/components/ui/primitives'
 import { Certifications } from '@/components/modules/Certifications'
+import { EndPageCta } from '@/components/modules/EndPageCta'
 
 export const metadata: Metadata = {
   title: 'About ASAP',
@@ -45,6 +46,8 @@ export default function AboutPage() {
       <AboutVision />
 
       <LeadershipRail />
+
+      <EndPageCta />
 
       <Certifications />
     </>
