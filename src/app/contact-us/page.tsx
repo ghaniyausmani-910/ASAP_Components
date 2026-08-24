@@ -17,33 +17,33 @@ export default function ContactPage() {
     <>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Contact Us' }]} />
 
-      <section className="section-y bg-white">
+      {/* B1 · at desktop the form sits on the right of the header row so its
+          submit lands above the 1080 fold; below lg the original vertical
+          order is preserved. The 4 contact-info cards stay below on all
+          viewports — they aren't part of the conversion path. */}
+      <section className="bg-white pb-[clamp(64px,10vw,160px)] pt-6 lg:pt-8">
         <Container>
-          {/* Header: heading left, CTA right */}
-          <ScrollReveal>
-            <div className="grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-12">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,560px)] lg:items-start lg:gap-12">
+            <ScrollReveal>
               <div>
                 <p className="eyebrow">Get in touch</p>
-                <h1 className="mt-3 font-display text-h2 font-light tracking-tight-2 text-ink">
+                <h1 className="mt-2 font-display text-h2 font-light tracking-tight-2 text-ink">
                   Contact <span className="text-tertiary">Our Team</span>
                 </h1>
+                <p className="mt-4 text-body-lg text-secondary">
+                  <Link href="/instant-rfq" className="font-semibold text-accent">Submit an Instant RFQ →</Link>
+                </p>
               </div>
-              <p className="text-body-lg lg:text-right">
-                <Link href="/instant-rfq" className="font-semibold text-accent">Submit an Instant RFQ →</Link>
-              </p>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
 
-          {/* Contact info cards */}
+            <ScrollReveal delay={120}>
+              <ContactForm />
+            </ScrollReveal>
+          </div>
+
+          {/* Contact info cards — supporting detail below the primary path. */}
           <ScrollReveal delay={80}>
             <ContactCards className="mt-12" />
-          </ScrollReveal>
-
-          {/* Form */}
-          <ScrollReveal delay={120}>
-            <div className="mt-12">
-              <ContactForm />
-            </div>
           </ScrollReveal>
         </Container>
       </section>
