@@ -15,7 +15,7 @@ export function BomUpload() {
           <p className="font-display text-lg font-medium">Have multiple parts?</p>
           <p className="mt-1 text-sm text-white/70">Upload your parts list or Bill of Materials (BOM) and we&apos;ll quote the whole list.</p>
         </div>
-        <label className="btn btn-primary cursor-pointer whitespace-nowrap">
+        <label className="btn btn-inverse cursor-pointer whitespace-nowrap">
           {file ? <><FileCheck2 size={16} /> {file}</> : <><Upload size={16} /> Upload BOM</>}
           <input
             type="file"

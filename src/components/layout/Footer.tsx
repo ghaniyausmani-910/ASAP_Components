@@ -20,7 +20,7 @@ export function Footer() {
             </p>
           </div>
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
-            <Link href="/instant-rfq" className="btn btn-primary">Instant RFQ</Link>
+            <Link href="/instant-rfq" className="btn btn-inverse">Instant RFQ</Link>
             <Link href="/catalog/aviation/part-types" className="btn btn-on-dark">Browse Parts</Link>
           </div>
         </div>

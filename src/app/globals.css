@@ -146,6 +146,13 @@
     border-color: rgba(255, 255, 255, 0.5);
   }
   .btn-on-dark:hover { background: #fff; color: var(--color-ink); }
+  /* Inverse — solid white fill with ink text, for the loudest action on a dark
+     band (e.g. the footer CTA banner over the deep-navy floor). */
+  .btn-inverse {
+    background: #fff;
+    color: var(--color-ink);
+  }
+  .btn-inverse:hover { background: rgba(255, 255, 255, 0.88); }
   /* Tertiary — lowest-emphasis action (e.g. "Add Line Item" in the cart table).
      Quieter than .btn-outline: secondary-ink text on a hairline input-line
      border, filling toward the accent on hover. Square, per the design system. */
