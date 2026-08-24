@@ -4,6 +4,7 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container } from '@/components/ui/primitives'
 import { AogForm } from '@/components/rfq/AogForm'
 import { AogPulseDot } from '@/components/rfq/AogPulseDot'
+import { RfqStartTracker } from '@/components/rfq/RfqStartTracker'
 import { Certifications } from '@/components/modules/Certifications'
 import { COMPANY, COMPLIANCE_RIBBON } from '@/lib/data/site'
 
@@ -23,6 +24,8 @@ export default function AogPage() {
   return (
     <>
       <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'AOG' }]} />
+
+      <RfqStartTracker source="aog" />
 
       <section className="section-y bg-white">
         <Container>

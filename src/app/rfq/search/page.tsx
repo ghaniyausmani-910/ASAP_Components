@@ -4,6 +4,7 @@ import { Container } from '@/components/ui/primitives'
 import { RfqForm } from '@/components/rfq/RfqForm'
 import { BomUpload } from '@/components/rfq/BomUpload'
 import { RfqTrustSidebar } from '@/components/rfq/RfqTrustSidebar'
+import { RfqStartTracker } from '@/components/rfq/RfqStartTracker'
 import { SearchBar } from '@/components/ui/SearchBar'
 import { Certifications } from '@/components/modules/Certifications'
 
@@ -28,6 +29,8 @@ export default function SearchRfqPage({
           ...(partno ? [{ label: partno }] : []),
         ]}
       />
+
+      {partno && <RfqStartTracker source="search-miss" partNo={partno} />}
 
       <section className="section-y bg-white">
         <Container>

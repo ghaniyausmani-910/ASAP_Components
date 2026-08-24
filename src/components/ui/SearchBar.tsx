@@ -7,8 +7,9 @@ import { cn } from '@/lib/utils'
 import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 import { Select } from '@/components/ui/Select'
-import { searchTargetHref } from '@/lib/data/suggestions'
+import { searchTargetHref, searchSuggestions } from '@/lib/data/suggestions'
 import { describePartNo } from '@/lib/data/parts'
+import { trackSearch } from '@/lib/analytics'
 import {
   shouldTriggerBulkPaste,
   parseBulkPaste,
@@ -51,6 +52,10 @@ export function SearchBar({
   }, [])
 
   function go(value: string, searchType: string) {
+    // A8: fire the typed search event with results_count so the miss rate is
+    // measurable. A miss (count === 0) is what A1 routes into the pre-filled RFQ.
+    const v = value.trim()
+    if (v) trackSearch(v, searchSuggestions(v, searchType, 50).length, searchType)
     // A query with no genuine catalog match dead-ends on the results page (which
     // fabricates a row for anything), so `searchTargetHref` routes it straight to
     // a pre-filled RFQ instead — keeping /search out of history so Back doesn't

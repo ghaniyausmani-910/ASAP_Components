@@ -20,7 +20,8 @@ import {
 import { cn } from '@/lib/utils'
 import { Highlight } from '@/components/ui/SuggestionsDropdown'
 import { searchCommand } from '@/lib/data/command-search'
-import { searchTargetHref } from '@/lib/data/suggestions'
+import { searchTargetHref, searchSuggestions } from '@/lib/data/suggestions'
+import { trackSearch } from '@/lib/analytics'
 
 const MONO_TYPES = new Set(['Part Number', 'NSN', 'CAGE Code'])
 
@@ -140,6 +141,8 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
         } else {
           // No row highlighted — treat as a free-text submit, same routing as
           // the header search bar (results page, or a pre-filled RFQ on a miss).
+          const v = query.trim()
+          if (v) trackSearch(v, searchSuggestions(v, 'Part Number', 50).length, 'Part Number')
           const href = searchTargetHref(query, 'Part Number')
           if (href) navigate(href)
         }
