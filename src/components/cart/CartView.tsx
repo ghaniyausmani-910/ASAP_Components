@@ -108,7 +108,9 @@ export function CartView() {
         {isEmpty && (
           <div className="mt-10 border border-hairline bg-white p-10 text-center sm:p-16">
             <ShoppingCart size={48} className="mx-auto text-tertiary" />
-            <h2 className="mt-4 font-display text-h4 font-medium">Your cart is empty</h2>
+            {/* C10 · empty-state wording aligns with the "Add to RFQ" row button so the
+                icon reads as a consistent RFQ workflow, not a shop cart. */}
+            <h2 className="mt-4 font-display text-h4 font-medium">Your RFQ is empty</h2>
             <p className="mx-auto mt-2 max-w-md text-secondary">
               Add parts from any search result or catalog listing — or, if you already know the part number, add a
               line item here to build your quote request without searching.

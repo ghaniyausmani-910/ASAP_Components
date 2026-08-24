@@ -27,11 +27,12 @@ export function AddToCartControl({
       <button
         type="button"
         onClick={() => addItem({ partNo, manufacturer, description })}
-        aria-label={`Add ${partNo} to cart`}
+        // C10 · icon stays (universal), wording is "Add to RFQ".
+        aria-label={`Add ${partNo} to RFQ`}
         className="inline-flex items-center justify-center gap-1 whitespace-nowrap border border-navy px-3 py-1.5 text-xs font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
       >
         <ShoppingCart size={14} />
-        <span className="sr-only sm:not-sr-only">Add</span>
+        <span className="sr-only sm:not-sr-only">Add to RFQ</span>
       </button>
     )
   }
