@@ -6,8 +6,11 @@ import { Container } from '@/components/ui/primitives'
 import { RfqForm } from '@/components/rfq/RfqForm'
 import { BomUpload } from '@/components/rfq/BomUpload'
 import { Certifications } from '@/components/modules/Certifications'
+import { StickyPartNumber } from '@/components/catalog/StickyPartNumber'
+import { ViewItemTracker } from '@/components/catalog/ViewItemTracker'
 import { getCategory } from '@/lib/data/catalog'
 import { findPart, relatedParts } from '@/lib/data/parts'
+import { COMPANY } from '@/lib/data/site'
 import { slugify } from '@/lib/utils'
 
 interface Params {
@@ -42,46 +45,60 @@ export default function PartDetailPage({ params }: { params: Params }) {
         ]}
       />
 
+      {/* G1 · fires view_item once the client mounts. Server-rendered content is
+          preserved; the tracker only pushes to dataLayer. */}
+      <ViewItemTracker partNo={partNo} manufacturer={part.manufacturer} category={category.slug} />
+
+      {/* B4 · the part number stays visible while scrolling — a thin sticky rail
+          under the header carries partNo + a jump-to-RFQ so cross-checking stays
+          possible without losing conversion access. */}
+      <StickyPartNumber partNo={partNo} manufacturer={part.manufacturer} />
+
       <section className="section-y bg-white">
         <Container>
-          {/* Part header */}
-          <p className="eyebrow">{category.label} · Submit a Quote</p>
-          <h1 className="mt-3 font-display text-h2 font-light tracking-tight-2">
-            Part number <span className="font-mono font-normal">{partNo}</span> by {part.manufacturer}
-          </h1>
+          {/* B1 · at desktop the compact RFQ sits beside the spec grid so the
+              Submit control lands above the 1080 fold. Below lg it stacks. */}
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start">
+            <div>
+              <p className="eyebrow">{category.label} · Submit a Quote</p>
+              <h1 className="mt-3 font-display text-h2 font-light tracking-tight-2">
+                Part number <span className="font-mono font-normal">{partNo}</span> by {part.manufacturer}
+              </h1>
 
-          <dl className="mt-6 grid gap-px overflow-hidden border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-3">
-            <Meta label="Part Number" value={partNo} mono />
-            <Meta label="Alternate P/N" value={part.altPartNo ?? '—'} mono />
-            <Meta label="Manufacturer" value={part.manufacturer} />
-            <Meta label="NSN" value={part.nsn ?? '—'} mono />
-            <Meta label="CAGE Code" value={part.cageCode ?? '—'} mono />
-            <Meta label="NIIN" value={part.niin ?? '—'} mono />
-          </dl>
+              <dl className="mt-6 grid gap-px overflow-hidden border border-hairline bg-hairline sm:grid-cols-2 lg:grid-cols-2">
+                <Meta label="Part Number" value={partNo} mono />
+                <Meta label="Alternate P/N" value={part.altPartNo ?? '—'} mono />
+                <Meta label="Manufacturer" value={part.manufacturer} />
+                <Meta label="NSN" value={part.nsn ?? '—'} mono />
+                <Meta label="CAGE Code" value={part.cageCode ?? '—'} mono />
+                <Meta label="NIIN" value={part.niin ?? '—'} mono />
+              </dl>
 
-          <p className="mt-6 max-w-3xl text-secondary">
-            Part number <span className="font-mono text-ink">{partNo}</span>
-            {part.description ? <> ({part.description})</> : null} by {part.manufacturer} is available and in stock. Fill
-            out the form below to request a quote — you will receive a response in 15 minutes or less. Last updated:
-            January 2026.
-          </p>
+              <p className="mt-6 max-w-3xl text-secondary">
+                Part number <span className="font-mono text-ink">{partNo}</span>
+                {part.description ? <> ({part.description})</> : null} by {part.manufacturer} is available and in stock.
+                Fill out the form below to request a quote — you will receive a response in 15 minutes or less.
+              </p>
+            </div>
 
-          {/* Compact RFQ */}
-          <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-start">
-            <RfqForm variant="compact" defaults={{ partNo, manufacturer: part.manufacturer }} />
+            {/* Compact RFQ — right column at ≥lg, wraps below the spec grid at mobile. */}
+            <div id="rfq-form">
+              <RfqForm variant="compact" defaults={{ partNo, manufacturer: part.manufacturer }} />
+            </div>
           </div>
 
           <div className="mt-6">
             <BomUpload />
           </div>
 
+          {/* C8 · phone + email flow from COMPANY, never a hardcoded second copy. */}
           <p className="mt-8 max-w-3xl text-sm text-secondary">
             Thank you for your interest in ASAP Components, an ASAP Semiconductor owned website with a large inventory of
             obsolete and hard-to-find military and civil aviation parts. Your request will be reviewed and quoted by one
             of our experienced sales representatives. You can also email your Bill of Materials (BOM) to{' '}
-            <a href="mailto:sales@asap-components.com" className="text-accent">sales@asap-components.com</a> or call us
-            toll-free at <a href="tel:+1-714-705-4780" className="text-accent">+1-714-705-4780</a>. We are available 24/7,
-            365 days a year.
+            <a href={`mailto:${COMPANY.email}`} className="text-accent">{COMPANY.email}</a> or call us toll-free at{' '}
+            <a href={`tel:${COMPANY.phone}`} className="text-accent">{COMPANY.phone}</a>. We are available 24/7, 365 days
+            a year.
           </p>
 
           {/* Related parts */}
