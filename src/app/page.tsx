@@ -40,11 +40,15 @@ export default function HomePage() {
           <div className="animate-fade">
             <div className="max-w-4xl">
               <p className="eyebrow !text-white/70">Aerospace &amp; Defense Parts Distributor</p>
-              <div className="w-fit">
+              {/* H4 · the second-line span used to be `whitespace-nowrap` inside a
+                  `w-fit` wrapper, which overflowed the 390 viewport. Keep the
+                  nowrap at ≥sm (where the composition depends on it), let it wrap
+                  naturally below that. */}
+              <div className="max-w-full sm:w-fit">
                 <h1 className="mt-5 font-display text-[clamp(2.75rem,6vw,5.5rem)] font-[440] leading-[1.1] tracking-tight-3 [text-shadow:0_2px_40px_rgba(11,31,51,0.5)] [text-wrap:balance]">
                   Proudly Supporting
                   <br />
-                  <span className="whitespace-nowrap text-slate-300">The USA and her Allies</span>
+                  <span className="sm:whitespace-nowrap text-slate-300">The USA and her Allies</span>
                 </h1>
                 <p className="mt-6 text-body-lg text-white/80 [text-shadow:0_1px_16px_rgba(11,31,51,0.5)]">
                   Mission-critical aerospace and defense parts — sourced, quoted, and delivered through a
@@ -64,7 +68,9 @@ export default function HomePage() {
       {/* 3 · FEATURED AVIATION PARTS — carousel */}
       <FeaturedCarousel items={FEATURED_HOME} />
 
-      {/* 4 · ABOUT — scroll-scrubbed editorial reveal (content only; animation lives in the component) */}
+      {/* 4 · ABOUT — scroll-scrubbed editorial reveal (content only; animation lives in the component).
+          B2 · the About section carries no CTA of its own; a small route-forward
+          band directly under it closes the section with an existing header label. */}
       <ScrollTextReveal
         label="About Us"
         heading="Searching. Securing. Shipping."
@@ -80,6 +86,16 @@ export default function HomePage() {
           { icon: 'route', title: 'Traceable supply chain', body: 'Full documentation and supply-chain integrity, end to end.', image: '/Cards/traceable-supply-chain.jpg', imageAlt: 'Quality control bench inspecting components beside the quality policy' },
         ]}
       />
+
+      {/* B2 · About section's route forward. Same Instant-RFQ label used in the header. */}
+      <section className="bg-white pb-16">
+        <Container>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/instant-rfq" className="btn btn-primary">Instant RFQ</Link>
+            <Link href="/about-us" className="btn btn-outline">About ASAP</Link>
+          </div>
+        </Container>
+      </section>
 
       {/* 5 · RECENTLY ORDERED PARTS — carousel */}
       <InDemandCarousel items={RECENTLY_ORDERED} />
@@ -104,6 +120,11 @@ export default function HomePage() {
             ASAP-Components guarantees supply chain integrity while offering same-day delivery to seamlessly meet
             your most challenging requirements.
           </ScrollScrubText>
+          {/* B2 · every section carries a route forward. Reuses the Instant RFQ
+              CTA label from the header so no new copy is drafted. */}
+          <div className="mt-10">
+            <Link href="/instant-rfq" className="btn btn-primary">Instant RFQ</Link>
+          </div>
         </Container>
       </section>
 
