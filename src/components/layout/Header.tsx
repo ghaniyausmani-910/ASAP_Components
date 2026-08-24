@@ -7,6 +7,7 @@ import { CATEGORIES } from '@/lib/data/catalog'
 import { Logo } from '@/components/layout/Logo'
 import { SearchBar } from '@/components/ui/SearchBar'
 import { CartButton } from '@/components/cart/CartButton'
+import { AogPulseDot } from '@/components/rfq/AogPulseDot'
 import { cn } from '@/lib/utils'
 
 // About ASAP sits right after Home; Blog and Contact Us close out the row.
@@ -53,7 +54,7 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
         <Logo onDark={onDark} />
 
         {/* Search + CTAs (desktop, top-right) — search flexes, CTAs stay pinned right */}
-        <div className="ml-auto hidden min-w-0 flex-1 items-center gap-4 lg:flex xl:max-w-[46rem]">
+        <div className="ml-auto hidden min-w-0 flex-1 items-center gap-4 lg:flex xl:max-w-[60rem]">
           <div className="min-w-0 flex-1">
             {/* Over the hero the header is dark → the search bar's active stroke
                 flips to white (brand-on-dark); on the solid/scrolled header it
@@ -61,14 +62,31 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
             <SearchBar size="sm" onDark={onDark} shortcut />
           </div>
           <CartButton onDark={onDark} />
+          {/* AOG — secondary/ghost chip, reads quieter than the primary quote
+              CTA beside it, carries the reduced-motion-safe pulse, navigates to
+              the dedicated emergency lane. */}
+          <Link
+            href="/aog"
+            aria-label="AOG: aircraft on ground, emergency RFQ"
+            className={cn('btn shrink-0 gap-2', onDark ? 'btn-on-dark' : 'btn-outline')}
+          >
+            <AogPulseDot /> AOG
+          </Link>
           <Link href="/instant-rfq" className="btn btn-primary group shrink-0">
             Instant RFQ <ArrowUpRight size={16} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
 
         {/* Mobile controls */}
-        <div className="ml-auto flex items-center gap-3 lg:hidden">
+        <div className="ml-auto flex items-center gap-2 lg:hidden">
           <CartButton onDark={onDark} />
+          <Link
+            href="/aog"
+            aria-label="AOG: aircraft on ground, emergency RFQ"
+            className={cn('btn !px-3 !py-2 text-xs gap-1.5', onDark ? 'btn-on-dark' : 'btn-outline')}
+          >
+            <AogPulseDot /> AOG
+          </Link>
           <Link href="/instant-rfq" className="btn btn-primary !px-3 !py-2 text-xs">RFQ</Link>
           <button aria-label="Open menu" onClick={() => setMobileOpen(true)} className={cn('p-2', onDark ? 'text-white' : 'text-ink')}>
             <Menu size={24} />
@@ -154,6 +172,14 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
               <MobileLink key={l.href} href={l.href} onClick={() => setMobileOpen(false)}>{l.label}</MobileLink>
             ))}
             <Link href="/instant-rfq" onClick={() => setMobileOpen(false)} className="btn btn-primary mt-5 w-full">Instant RFQ</Link>
+            <Link
+              href="/aog"
+              onClick={() => setMobileOpen(false)}
+              aria-label="AOG: aircraft on ground, emergency RFQ"
+              className="btn btn-outline mt-3 w-full gap-2"
+            >
+              <AogPulseDot /> AOG — aircraft on ground
+            </Link>
           </div>
         </div>
       )}

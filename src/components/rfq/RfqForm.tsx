@@ -1,8 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { CheckCircle2, Clock, ShieldCheck } from 'lucide-react'
+import { CheckCircle2, Clock, PhoneCall, ShieldCheck } from 'lucide-react'
 import { Select } from '@/components/ui/Select'
+import { AogPulseDot } from '@/components/rfq/AogPulseDot'
+import { trackLead } from '@/lib/analytics'
+import { cn } from '@/lib/utils'
 
 type Variant = 'full' | 'compact'
 
@@ -13,7 +16,17 @@ export interface RfqDefaults {
   email?: string
 }
 
-export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; defaults?: RfqDefaults }) {
+export function RfqForm({
+  variant = 'full',
+  defaults,
+  onAogChange,
+}: {
+  variant?: Variant
+  defaults?: RfqDefaults
+  /** Lets a parent (e.g. the Instant RFQ page) react to the AOG toggle — used
+      to hide non-essential panels like the BOM upload while in AOG mode. */
+  onAogChange?: (aog: boolean) => void
+}) {
   const [sent, setSent] = useState(false)
   const [ref, setRef] = useState('')
   const [aog, setAog] = useState(false)
@@ -21,23 +34,63 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
 
   function toggleAog(checked: boolean) {
     setAog(checked)
-    if (checked) setNeedBy('Immediately')
+    setNeedBy(checked ? 'AOG' : '')
+    onAogChange?.(checked)
   }
 
   function submit(e: React.FormEvent) {
     e.preventDefault()
+    const fd = new FormData(e.currentTarget as HTMLFormElement)
+    const g = (k: string) => String(fd.get(k) ?? '').trim()
+    const name = [g('first'), g('last')].filter(Boolean).join(' ') || g('c-name')
+    const partNo = g('pn') || g('c-pn')
+    const mfr = g('mfr') || g('c-mfr')
+    const qty = g('qty')
+    const company = g('company')
+    const email = g('email') || g('c-email')
+    const phone = g('phone')
+    const comments = g('comments')
+
+    const partSummary = [partNo && `Part: ${partNo}`, mfr && `Mfr: ${mfr}`, qty && `Qty: ${qty}`]
+      .filter(Boolean)
+      .join(' · ')
+    const partLine = partNo ? `AOG request for ${partNo}${mfr ? ` (${mfr})` : ''}.\n` : ''
+    const commentBody = [partSummary, comments].filter(Boolean).join('\n\n')
+
     const id = 'ASAP-' + Math.floor(100000 + Math.random() * 899999)
+    // Section-6 RFQ contract. No endpoint exists on this branch, so success is
+    // mocked (as every form here does); the payload is fully built so wiring a
+    // real POST to /api/rfq later is a one-line change. The aog / method /
+    // PartsBy flags travel in the body — the backend needs no AOG-specific path.
+    const payload = {
+      CustFName: name,
+      CustPhone1: phone,
+      CustEmail: email,
+      CustComp: aog ? 'AOG intake' : company,
+      Comments: aog ? `${partLine}AOG request.\n\n${commentBody}`.trim() : commentBody,
+      PartsBy: aog ? 'AOG' : needBy,
+      aog,
+      method: aog ? 'aog' : 'rfq',
+      ref: id,
+    }
+    void payload
+
     setRef(id)
     setSent(true)
+    trackLead({ method: aog ? 'aog' : 'rfq', ref: id })
   }
 
   if (sent) {
     return (
-      <div className="border border-hairline bg-white p-8 text-center sm:p-12">
+      <div role="status" aria-live="polite" className="border border-hairline bg-white p-8 text-center sm:p-12">
         <CheckCircle2 size={52} className="mx-auto text-success" />
-        <h3 className="mt-4 font-display text-h4 font-medium">Your RFQ has been submitted</h3>
+        <h3 className="mt-4 font-display text-h4 font-medium">
+          {aog ? 'Your AOG request has been submitted' : 'Your RFQ has been submitted'}
+        </h3>
         <p className="mx-auto mt-2 max-w-md text-secondary">
-          A dedicated account manager will respond with a competitive quote — typically within 15 minutes, 24/7 × 365.
+          {aog
+            ? 'A specialist is picking it up now — first response within 15 minutes, day or night.'
+            : 'A dedicated account manager will respond with a competitive quote — typically within 15 minutes, 24/7 × 365.'}
         </p>
         <p className="mt-4 inline-block bg-surface px-4 py-2 font-mono text-sm">Reference: {ref}</p>
         <div className="mt-4">
@@ -77,14 +130,20 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
           <Field id="qty" label="Quantity (ea)" required defaultValue={defaults?.qty} />
           <div>
             <label htmlFor="need" className="field-label">Need Parts By <span className="text-accent">*</span></label>
-            <Select
-              id="need"
-              required
-              ariaLabel="Need Parts By"
-              value={needBy}
-              onChange={setNeedBy}
-              options={['Immediately', '1–2 weeks', '1 month', 'Flexible']}
-            />
+            {aog ? (
+              <div className="field-input flex items-center gap-2 bg-surface font-medium text-ink" aria-live="polite">
+                <AogPulseDot /> AOG — immediate
+              </div>
+            ) : (
+              <Select
+                id="need"
+                required
+                ariaLabel="Need Parts By"
+                value={needBy}
+                onChange={setNeedBy}
+                options={['Immediately', '1–2 weeks', '1 month', 'Flexible']}
+              />
+            )}
           </div>
           <label htmlFor="aog" className="flex cursor-pointer items-start gap-3 text-sm text-secondary sm:col-span-2">
             <input
@@ -123,6 +182,7 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
             <label htmlFor="comments" className="field-label">Comments</label>
             <textarea
               id="comments"
+              name="comments"
               rows={2}
               className="field-input"
               placeholder="Share anything that helps us quote — a target price, acceptable alternates, or preferred condition."
@@ -141,9 +201,19 @@ export function RfqForm({ variant = 'full', defaults }: { variant?: Variant; def
           </span>
         </label>
         <div className="mt-5 flex flex-wrap items-center gap-5">
-          <button type="submit" className="btn btn-primary">Submit RFQ</button>
-          <span className="flex items-center gap-2 text-sm text-tertiary"><Clock size={15} className="text-accent" /> Quotes back within 15 minutes</span>
-          <span className="flex items-center gap-2 text-sm text-tertiary"><ShieldCheck size={15} className="text-accent" /> We never share your information</span>
+          <button type="submit" className={cn('btn', aog ? 'btn-danger' : 'btn-primary')}>
+            {aog ? <><PhoneCall size={16} /> Send AOG request</> : 'Submit RFQ'}
+          </button>
+          <span className="flex items-center gap-2 text-sm text-tertiary">
+            {aog ? (
+              <><ShieldCheck size={15} className="text-accent" /> First response within 15 minutes</>
+            ) : (
+              <><Clock size={15} className="text-accent" /> Quotes back within 15 minutes</>
+            )}
+          </span>
+          {!aog && (
+            <span className="flex items-center gap-2 text-sm text-tertiary"><ShieldCheck size={15} className="text-accent" /> We never share your information</span>
+          )}
         </div>
       </div>
     </form>
@@ -168,7 +238,7 @@ function Field({
       <label htmlFor={id} className="field-label">
         {label} {required && <span className="text-accent">*</span>}
       </label>
-      <input id={id} type={type} required={required} defaultValue={defaultValue} className="field-input" />
+      <input id={id} name={id} type={type} required={required} defaultValue={defaultValue} className="field-input" />
     </div>
   )
 }

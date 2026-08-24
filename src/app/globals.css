@@ -165,6 +165,16 @@
     background: transparent;
     cursor: not-allowed;
   }
+  /* Urgent — the loudest action on the site, reserved for AOG (aircraft on
+     ground) submit + entry point. Filled in the design system's own error
+     token (no new red is introduced); reads louder than .btn-primary's navy
+     so AOG never competes with, but always out-shouts, a normal quote CTA. */
+  .btn-danger {
+    background: var(--color-error);
+    color: #fff;
+  }
+  .btn-danger:hover { background: color-mix(in srgb, var(--color-error) 86%, #000); }
+  .btn-danger:disabled { opacity: 0.65; cursor: not-allowed; }
 
   /* Form controls */
   .field-label {
@@ -296,6 +306,22 @@
   @keyframes row-flash {
     0%, 40% { background-color: var(--color-highlight); }
     100% { background-color: transparent; }
+  }
+
+  /* AOG live-desk pulse — the urgency cue on the AOG chip + page eyebrow.
+     A round status dot in the site's error token, ringed by an expanding
+     "ping" that fades out. The dot itself is always visible; only the ring
+     animates, so the signal survives reduced-motion as a static dot. */
+  .aog-ping {
+    background: var(--color-error);
+    animation: aog-ping 1.6s var(--ease-out) infinite;
+  }
+  @keyframes aog-ping {
+    0% { transform: scale(1); opacity: 0.55; }
+    75%, 100% { transform: scale(2.6); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .aog-ping { animation: none; opacity: 0; }
   }
 
   /* One consistent vertical rhythm for every section site-wide */
