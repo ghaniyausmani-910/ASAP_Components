@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import { CheckCircle2 } from 'lucide-react'
 
@@ -15,7 +16,11 @@ export function ContactForm() {
           Thank you for reaching out. One of our representatives will contact you shortly — typically within 15 minutes
           during business hours.
         </p>
-        <button className="btn btn-outline mt-6" onClick={() => setSent(false)}>Send another message</button>
+        {/* B5 · every end state offers a next step so a returning buyer never dead-ends. */}
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Link href="/search" className="btn btn-outline">Search more parts</Link>
+          <button className="btn btn-primary" onClick={() => setSent(false)}>Send another message</button>
+        </div>
       </div>
     )
   }
@@ -35,8 +40,10 @@ export function ContactForm() {
         <Field label="First Name" required id="fn" />
         <Field label="Last Name" required id="ln" />
         <Field label="Email" type="email" required id="em" />
-        <Field label="Phone" type="tel" id="ph" />
-        <Field label="Company" id="co" />
+        {/* C9 · phone and company are mandatory on the contact form so a part-number
+            inquiry has enough qualification data to be routed into the RFQ table. */}
+        <Field label="Phone" type="tel" required id="ph" />
+        <Field label="Company" required id="co" />
         <Field label="Country" id="cn" />
         <div className="sm:col-span-2">
           <label htmlFor="msg" className="field-label">Message <span className="text-accent">*</span></label>
