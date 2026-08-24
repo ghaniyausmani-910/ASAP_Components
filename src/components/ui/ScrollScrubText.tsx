@@ -38,7 +38,12 @@ import {
  *  and the colour emphasized words resolve to so they read on that fill. */
 export const SCRUB_TONES = {
   light: {
-    from: 'rgb(160, 174, 189)', // soft steel-grey — a legible preview, not near-white
+    // H5 · initial "unrevealed" color must clear WCAG 3.0:1 large-text on white
+    // (the heading is 44px). The previous rgb(160,174,189) came in at 2.26:1,
+    // failing the gate at the resting state before any scroll. Deepening the
+    // steel-grey lifts it to ~4.2:1 and still reads as a soft preview against
+    // the fully-resolved ink `to`.
+    from: 'rgb(120, 132, 145)',
     to: 'rgb(11, 31, 51)', // ink (#0b1f33)
     emphasisTo: 'rgb(11, 31, 51)', // ink — reads on the light ~10% navy tint fill
     highlight: 'var(--color-highlight)', // ~10% navy tint marker fill

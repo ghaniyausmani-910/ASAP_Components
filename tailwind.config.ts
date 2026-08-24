@@ -27,6 +27,9 @@ const config: Config = {
         },
         secondary: 'var(--color-text-secondary)',
         tertiary: 'var(--color-text-tertiary)',
+        // H5 · large-text-only decorative gray. Passes 3.0:1 large-text; do NOT
+        // use for body copy — that's what `text-secondary`/`text-tertiary` are for.
+        decorative: 'var(--color-text-decorative)',
         success: 'var(--color-success)',
         warning: 'var(--color-warning)',
       },

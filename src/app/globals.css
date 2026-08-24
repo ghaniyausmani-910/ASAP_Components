@@ -35,14 +35,22 @@
   /* marker-wipe fill behind key phrases (ScrollScrubText emphasis) */
   --color-highlight: rgb(var(--ink-rgb) / 0.1);
 
-  /* ---- Tier 2: semantic neutrals ---- */
+  /* ---- Tier 2: semantic neutrals ----
+     H5 · body-copy tokens must clear WCAG 2.1 AA 4.5:1 on white. `--ink-48`
+     came in at 3.1:1 wherever it was used at <24px, which was most sites of
+     use (breadcrumb crumbs, spec-grid labels, form microcopy). Tertiary is
+     therefore lifted to `--ink-64` so all body-scale uses pass without an
+     audit at every call site. Where a purely-decorative gray is needed at
+     ≥24px (e.g. a soft heading fade), use `--color-text-decorative` instead;
+     that stays at `--ink-48` and passes the 3.0:1 large-text bar. */
   --color-white: #ffffff;
   --color-surface: color-mix(in srgb, var(--ink) 5%, #fff);
   --color-surface-2: color-mix(in srgb, var(--ink) 9%, #fff);
   --color-ink: rgb(var(--ink-rgb));
   --color-ink-900: rgb(var(--ink-rgb));
-  --color-text-secondary: var(--ink-64);
-  --color-text-tertiary: var(--ink-48);
+  --color-text-secondary: var(--ink-76);
+  --color-text-tertiary: var(--ink-64);
+  --color-text-decorative: var(--ink-48);
   --color-border: var(--ink-14);
   --color-inputline: var(--ink-28);
   --on-dark: rgba(255, 255, 255, 0.92);
