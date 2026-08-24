@@ -77,17 +77,33 @@ export function Header({ variant = 'solid' }: { variant?: 'solid' | 'overlay' })
           </Link>
         </div>
 
-        {/* Mobile controls */}
+        {/* Mobile controls. H4 · at 390px the row must not overflow — hide the
+            standalone AOG and RFQ chips below sm and rely on the hamburger drawer
+            (which carries both). AOG stays visible as a live pulse-dot next to
+            the cart so C6 (AOG visibility) still holds. */}
         <div className="ml-auto flex items-center gap-2 lg:hidden">
           <CartButton onDark={onDark} />
           <Link
             href="/aog"
             aria-label="AOG: aircraft on ground, emergency RFQ"
-            className={cn('btn !px-3 !py-2 text-xs gap-1.5', onDark ? 'btn-on-dark' : 'btn-outline')}
+            className={cn(
+              'hidden sm:inline-flex btn !px-3 !py-2 text-xs gap-1.5',
+              onDark ? 'btn-on-dark' : 'btn-outline',
+            )}
           >
             <AogPulseDot /> AOG
           </Link>
-          <Link href="/instant-rfq" className="btn btn-primary !px-3 !py-2 text-xs">RFQ</Link>
+          <Link
+            href="/aog"
+            aria-label="AOG: aircraft on ground, emergency RFQ"
+            className={cn(
+              'inline-flex h-10 w-10 items-center justify-center sm:hidden',
+              onDark ? 'text-white' : 'text-ink',
+            )}
+          >
+            <AogPulseDot />
+          </Link>
+          <Link href="/instant-rfq" className="hidden sm:inline-flex btn btn-primary !px-3 !py-2 text-xs">RFQ</Link>
           <button aria-label="Open menu" onClick={() => setMobileOpen(true)} className={cn('p-2', onDark ? 'text-white' : 'text-ink')}>
             <Menu size={24} />
           </button>
