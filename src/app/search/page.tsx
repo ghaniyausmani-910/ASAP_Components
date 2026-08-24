@@ -6,9 +6,33 @@ import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container } from '@/components/ui/primitives'
 import { SearchBar } from '@/components/ui/SearchBar'
 import { SearchResults } from '@/components/catalog/SearchResults'
+import { BulkSearchResults, type BulkSearchItem } from '@/components/catalog/BulkSearchResults'
 import { Certifications } from '@/components/modules/Certifications'
 import { searchResult } from '@/lib/data/parts'
+import { lookupPartByNumber } from '@/lib/data/catalog-parts'
 import { hasCatalogMatch } from '@/lib/data/suggestions'
+
+/** Resolve one pasted token to a result row — canonical part if we stock it,
+ *  otherwise a fabricated exact-match row (same behaviour as single search). */
+function resolveToken(token: string): BulkSearchItem {
+  const canon = lookupPartByNumber(token)
+  if (canon) {
+    return {
+      part: {
+        partNo: canon.partNo,
+        manufacturer: canon.manufacturer,
+        description: canon.description,
+        nsn: canon.nsn,
+        niin: canon.niin,
+        cageCode: canon.cageCode,
+        qty: 'Avl',
+      },
+      categorySlug: canon.category,
+    }
+  }
+  const { part, categorySlug } = searchResult(token)
+  return { part, categorySlug }
+}
 
 export const metadata: Metadata = {
   title: 'Search Results',
@@ -18,10 +42,47 @@ export const metadata: Metadata = {
 export default function SearchPage({
   searchParams,
 }: {
-  searchParams: { q?: string; type?: string }
+  searchParams: { q?: string; type?: string; qs?: string }
 }) {
   const q = searchParams.q?.trim()
   const type = searchParams.type
+  const qs = searchParams.qs?.trim()
+
+  // Bulk "search all" — one row per pasted token.
+  if (qs) {
+    const tokens = Array.from(
+      new Set(
+        qs
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean),
+      ),
+    )
+    const items = tokens.map(resolveToken)
+    return (
+      <>
+        <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Search', href: '/search' }, { label: `${tokens.length} items` }]} />
+        <section className="section-y bg-white">
+          <Container>
+            <div className="max-w-3xl">
+              <p className="eyebrow">Bulk search</p>
+              <h1 className="mt-3 font-display text-h2 font-light tracking-tight-2">
+                Results for <span className="font-mono font-normal">{tokens.length}</span> pasted item{tokens.length === 1 ? '' : 's'}
+              </h1>
+              <p className="mt-4 text-body-lg text-secondary">
+                Review the matches below and add any to your RFQ, or open a part to request a quote — answered within 15
+                minutes, 24/7.
+              </p>
+            </div>
+            <div className="mt-10">
+              <BulkSearchResults items={items} />
+            </div>
+          </Container>
+        </section>
+        <Certifications />
+      </>
+    )
+  }
 
   // Direct / shared link to a query we don't stock: funnel to a pre-filled RFQ,
   // mirroring what the search bar does client-side. (Bar submits normally never
