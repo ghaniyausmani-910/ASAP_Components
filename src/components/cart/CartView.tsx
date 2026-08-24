@@ -6,6 +6,7 @@ import { CheckCircle2, Plus, ShoppingCart, Trash2 } from 'lucide-react'
 import { useCart } from '@/lib/cart/CartContext'
 import { QtyStepper } from '@/components/cart/QtyStepper'
 import { DraftLineRow, emptyDraft, isDraftValid, type DraftLine } from '@/components/cart/DraftLineRow'
+import { BomUpload } from '@/components/rfq/BomUpload'
 import { Select } from '@/components/ui/Select'
 import { describePartNo } from '@/lib/data/parts'
 import { cn } from '@/lib/utils'
@@ -18,6 +19,9 @@ export function CartView() {
   // In-place "Add Line Item" entry. The draft is local UI state — never a real
   // CartLine until committed — so a half-typed row never hits localStorage.
   const [draft, setDraft] = useState<DraftLine | null>(null)
+  // A parsed/attached BOM counts as "cart has intent" for layout purposes —
+  // flip to two-column (contact form on the right) even before Send to cart.
+  const [bomUploaded, setBomUploaded] = useState(false)
   const rowRefs = useRef<Map<string, HTMLTableRowElement>>(new Map())
   const [flashKey, setFlashKey] = useState<string | null>(null)
 
@@ -89,38 +93,37 @@ export function CartView() {
     )
   }
 
-  // ── Empty state ───────────────────────────────────────────────
-  // Skipped once a draft is open so the first typed part flips straight to the
-  // table view (a memory-only RFQ needs no catalog visit).
-  if (lines.length === 0 && !draft) {
-    return (
-      <>
-        <PageHeader />
-        <div className="mt-10 border border-hairline bg-white p-10 text-center sm:p-16">
-        <ShoppingCart size={48} className="mx-auto text-tertiary" />
-        <h2 className="mt-4 font-display text-h4 font-medium">Your cart is empty</h2>
-        <p className="mx-auto mt-2 max-w-md text-secondary">
-          Add parts from any search result or catalog listing — or, if you already know the part number, add a line
-          item here to build your quote request without searching.
-        </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <Link href="/catalog/aviation/part-types" className="btn btn-primary">Browse catalog</Link>
-          <button type="button" onClick={handleAddLineItem} className="btn btn-tertiary">
-            <Plus size={16} /> Add Line Item
-          </button>
-        </div>
-        </div>
-      </>
-    )
-  }
-
-  // ── Cart with items ───────────────────────────────────────────
+  // ── Single return: keeps BomUpload mounted across state flips ─
+  // A separate empty-state return would unmount BomUpload the moment it fires
+  // `onBomChange(true)` (Fragment root → grid root), discarding its parsed
+  // result and bouncing us right back to the empty card.
+  const hasCartRows = lines.length > 0 || draft !== null
+  const isEmpty = !hasCartRows && !bomUploaded
   return (
-    <div className="grid gap-10 lg:grid-cols-[1fr_360px] lg:items-start">
+    <div className={isEmpty ? '' : 'grid gap-10 lg:grid-cols-[1fr_360px] lg:items-start'}>
       {/* Header + line items — the scrolling column */}
       <div>
         <PageHeader />
 
+        {isEmpty && (
+          <div className="mt-10 border border-hairline bg-white p-10 text-center sm:p-16">
+            <ShoppingCart size={48} className="mx-auto text-tertiary" />
+            <h2 className="mt-4 font-display text-h4 font-medium">Your cart is empty</h2>
+            <p className="mx-auto mt-2 max-w-md text-secondary">
+              Add parts from any search result or catalog listing — or, if you already know the part number, add a
+              line item here to build your quote request without searching.
+            </p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link href="/catalog/aviation/part-types" className="btn btn-primary">Browse catalog</Link>
+              <button type="button" onClick={handleAddLineItem} className="btn btn-tertiary">
+                <Plus size={16} /> Add Line Item
+              </button>
+            </div>
+          </div>
+        )}
+
+        {hasCartRows && (
+          <>
         <div className="mt-10 flex items-center justify-between">
           <h2 className="font-display text-h4 font-medium">
             {lines.length} {lines.length === 1 ? 'part' : 'parts'} · {totalCount} total qty
@@ -205,9 +208,16 @@ export function CartView() {
         >
           <Plus size={16} /> Add Line Item
         </button>
+          </>
+        )}
+
+        <div className={hasCartRows ? 'mt-8' : 'mt-10'}>
+          <BomUpload onBomChange={setBomUploaded} />
+        </div>
       </div>
 
       {/* Contact form — sticky on desktop, top-aligned with the eyebrow */}
+      {!isEmpty && (
       <form onSubmit={submit} className="h-fit border border-hairline bg-white lg:sticky lg:top-[96px] lg:self-start">
         <p className="border-b border-hairline bg-navy px-5 py-3 font-display text-sm font-medium text-white">
           Request a quote for all parts
@@ -248,6 +258,7 @@ export function CartView() {
           <button type="submit" className="btn btn-primary w-full justify-center">Submit RFQ</button>
         </div>
       </form>
+      )}
     </div>
   )
 }

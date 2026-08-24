@@ -20,12 +20,16 @@ export function RfqForm({
   variant = 'full',
   defaults,
   onAogChange,
+  hasBom = false,
 }: {
   variant?: Variant
   defaults?: RfqDefaults
   /** Lets a parent (e.g. the Instant RFQ page) react to the AOG toggle — used
       to hide non-essential panels like the BOM upload while in AOG mode. */
   onAogChange?: (aog: boolean) => void
+  /** When a BOM is attached (parent-managed), the parts list lives in the BOM,
+      so the Part Details section is hidden — only contact info is collected. */
+  hasBom?: boolean
 }) {
   const [sent, setSent] = useState(false)
   const [ref, setRef] = useState('')
@@ -70,14 +74,14 @@ export function RfqForm({
       Comments: aog ? `${partLine}AOG request.\n\n${commentBody}`.trim() : commentBody,
       PartsBy: aog ? 'AOG' : needBy,
       aog,
-      method: aog ? 'aog' : 'rfq',
+      method: aog ? 'aog' : hasBom ? 'rfq-bom' : 'rfq',
       ref: id,
     }
     void payload
 
     setRef(id)
     setSent(true)
-    trackLead({ method: aog ? 'aog' : 'rfq', ref: id })
+    trackLead({ method: aog ? 'aog' : hasBom ? 'rfq-bom' : 'rfq', ref: id })
   }
 
   if (sent) {
@@ -121,7 +125,8 @@ export function RfqForm({
 
   return (
     <form onSubmit={submit} className="border border-hairline bg-white">
-      {/* Part details */}
+      {/* Part details — hidden when a BOM is attached; the BOM is the parts list. */}
+      {!hasBom && (
       <fieldset className="border-b border-hairline p-6">
         <legend className="float-left mb-4 w-full font-display text-sm font-medium text-navy">Part Details</legend>
         <div className="clear-both grid gap-x-6 gap-y-5 sm:grid-cols-2">
@@ -160,6 +165,7 @@ export function RfqForm({
           </label>
         </div>
       </fieldset>
+      )}
 
       {/* Contact info */}
       <fieldset className="p-6">

@@ -14,8 +14,13 @@ export interface LeadEvent {
 }
 
 export function trackLead(params: LeadEvent) {
+  trackEvent('generate_lead', { ...params })
+}
+
+/** Generic dataLayer push — same no-op-until-GTM behavior as trackLead. */
+export function trackEvent(event: string, params?: Record<string, unknown>) {
   if (typeof window === 'undefined') return
   const w = window as unknown as { dataLayer?: Record<string, unknown>[] }
   w.dataLayer = w.dataLayer || []
-  w.dataLayer.push({ event: 'generate_lead', ...params })
+  w.dataLayer.push({ event, ...(params ?? {}) })
 }
