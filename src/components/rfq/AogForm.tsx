@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { AlertTriangle, ArrowRight, CheckCircle2, Loader2, PhoneCall, ShieldCheck } from 'lucide-react'
 import { Select } from '@/components/ui/Select'
 import { COMPANY } from '@/lib/data/site'
-import { trackLead } from '@/lib/analytics'
+import { trackLead, trackRfqFormStart } from '@/lib/analytics'
 
 // When AOG is raised from a specific part (deep-linked from a part page), the
 // part identity is prepended to the Comments blob — see buildPayload.
@@ -154,7 +154,11 @@ export function AogForm({ defaults }: { defaults?: AogDefaults }) {
           Can&rsquo;t wait? Call the desk directly at{' '}
           <a href={`tel:${COMPANY.phone}`} className="font-medium text-accent">{COMPANY.phone}</a>.
         </p>
-        <Link href="/" className="btn btn-outline mt-6">Back to catalog</Link>
+        {/* B5 · no lane terminates — offer a next search alongside the back-home. */}
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          <Link href="/search" className="btn btn-outline">Search more parts</Link>
+          <Link href="/" className="btn btn-primary">Back to home</Link>
+        </div>
       </div>
     )
   }
@@ -162,7 +166,7 @@ export function AogForm({ defaults }: { defaults?: AogDefaults }) {
   const submitting = status === 'submitting'
 
   return (
-    <form onSubmit={submit} noValidate className="border border-hairline bg-white">
+    <form onSubmit={submit} onFocusCapture={() => trackRfqFormStart('aog')} noValidate className="border border-hairline bg-white">
       {status === 'error' && (
         <div role="alert" className="flex items-start gap-3 border-b border-hairline bg-[color-mix(in_srgb,var(--color-error)_8%,#fff)] p-5 text-sm">
           <AlertTriangle size={18} className="mt-0.5 shrink-0 text-error" />
