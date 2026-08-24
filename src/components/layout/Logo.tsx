@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -50,15 +51,26 @@ export function Logo({
           <span className="font-bold">ASAP</span> <span className="font-normal">Components</span>
         </span>
         {subtitle && (
-          // Tracked to the exact width of the "ASAP Components" wordmark above,
-          // so the two lines lock into one block (parent-logo relationship).
+          // Parent-brand lockup: the "ASAP" wordmark image sits inline in the
+          // subtext to lock this site to the ASAP Semiconductor family.
           <span
             className={cn(
-              'mt-0.5 hidden text-[8.5px] font-medium uppercase tracking-[0.053em] sm:block',
+              'mt-0.5 hidden items-center gap-1 text-[8.5px] font-medium uppercase tracking-[0.053em] sm:inline-flex',
               onDark ? 'text-white/70' : 'text-secondary',
             )}
           >
-            An ASAP Semiconductor Website
+            <Image
+              src={onDark ? '/logos/asap.png' : '/logos/asap-navy.png'}
+              alt="ASAP"
+              width={240}
+              height={71}
+              priority
+              className={cn(
+                'h-[1.1em] w-auto shrink-0',
+                onDark ? 'opacity-70' : 'opacity-80',
+              )}
+            />
+            <span>Semiconductor Website</span>
           </span>
         )}
       </span>
