@@ -23,7 +23,7 @@ export default function ContactPage() {
           viewports — they aren't part of the conversion path. */}
       <section className="bg-white pb-[clamp(64px,10vw,160px)] pt-6 lg:pt-8">
         <Container>
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,560px)] lg:items-start lg:gap-12">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,620px)] lg:items-start lg:gap-12">
             <ScrollReveal>
               <div>
                 <p className="eyebrow">Get in touch</p>

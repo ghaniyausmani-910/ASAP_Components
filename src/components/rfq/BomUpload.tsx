@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Upload, FileCheck2, AlertTriangle, Download, RotateCcw } from 'lucide-react'
+import { Upload, FileCheck2, AlertTriangle, Download, RotateCcw, Trash2 } from 'lucide-react'
 import { useCart } from '@/lib/cart/CartContext'
 import { useToast } from '@/lib/toast/ToastContext'
 import { trackEvent } from '@/lib/analytics'
@@ -81,7 +81,7 @@ export function BomUpload({ onBomChange }: { onBomChange?: (hasBom: boolean) => 
     const n = folded.size
     trackEvent('add_to_cart', { method: 'bom', lines: n })
     showToast({
-      message: `Added ${n} line${n === 1 ? '' : 's'} to your cart`,
+      message: `Added ${n} line${n === 1 ? '' : 's'} to your quote`,
       action: { label: 'Undo', onClick: () => undos.forEach((u) => u()) },
       duration: 9000,
     })
@@ -102,9 +102,14 @@ export function BomUpload({ onBomChange }: { onBomChange?: (hasBom: boolean) => 
           <div>
             <p className="font-display text-sm font-medium text-ink">{result.fileName} attached</p>
             <p className="mt-1 text-sm text-secondary">{result.note}</p>
-            <button type="button" onClick={reset} className="mt-3 inline-flex items-center gap-1.5 text-sm text-accent hover:underline">
-              <RotateCcw size={14} /> Upload a different file
-            </button>
+            <div className="mt-3 flex flex-wrap items-center gap-4">
+              <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-sm text-accent hover:underline">
+                <RotateCcw size={14} /> Upload a different file
+              </button>
+              <button type="button" onClick={reset} className="inline-flex items-center gap-1.5 text-sm text-secondary hover:text-error">
+                <Trash2 size={14} /> Clear
+              </button>
+            </div>
           </div>
         </div>
       </div>

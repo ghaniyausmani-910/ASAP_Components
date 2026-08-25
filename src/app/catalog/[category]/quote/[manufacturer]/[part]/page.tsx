@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Container } from '@/components/ui/primitives'
 import { RfqForm } from '@/components/rfq/RfqForm'
-import { BomUpload } from '@/components/rfq/BomUpload'
 import { Certifications } from '@/components/modules/Certifications'
 import { StickyPartNumber } from '@/components/catalog/StickyPartNumber'
 import { ViewItemTracker } from '@/components/catalog/ViewItemTracker'
@@ -57,8 +56,12 @@ export default function PartDetailPage({ params }: { params: Params }) {
       <section className="section-y bg-white">
         <Container>
           {/* B1 · at desktop the compact RFQ sits beside the spec grid so the
-              Submit control lands above the 1080 fold. Below lg it stacks. */}
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-start">
+              Submit control lands above the 1080 fold. `items-end` bottom-aligns
+              the form with the spec table on the left. The lead-in paragraph is
+              pulled below the grid so the two columns close at the same line.
+              Below lg the columns stack and the paragraph flows in its usual
+              reading order between them. */}
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,420px)] lg:items-end">
             <div>
               <p className="eyebrow">{category.label} · Submit a Quote</p>
               <h1 className="mt-3 font-display text-h2 font-light tracking-tight-2">
@@ -73,12 +76,6 @@ export default function PartDetailPage({ params }: { params: Params }) {
                 <Meta label="CAGE Code" value={part.cageCode ?? '—'} mono />
                 <Meta label="NIIN" value={part.niin ?? '—'} mono />
               </dl>
-
-              <p className="mt-6 max-w-3xl text-secondary">
-                Part number <span className="font-mono text-ink">{partNo}</span>
-                {part.description ? <> ({part.description})</> : null} by {part.manufacturer} is available and in stock.
-                Fill out the form below to request a quote — you will receive a response in 15 minutes or less.
-              </p>
             </div>
 
             {/* Compact RFQ — right column at ≥lg, wraps below the spec grid at mobile. */}
@@ -87,9 +84,11 @@ export default function PartDetailPage({ params }: { params: Params }) {
             </div>
           </div>
 
-          <div className="mt-6">
-            <BomUpload />
-          </div>
+          <p className="mt-6 max-w-3xl text-secondary">
+            Part number <span className="font-mono text-ink">{partNo}</span>
+            {part.description ? <> ({part.description})</> : null} by {part.manufacturer} is available and in stock.
+            Fill out the form below to request a quote — you will receive a response in 15 minutes or less.
+          </p>
 
           {/* C8 · phone + email flow from COMPANY, never a hardcoded second copy. */}
           <p className="mt-8 max-w-3xl text-sm text-secondary">

@@ -12,7 +12,7 @@ export function CartButton({ onDark = false, className }: { onDark?: boolean; cl
   return (
     <Link
       href="/cart"
-      aria-label={`RFQ cart${totalCount > 0 ? `, ${totalCount} item${totalCount === 1 ? '' : 's'}` : ''}`}
+      aria-label={`Quote${totalCount > 0 ? `, ${totalCount} item${totalCount === 1 ? '' : 's'}` : ''}`}
       className={cn(
         'relative inline-flex h-10 w-10 items-center justify-center transition-colors',
         onDark ? 'text-white hover:text-white/80' : 'text-ink hover:text-accent',

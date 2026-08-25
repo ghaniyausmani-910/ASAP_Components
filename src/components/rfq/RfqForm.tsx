@@ -143,12 +143,12 @@ export function RfqForm({
 
   return (
     <form onSubmit={submit} onFocusCapture={onFirstFocus} className="border border-hairline bg-white">
-      {/* B1 · at ≥lg, Part Details + Contact Information sit side-by-side so the
-          submit lands above the 1080 fold. Below lg the two fieldsets stack. */}
-      <div className={cn('grid', !hasBom && 'lg:grid-cols-2 lg:divide-x lg:divide-hairline')}>
+      {/* B1 · Part Details + Contact Information stack vertically on every
+          viewport so the reader completes one section at a time. */}
+      <div className="grid">
       {/* Part details — hidden when a BOM is attached; the BOM is the parts list. */}
       {!hasBom && (
-      <fieldset className="border-b border-hairline p-5 lg:border-b-0">
+      <fieldset className="border-b border-hairline p-5">
         <legend className="float-left mb-4 w-full font-display text-sm font-medium text-navy">Part Details</legend>
         <div className="clear-both grid gap-x-6 gap-y-4 sm:grid-cols-2">
           <Field id="pn" label="Mfg Part Number" required defaultValue={defaults?.partNo} />

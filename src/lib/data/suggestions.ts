@@ -31,6 +31,9 @@ export interface Suggestion {
   type: SuggestionType
   /** Where selecting this row navigates — the specific part, or a manufacturer listing. */
   href: string
+  /** When the row belongs to a labelled group (Recent / Popular) rather than the
+   *  live query result, the dropdown renders a section header ahead of it. */
+  section?: 'recent' | 'popular'
 }
 
 /** Part-detail URL for a canonical part. */
@@ -94,6 +97,18 @@ export const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, '')
  * Prefix matches rank first, then substring matches on the value, then matches
  * that only hit the hint (description / manufacturer / FSC label).
  */
+/**
+ * Popular suggestions for a given type — the top N entries from the pool.
+ * Used as the empty-query state of the search dropdown so the user always sees
+ * something clickable before they start typing.
+ */
+export function popularSuggestions(type: string, limit = 5): Suggestion[] {
+  const kind = (['Part Number', 'NSN', 'CAGE Code', 'Manufacturer'].includes(type) ? type : 'Part Number') as SuggestionType
+  return poolFor(type)
+    .slice(0, limit)
+    .map((s) => ({ value: s.value, hint: s.hint, mfr: s.mfr, type: kind, href: s.href, section: 'popular' }))
+}
+
 export function searchSuggestions(query: string, type: string, limit = 6): Suggestion[] {
   const q = query.trim().toLowerCase()
   if (!q) return []

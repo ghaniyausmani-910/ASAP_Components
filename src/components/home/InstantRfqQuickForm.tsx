@@ -96,7 +96,7 @@ export function InstantRfqQuickForm() {
       <p className="mt-4 text-sm text-tertiary">
         Need to quote many parts at once?{' '}
         <Link href="/instant-rfq" className="font-medium text-accent underline underline-offset-2 hover:text-accent-hover">
-          Use the RFQ cart
+          Use the quote request
         </Link>{' '}
         and submit them as one collection.
       </p>

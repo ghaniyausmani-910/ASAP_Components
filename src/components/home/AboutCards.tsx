@@ -20,7 +20,14 @@ const DEFAULT_CARDS: AboutCardData[] = [
   { icon: 'route', title: 'Traceable supply chain', body: 'Full documentation and supply-chain integrity, end to end.' },
 ]
 
-export function AboutCards({ cards = DEFAULT_CARDS }: { cards?: AboutCardData[] }) {
+export function AboutCards({
+  cards = DEFAULT_CARDS,
+  actions,
+}: {
+  cards?: AboutCardData[]
+  /** Optional left-aligned actions rendered on the same row as the arrow nav. */
+  actions?: React.ReactNode
+}) {
   const trackRef = useRef<HTMLDivElement>(null)
   const [atStart, setAtStart] = useState(true)
   const [atEnd, setAtEnd] = useState(false)
@@ -100,14 +107,18 @@ export function AboutCards({ cards = DEFAULT_CARDS }: { cards?: AboutCardData[] 
         ))}
       </div>
 
-      {/* Arrow nav — end-aware, right-aligned under the row. */}
-      <div className="mt-6 flex items-center justify-end gap-3">
-        <NavButton label="Previous cards" disabled={atStart} onClick={() => page(-1)}>
-          <ArrowLeft size={18} />
-        </NavButton>
-        <NavButton label="Next cards" disabled={atEnd} onClick={() => page(1)}>
-          <ArrowRight size={18} />
-        </NavButton>
+      {/* Arrow nav — end-aware. When `actions` are supplied they sit on the
+          left of this row so the section's CTAs top-align with the arrows. */}
+      <div className="mt-6 flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-3">{actions}</div>
+        <div className="flex items-center gap-3">
+          <NavButton label="Previous cards" disabled={atStart} onClick={() => page(-1)}>
+            <ArrowLeft size={18} />
+          </NavButton>
+          <NavButton label="Next cards" disabled={atEnd} onClick={() => page(1)}>
+            <ArrowRight size={18} />
+          </NavButton>
+        </div>
       </div>
     </div>
   )

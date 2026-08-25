@@ -2,11 +2,15 @@
 
 import { useState } from 'react'
 import { RfqForm, type RfqDefaults } from '@/components/rfq/RfqForm'
+import { AogForm } from '@/components/rfq/AogForm'
 import { BomUpload } from '@/components/rfq/BomUpload'
 
-// Pairs the full RFQ form with the BOM upload panel. AOG hides BOM (an AOG is a
-// single urgent part). A parsed/attached BOM in turn hides the RFQ Part Details
-// — the BOM itself is the parts list, so re-entering a part number is redundant.
+// Pairs the full RFQ form with the BOM upload panel. Checking the AOG toggle
+// swaps the standard RFQ fields for the dedicated AOG intake (ship-to +
+// situation) — the two intakes ask for different things, so the fields
+// themselves change, not just a badge. AOG also hides BOM (an AOG is a single
+// urgent part). A parsed/attached BOM in turn hides the RFQ Part Details —
+// the BOM itself is the parts list, so re-entering a part number is redundant.
 export function InstantRfqPanel({ defaults }: { defaults?: RfqDefaults }) {
   const [aog, setAog] = useState(false)
   const [hasBom, setHasBom] = useState(false)
@@ -18,7 +22,14 @@ export function InstantRfqPanel({ defaults }: { defaults?: RfqDefaults }) {
   return (
     <div className="flex flex-col gap-6">
       <div style={{ order: hasBom ? 1 : 2 }}>
-        <RfqForm variant="full" defaults={defaults} onAogChange={setAog} hasBom={hasBom} />
+        {aog ? (
+          <AogForm
+            defaults={{ partNo: defaults?.partNo, manufacturer: defaults?.manufacturer }}
+            onAogChange={setAog}
+          />
+        ) : (
+          <RfqForm variant="full" defaults={defaults} onAogChange={setAog} hasBom={hasBom} />
+        )}
       </div>
       {!aog && (
         <div style={{ order: hasBom ? 0 : 3 }}>

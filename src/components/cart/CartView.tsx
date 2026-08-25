@@ -110,7 +110,7 @@ export function CartView() {
             <ShoppingCart size={48} className="mx-auto text-tertiary" />
             {/* C10 · empty-state wording aligns with the "Add to RFQ" row button so the
                 icon reads as a consistent RFQ workflow, not a shop cart. */}
-            <h2 className="mt-4 font-display text-h4 font-medium">Your RFQ is empty</h2>
+            <h2 className="mt-4 font-display text-h4 font-medium">Your quote is empty</h2>
             <p className="mx-auto mt-2 max-w-md text-secondary">
               Add parts from any search result or catalog listing — or, if you already know the part number, add a
               line item here to build your quote request without searching.
@@ -132,7 +132,7 @@ export function CartView() {
           </h2>
           {lines.length > 0 && (
             <button onClick={clear} className="text-sm text-tertiary underline underline-offset-2 hover:text-accent">
-              Clear cart
+              Clear quote
             </button>
           )}
         </div>
@@ -268,8 +268,8 @@ export function CartView() {
 function PageHeader() {
   return (
     <div className="max-w-3xl">
-      <p className="eyebrow">RFQ Cart</p>
-      <h1 className="mt-3 font-display text-h2 font-light tracking-tight-2">Your parts cart</h1>
+      <p className="eyebrow">Quote Request</p>
+      <h1 className="mt-3 font-display text-h2 font-light tracking-tight-2">Your parts quote</h1>
       <p className="mt-4 text-body-lg text-secondary">
         Review the parts you have collected, set quantities, and submit one request for a competitive quote on
         everything — answered within 15 minutes, 24/7.

@@ -85,17 +85,13 @@ export default function HomePage() {
           { icon: 'truck', title: 'Same-day delivery', body: 'Expedited fulfillment for your most urgent requirements.', image: '/Cards/same-day-delivery.jpg', imageAlt: 'ASAP staff loading a package into a FedEx Express truck' },
           { icon: 'route', title: 'Traceable supply chain', body: 'Full documentation and supply-chain integrity, end to end.', image: '/Cards/traceable-supply-chain.jpg', imageAlt: 'Quality control bench inspecting components beside the quality policy' },
         ]}
-      />
-
-      {/* B2 · About section's route forward. Same Instant-RFQ label used in the header. */}
-      <section className="bg-white pb-16">
-        <Container>
+        footer={
           <div className="flex flex-wrap gap-3">
-            <Link href="/instant-rfq" className="btn btn-primary">Instant RFQ</Link>
-            <Link href="/about-us" className="btn btn-outline">About ASAP</Link>
+            <Link href="/instant-rfq" className="btn btn-inverse">Instant RFQ</Link>
+            <Link href="/about-us" className="btn btn-on-dark">About ASAP</Link>
           </div>
-        </Container>
-      </section>
+        }
+      />
 
       {/* 5 · RECENTLY ORDERED PARTS — carousel */}
       <InDemandCarousel items={RECENTLY_ORDERED} />

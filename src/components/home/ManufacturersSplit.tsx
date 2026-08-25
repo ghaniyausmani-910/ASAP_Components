@@ -15,7 +15,7 @@ export function ManufacturersSplit({ items }: { items: ManufacturerCard[] }) {
       <div className="lg:sticky lg:top-28 lg:self-start">
         <figure className="relative aspect-[4/5] overflow-hidden border border-hairline bg-surface sm:aspect-[16/10] lg:aspect-[24/25]">
           <Image
-            src="/about/team-cart-hd.jpg"
+            src="/team/ASAP-Semiconductor-TNK-Photo-2024-111.jpg"
             alt="ASAP Components team members handling a packaged part beside a branded parts cart in the warehouse"
             fill
             quality={95}
@@ -86,10 +86,7 @@ function ManufacturerCell({ m }: { m: ManufacturerCard }) {
 
         {/* Logo — the hero of the card. Left-aligned in a generous zone that fills
             the card body so the brand is unmistakably the focal point. Height is
-            optically normalized per brand (see LOGO_HEIGHT).
-            D7 · one colour treatment: every logo renders monochrome-navy at rest
-            so a wall of vendor marks reads as one system. Hover restores full
-            colour for recognition — legibility at rest is not conditional on it. */}
+            optically normalized per brand (see LOGO_HEIGHT). */}
         <div className="flex flex-1 items-center py-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -100,7 +97,7 @@ function ManufacturerCell({ m }: { m: ManufacturerCard }) {
             // wordmarks so none spans the full card — object-contain then trims
             // their effective height to match, pulling the whole wall together.
             style={{ height: logoHeight, maxWidth: '12.5rem' }}
-            className="w-auto object-contain object-left [filter:grayscale(1)_contrast(1.05)_brightness(0.55)] opacity-80 transition-[filter,opacity] duration-300 ease-out group-hover:[filter:none] group-hover:opacity-100 group-focus-visible:[filter:none] group-focus-visible:opacity-100"
+            className="w-auto object-contain object-left"
           />
         </div>
 

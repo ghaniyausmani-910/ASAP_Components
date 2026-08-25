@@ -5,14 +5,14 @@ import { CartView } from '@/components/cart/CartView'
 import { Certifications } from '@/components/modules/Certifications'
 
 export const metadata: Metadata = {
-  title: 'Cart',
-  description: 'Review the parts you have collected and request a quote for all of them at once.',
+  title: 'Quote',
+  description: 'Review the parts you have collected and request a quotation for all of them at once.',
 }
 
 export default function CartPage() {
   return (
     <>
-      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Cart' }]} />
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Quote' }]} />
 
       <section className="section-y bg-white">
         <Container>

@@ -27,12 +27,13 @@ export function AddToCartControl({
       <button
         type="button"
         onClick={() => addItem({ partNo, manufacturer, description })}
-        // C10 · icon stays (universal), wording is "Add to RFQ".
+        // C10 · icon-only row control; the accessible name still names the
+        // action so screen readers announce "Add {partNo} to RFQ".
         aria-label={`Add ${partNo} to RFQ`}
-        className="inline-flex items-center justify-center gap-1 whitespace-nowrap border border-navy px-3 py-1.5 text-xs font-semibold text-navy transition-colors hover:bg-navy hover:text-white"
+        title="Add to RFQ"
+        className="inline-flex h-8 w-8 items-center justify-center border border-navy text-navy transition-colors hover:bg-navy hover:text-white"
       >
         <ShoppingCart size={14} />
-        <span className="sr-only sm:not-sr-only">Add to RFQ</span>
       </button>
     )
   }

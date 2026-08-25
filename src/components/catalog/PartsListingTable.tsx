@@ -66,7 +66,7 @@ export function PartsListingTable({
               <Th>Manufacturer</Th>
               {showDescription && <Th>Description</Th>}
               {extraColumn && <Th>{extraColumn.label}</Th>}
-              <Th className="w-56">Actions</Th>
+              <Th className="w-56 text-right">Actions</Th>
             </tr>
           </thead>
           <tbody>
@@ -88,14 +88,20 @@ export function PartsListingTable({
                   </td>
                 )}
                 <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
+                  {/* Icon-first / stepper-when-added lives in a fixed-width
+                      right-aligned slot so its trailing edge stays flush with
+                      the RFQ button — a row whose control is still the small
+                      icon lines up with rows where the stepper has expanded. */}
+                  <div className="flex items-center justify-end gap-2">
+                    <div className="flex w-[112px] items-center justify-end">
+                      <AddToCartControl partNo={p.partNo} manufacturer={p.manufacturer} description={p.description} />
+                    </div>
                     <Link
                       href={`/rfq/search?partno=${encodeURIComponent(p.partNo)}`}
                       className="inline-flex items-center gap-1 whitespace-nowrap bg-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent-hover"
                     >
                       RFQ <ArrowRight size={12} />
                     </Link>
-                    <AddToCartControl partNo={p.partNo} manufacturer={p.manufacturer} description={p.description} />
                   </div>
                 </td>
               </tr>
@@ -106,7 +112,7 @@ export function PartsListingTable({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <nav className="mt-6 flex flex-wrap items-center justify-center gap-1" aria-label="Pagination">
+        <nav className="mt-6 flex flex-wrap items-center justify-start gap-1" aria-label="Pagination">
           <PageBtn disabled={current === 1} onClick={() => setPage(current - 1)}>‹ Prev</PageBtn>
           {pageWindow(current, totalPages).map((n, i) =>
             n === '…' ? (

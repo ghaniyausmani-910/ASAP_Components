@@ -57,7 +57,7 @@ export function CageTable({ rows }: { rows: { code: string; manufacturer: string
         ))}
       </div>
       {totalPages > 1 && (
-        <nav className="mt-6 flex items-center justify-center gap-1" aria-label="Pagination">
+        <nav className="mt-6 flex items-center justify-start gap-1" aria-label="Pagination">
           <button disabled={current === 1} onClick={() => setPage(current - 1)} className="h-9 border border-hairline px-3 text-sm text-secondary enabled:hover:border-accent enabled:hover:text-accent disabled:opacity-40">‹ Prev</button>
           <span className="px-3 text-sm text-secondary">{current} / {totalPages}</span>
           <button disabled={current === totalPages} onClick={() => setPage(current + 1)} className="h-9 border border-hairline px-3 text-sm text-secondary enabled:hover:border-accent enabled:hover:text-accent disabled:opacity-40">Next ›</button>

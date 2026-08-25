@@ -50,9 +50,22 @@ export function BomReview({
         {needAttention > 0 && (
           <span className="text-xs text-tertiary">{needAttention} row{needAttention === 1 ? '' : 's'} without a part number will be skipped</span>
         )}
-        <button type="button" onClick={onReset} className="ml-auto text-sm text-accent hover:underline">
-          Upload a different file
-        </button>
+        <div className="ml-auto flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => {
+              if (rows.length === 0 || confirm(`Clear all ${rows.length} line${rows.length === 1 ? '' : 's'} from this BOM?`)) {
+                onReset()
+              }
+            }}
+            className="inline-flex items-center gap-1.5 text-sm text-secondary hover:text-error"
+          >
+            <Trash2 size={14} /> Clear all
+          </button>
+          <button type="button" onClick={onReset} className="text-sm text-accent hover:underline">
+            Upload a different file
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -113,7 +126,7 @@ export function BomReview({
           disabled={sendable.length === 0}
           className="btn btn-primary ml-auto !px-4 !py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Send {sendable.length} line{sendable.length === 1 ? '' : 's'} to cart
+          Send {sendable.length} line{sendable.length === 1 ? '' : 's'} to quote
           <ArrowRight size={16} />
         </button>
       </div>

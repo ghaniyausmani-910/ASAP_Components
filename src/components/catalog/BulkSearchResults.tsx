@@ -84,7 +84,7 @@ export function BulkSearchResults({ items }: { items: BulkSearchItem[] }) {
                 <Th>Item Name</Th>
                 <Th>Manufacturer</Th>
                 <Th className="w-28">Availability</Th>
-                <Th className="w-56">Actions</Th>
+                <Th className="w-56 text-right">Actions</Th>
               </tr>
             </thead>
             <tbody>
@@ -108,14 +108,16 @@ export function BulkSearchResults({ items }: { items: BulkSearchItem[] }) {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center justify-end gap-2">
+                          <div className="flex w-[112px] items-center justify-end">
+                            <AddToCartControl partNo={p.partNo} manufacturer={p.manufacturer} description={p.description} />
+                          </div>
                           <Link
                             href={`/rfq/search?partno=${encodeURIComponent(p.partNo)}`}
                             className="inline-flex items-center gap-1 whitespace-nowrap bg-accent px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-accent-hover"
                           >
                             Get Quote <ArrowRight size={12} />
                           </Link>
-                          <AddToCartControl partNo={p.partNo} manufacturer={p.manufacturer} description={p.description} />
                         </div>
                       </td>
                     </tr>

@@ -45,29 +45,31 @@ type Leader = {
 
 const LEADERS: Leader[] = [
   {
-    name: 'Marcus Feld',
-    role: 'President & Chief Executive Officer',
-    bio: 'Sets the strategy that turns a 10-million-part catalog into a same-day sourcing partner for civil and defense programs.',
+    name: 'Joe Faruqui',
+    role: 'CEO & Cofounder',
+    bio: 'Owns the supplier network, commercial strategy, and the guarantees ASAP makes to defense and civil customers.',
+    photo: '/team/Joe%20Faruqui.png',
   },
   {
-    name: 'Elena Vasquez',
-    role: 'VP, Global Sourcing & Procurement',
-    bio: 'Runs the 5,100-manufacturer supplier network and vendor relationships behind every quote we return.',
+    name: 'Ryan Aggergaard',
+    role: 'Executive Vice President and Chief Legal Officer',
+    bio: 'Owns contracts and customer terms, export-control compliance, and the FAR/DFARS flow-downs that government orders are accepted under.',
+    photo: '/team/Ryan%20Aggergaard.png',
   },
   {
-    name: 'David Chen',
-    role: 'Director, Quality & Compliance',
-    bio: 'Owns the AS9120B and ISO 9001:2015 systems that keep every shipment fully traceable and audit-ready.',
+    name: 'Nate',
+    role: 'President',
+    bio: 'Bio and areas of ownership TBD — replace with this leader’s responsibilities.',
   },
   {
-    name: 'Priya Nair',
-    role: 'Head of AOG Rapid-Response',
-    bio: 'Leads the 24/7 desk that gets AOG-critical hardware identified, quoted, and moving in minutes.',
+    name: 'Haley',
+    role: 'CFO',
+    bio: 'Bio and areas of ownership TBD — replace with this leader’s responsibilities.',
   },
   {
-    name: 'James Whitmore',
-    role: 'VP, Customer Success',
-    bio: 'Makes sure procurement teams stay on schedule from first quote through delivery and reorder.',
+    name: 'Tony',
+    role: 'General Manager',
+    bio: 'Bio and areas of ownership TBD — replace with this leader’s responsibilities.',
   },
 ]
 
@@ -230,7 +232,10 @@ function PlateBackground({ photo, isActive }: { photo?: string; isActive: boolea
             e.currentTarget.style.display = 'none'
           }}
           className={cn(
-            'absolute inset-0 -z-10 h-full w-full object-cover object-top',
+            // object-position `50% 20%` puts the subject's eyes near the top
+            // third — enough headroom that the plate never feels like it's
+            // pressing against the face on either the narrow or wide state.
+            'absolute inset-0 -z-10 h-full w-full object-cover [object-position:50%_20%]',
             'motion-safe:transition-[transform,filter,opacity] motion-safe:duration-700 motion-safe:[transition-timing-function:cubic-bezier(.22,1,.36,1)]',
             isActive
               ? 'opacity-100 [filter:saturate(1)] motion-safe:scale-105'

@@ -8,6 +8,7 @@ import { useAutocomplete } from '@/components/ui/useAutocomplete'
 import { SuggestionsDropdown } from '@/components/ui/SuggestionsDropdown'
 import { Select } from '@/components/ui/Select'
 import { searchTargetHref, searchSuggestions } from '@/lib/data/suggestions'
+import { useRecentSearches } from '@/lib/search/recentSearches'
 import { describePartNo } from '@/lib/data/parts'
 import { trackSearch } from '@/lib/analytics'
 import {
@@ -51,11 +52,16 @@ export function SearchBar({
     setIsMac(/mac|iphone|ipad|ipod/i.test(navigator.platform || navigator.userAgent))
   }, [])
 
+  const { recent, record: recordRecent } = useRecentSearches(type)
+
   function go(value: string, searchType: string) {
     // A8: fire the typed search event with results_count so the miss rate is
     // measurable. A miss (count === 0) is what A1 routes into the pre-filled RFQ.
     const v = value.trim()
-    if (v) trackSearch(v, searchSuggestions(v, searchType, 50).length, searchType)
+    if (v) {
+      trackSearch(v, searchSuggestions(v, searchType, 50).length, searchType)
+      recordRecent(v)
+    }
     // A query with no genuine catalog match dead-ends on the results page (which
     // fabricates a row for anything), so `searchTargetHref` routes it straight to
     // a pre-filled RFQ instead — keeping /search out of history so Back doesn't
@@ -66,6 +72,8 @@ export function SearchBar({
 
   function handleSelect(s: { value: string; type: string; href?: string }) {
     setQ(s.value)
+    // Log every commit — recent + popular clicks are searches the user just ran.
+    recordRecent(s.value)
     // A suggestion points at one specific thing — deep-link to its page.
     // Falls back to the listing if a row ever lacks an href.
     if (s.href) {
@@ -75,7 +83,7 @@ export function SearchBar({
     }
   }
 
-  const ac = useAutocomplete({ query: q, type, onSelect: handleSelect })
+  const ac = useAutocomplete({ query: q, type, onSelect: handleSelect, recent })
 
   function submit(e: React.FormEvent) {
     e.preventDefault()

@@ -1,5 +1,6 @@
 'use client'
 
+import { Fragment } from 'react'
 import { cn } from '@/lib/utils'
 import type { Suggestion } from '@/lib/data/suggestions'
 
@@ -55,9 +56,28 @@ export function SuggestionsDropdown({
     >
       {items.map((s, i) => {
         const mono = MONO_TYPES.has(s.type)
+        // Show a section header ahead of the first row whose `section` differs
+        // from the previous row — groups "Recent" and "Popular" without any
+        // manual bookkeeping in the caller.
+        const prev = i > 0 ? items[i - 1].section : undefined
+        const header = s.section && s.section !== prev
+          ? (s.section === 'recent' ? 'Recent searches' : 'Popular searches')
+          : null
         return (
+          <Fragment key={`${s.type}-${s.value}`}>
+          {header && (
+            <li
+              role="presentation"
+              className={cn(
+                'px-4 pt-2 pb-1 text-[0.7rem] font-medium uppercase tracking-[0.08em]',
+                dark ? 'text-white/50' : 'text-tertiary',
+                i > 0 && (dark ? 'border-t border-white/10 mt-1' : 'border-t border-inputline mt-1'),
+              )}
+            >
+              {header}
+            </li>
+          )}
           <li
-            key={`${s.type}-${s.value}`}
             id={`${id}-opt-${i}`}
             role="option"
             aria-selected={i === active}
@@ -105,6 +125,7 @@ export function SuggestionsDropdown({
               </span>
             )}
           </li>
+          </Fragment>
         )
       })}
     </ul>

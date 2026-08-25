@@ -32,7 +32,15 @@ const FOCUS_ORDER: Field[] = [
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-export function AogForm({ defaults }: { defaults?: AogDefaults }) {
+export function AogForm({
+  defaults,
+  onAogChange,
+}: {
+  defaults?: AogDefaults
+  /** Lets the parent (e.g. InstantRfqPanel) swap back to the standard RFQ form
+      when the AOG toggle is unchecked from inside this form. */
+  onAogChange?: (aog: boolean) => void
+}) {
   const [status, setStatus] = useState<Status>('idle')
   const [ref, setRef] = useState('')
   const [errors, setErrors] = useState<Errors>({})
@@ -184,6 +192,26 @@ export function AogForm({ defaults }: { defaults?: AogDefaults }) {
           AOG request for {defaults.partNo}
           {defaults.manufacturer ? ` (${defaults.manufacturer})` : ''}
         </p>
+      )}
+
+      {/* AOG toggle — mirrors the checkbox in the standard RFQ form so the
+          user can flip back without leaving the panel. Only rendered when the
+          parent is listening for the flip (i.e. it's showing this form because
+          the RFQ toggle is on). */}
+      {onAogChange && (
+        <label htmlFor="aog-toggle" className="flex cursor-pointer items-start gap-3 border-b border-hairline p-5 text-sm text-secondary">
+          <input
+            id="aog-toggle"
+            type="checkbox"
+            checked
+            onChange={(e) => onAogChange(e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-[var(--color-warning)]"
+          />
+          <span>
+            <span className="font-medium text-ink">This is an AOG (Aircraft on Ground) request.</span>{' '}
+            We&rsquo;ll prioritize it and expedite your quote.
+          </span>
+        </label>
       )}
 
       {/* Contact */}

@@ -58,12 +58,12 @@ export function ChatWidget() {
       {open && (
         <div className="mb-3 w-[300px] border border-hairline bg-white shadow-hover animate-fade">
           <div className="flex items-center justify-between bg-navy px-4 py-3 text-white">
-            <span className="font-display text-sm font-medium">Chat with a specialist</span>
-            <button aria-label="Close chat" onClick={() => setOpen(false)}><X size={18} /></button>
+            <span className="font-display text-sm font-medium">Chat with Bolt</span>
+            <button aria-label="Close Bolt chat" onClick={() => setOpen(false)}><X size={18} /></button>
           </div>
           <div className="space-y-3 p-4 text-sm">
             <div className="bg-surface p-3 text-secondary">
-              Hi! Need help finding a part or getting a quote? Message us and a sourcing specialist will respond right away.
+              Hi, I&apos;m Bolt — ASAP&apos;s sourcing assistant. Need help finding a part or getting a quote? Send a message and I&apos;ll get you moving right away.
             </div>
             <div className="field-shell flex items-center gap-2 p-1">
               <input className="min-w-0 flex-1 px-2 py-1.5 text-sm outline-none" placeholder="Type a message…" />
@@ -75,7 +75,7 @@ export function ChatWidget() {
       <button
         ref={buttonRef}
         onClick={() => setOpen((v) => !v)}
-        aria-label="Open chat"
+        aria-label="Open Bolt chat"
         className={
           onDark
             ? 'flex h-14 w-14 items-center justify-center border border-hairline bg-white text-ink shadow-hover transition-colors hover:bg-surface'

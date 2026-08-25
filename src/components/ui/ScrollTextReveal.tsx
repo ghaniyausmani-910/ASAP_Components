@@ -70,6 +70,10 @@ export interface ScrollTextRevealProps {
   /** Optional value-prop card carousel rendered below the copy. Six cards,
    *  three per view on desktop; see AboutCards for the shape + copy slot. */
   cards?: AboutCard[]
+  /** Optional actions row rendered inside the section, left-aligned to
+   *  the container gutter, below the cards. Use for section-closing CTAs
+   *  that should live inside the About band rather than in a follow-up strip. */
+  footer?: React.ReactNode
   /** Background/colour treatment. Defaults to `dark` (navy). */
   tone?: keyof typeof TONES
   className?: string
@@ -82,6 +86,7 @@ export function ScrollTextReveal({
   cta,
   photos,
   cards,
+  footer,
   tone = 'dark',
   className,
 }: ScrollTextRevealProps) {
@@ -187,8 +192,9 @@ export function ScrollTextReveal({
       )}
 
       {/* Value-prop card carousel — sits below the copy, inside the same
-          section so it shares the navy band. */}
-      {cards && cards.length > 0 && <AboutCards cards={cards} />}
+          section so it shares the navy band. Any `footer` slot renders on
+          the arrow row so section CTAs top-align with the nav controls. */}
+      {cards && cards.length > 0 && <AboutCards cards={cards} actions={footer} />}
     </section>
   )
 }
