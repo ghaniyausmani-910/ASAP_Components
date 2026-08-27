@@ -172,12 +172,12 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
             onClick={onClose}
             aria-hidden="true"
           />
-          <div className="absolute inset-x-0 top-0 flex justify-center px-4 pt-[12vh]">
+          <div className="absolute inset-x-0 top-0 flex justify-center px-4 pt-[8vh]">
             <motion.div
               role="dialog"
               aria-modal="true"
               aria-label="Site search"
-              className="w-full max-w-[640px] overflow-hidden border border-inputline bg-white shadow-hover"
+              className="w-full max-w-[800px] overflow-hidden border border-inputline bg-white shadow-hover"
               initial={{ opacity: 0, y: reduce ? 0 : -8, scale: reduce ? 1 : 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: reduce ? 0 : -8, scale: reduce ? 1 : 0.98 }}
@@ -210,32 +210,46 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
 
               {/* Results */}
               {!hasQuery ? (
-                <div id="cmd-listbox" className="max-h-[60vh] overflow-auto p-2">
+                <div id="cmd-listbox" className="max-h-[70vh] overflow-auto p-2">
                   <div className="grid grid-cols-1 gap-x-4 sm:grid-cols-2">
-                    {DEFAULT_GROUPS.map((group) => (
-                      <div key={group.title} className="py-1">
-                        <div className="px-4 pb-1 pt-2 text-xs uppercase tracking-[0.08em] text-tertiary">
-                          {group.title}
+                    {DEFAULT_GROUPS.map((group) => {
+                      const inverse = group.title === 'Quick links'
+                      return (
+                        <div key={group.title} className={cn('py-1', inverse && 'bg-navy')}>
+                          <div
+                            className={cn(
+                              'px-4 pb-1 pt-2 text-xs uppercase tracking-[0.08em]',
+                              inverse ? 'text-white/60' : 'text-tertiary',
+                            )}
+                          >
+                            {group.title}
+                          </div>
+                          <ul role="listbox" aria-label={group.title}>
+                            {group.items.map((item) => {
+                              const idx = DEFAULT_ITEMS.indexOf(item)
+                              return (
+                                <Row
+                                  key={item.href}
+                                  index={idx}
+                                  active={active === idx}
+                                  inverse={inverse}
+                                  title={item.label}
+                                  hint={item.hint}
+                                  icon={
+                                    <item.Icon
+                                      size={16}
+                                      className={inverse ? 'text-white/70' : 'text-tertiary'}
+                                    />
+                                  }
+                                  onHover={() => setActive(idx)}
+                                  onPick={() => navigate(item.href)}
+                                />
+                              )
+                            })}
+                          </ul>
                         </div>
-                        <ul role="listbox" aria-label={group.title}>
-                          {group.items.map((item) => {
-                            const idx = DEFAULT_ITEMS.indexOf(item)
-                            return (
-                              <Row
-                                key={item.href}
-                                index={idx}
-                                active={active === idx}
-                                title={item.label}
-                                hint={item.hint}
-                                icon={<item.Icon size={16} className="text-tertiary" />}
-                                onHover={() => setActive(idx)}
-                                onPick={() => navigate(item.href)}
-                              />
-                            )
-                          })}
-                        </ul>
-                      </div>
-                    ))}
+                      )
+                    })}
                   </div>
                 </div>
               ) : !hasResults ? (
@@ -245,7 +259,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
                   request a quote.
                 </div>
               ) : (
-                <ul id="cmd-listbox" role="listbox" className="max-h-[60vh] overflow-auto py-2">
+                <ul id="cmd-listbox" role="listbox" className="max-h-[70vh] overflow-auto py-2">
                   {parts.length > 0 && <SectionLabel>Parts</SectionLabel>}
                   {parts.map((s, i) => (
                     <Row
@@ -309,6 +323,7 @@ function Row({
   index,
   active,
   mono,
+  inverse,
   title,
   hint,
   trailing,
@@ -319,6 +334,7 @@ function Row({
   index: number
   active: boolean
   mono?: boolean
+  inverse?: boolean
   title: React.ReactNode
   hint?: string
   trailing?: string
@@ -339,14 +355,32 @@ function Row({
       }}
       className={cn(
         'flex cursor-pointer items-baseline justify-between gap-3 px-4 py-2.5 transition-colors',
-        active ? 'bg-surface' : 'hover:bg-surface',
+        inverse
+          ? active
+            ? 'bg-white/10'
+            : 'hover:bg-white/10'
+          : active
+            ? 'bg-surface'
+            : 'hover:bg-surface',
       )}
     >
       <span className="flex min-w-0 items-baseline gap-3">
         {icon && <span className="self-center">{icon}</span>}
         <span className="flex min-w-0 flex-col">
-          <span className={cn('truncate text-body text-ink', mono && 'font-mono text-sm')}>{title}</span>
-          {hint && <span className="truncate text-xs text-tertiary">{hint}</span>}
+          <span
+            className={cn(
+              'truncate text-body',
+              inverse ? 'text-white' : 'text-ink',
+              mono && 'font-mono text-sm',
+            )}
+          >
+            {title}
+          </span>
+          {hint && (
+            <span className={cn('truncate text-xs', inverse ? 'text-white/60' : 'text-tertiary')}>
+              {hint}
+            </span>
+          )}
         </span>
       </span>
       {trailing && (
